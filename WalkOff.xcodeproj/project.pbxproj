@@ -8,11 +8,32 @@
 
 /* Begin PBXBuildFile section */
 		B898764A1B03038B00B54926 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876491B03038B00B54926 /* AppDelegate.swift */; };
-		B898764C1B03038B00B54926 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898764B1B03038B00B54926 /* ViewController.swift */; };
+		B898764C1B03038B00B54926 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898764B1B03038B00B54926 /* MainViewController.swift */; };
 		B898764F1B03038B00B54926 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B898764D1B03038B00B54926 /* Main.storyboard */; };
 		B89876511B03038B00B54926 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B89876501B03038B00B54926 /* Images.xcassets */; };
 		B89876541B03038B00B54926 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B89876521B03038B00B54926 /* LaunchScreen.xib */; };
 		B89876601B03038B00B54926 /* WalkOffTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898765F1B03038B00B54926 /* WalkOffTests.swift */; };
+		B89876771B0304B900B54926 /* SocketAckManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898766A1B0304B900B54926 /* SocketAckManager.swift */; };
+		B89876781B0304B900B54926 /* SocketAnyEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898766B1B0304B900B54926 /* SocketAnyEvent.swift */; };
+		B89876791B0304B900B54926 /* SocketEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898766C1B0304B900B54926 /* SocketEngine.swift */; };
+		B898767A1B0304B900B54926 /* SocketEngineClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898766D1B0304B900B54926 /* SocketEngineClient.swift */; };
+		B898767B1B0304B900B54926 /* SocketEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898766E1B0304B900B54926 /* SocketEventHandler.swift */; };
+		B898767C1B0304B900B54926 /* SocketFixUTF8.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898766F1B0304B900B54926 /* SocketFixUTF8.swift */; };
+		B898767D1B0304B900B54926 /* SocketIOClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876701B0304B900B54926 /* SocketIOClient.swift */; };
+		B898767E1B0304B900B54926 /* SocketLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876711B0304B900B54926 /* SocketLogger.swift */; };
+		B898767F1B0304B900B54926 /* SocketPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876721B0304B900B54926 /* SocketPacket.swift */; };
+		B89876801B0304B900B54926 /* SocketParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876731B0304B900B54926 /* SocketParser.swift */; };
+		B89876811B0304B900B54926 /* SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876741B0304B900B54926 /* SocketTypes.swift */; };
+		B89876821B0304B900B54926 /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876751B0304B900B54926 /* SwiftRegex.swift */; };
+		B89876831B0304B900B54926 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876761B0304B900B54926 /* WebSocket.swift */; };
+		B89876851B03050900B54926 /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876841B03050900B54926 /* GameManager.swift */; };
+		B89876871B03065100B54926 /* GameKitHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876861B03065100B54926 /* GameKitHelper.swift */; };
+		B89876891B03068300B54926 /* Movement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876881B03068300B54926 /* Movement.swift */; };
+		B898768B1B0306A000B54926 /* GameCenterAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898768A1B0306A000B54926 /* GameCenterAuthorization.swift */; };
+		B898768D1B03080D00B54926 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898768C1B03080D00B54926 /* NavigationController.swift */; };
+		B898768F1B03099100B54926 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898768E1B03099100B54926 /* Player.swift */; };
+		B89876911B03099900B54926 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876901B03099900B54926 /* Game.swift */; };
+		B89876951B0309EE00B54926 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876941B0309EE00B54926 /* DetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,13 +50,34 @@
 		B89876441B03038B00B54926 /* WalkOff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WalkOff.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B89876481B03038B00B54926 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B89876491B03038B00B54926 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B898764B1B03038B00B54926 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B898764B1B03038B00B54926 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		B898764E1B03038B00B54926 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B89876501B03038B00B54926 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		B89876531B03038B00B54926 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		B89876591B03038B00B54926 /* WalkOffTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WalkOffTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B898765E1B03038B00B54926 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B898765F1B03038B00B54926 /* WalkOffTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkOffTests.swift; sourceTree = "<group>"; };
+		B898766A1B0304B900B54926 /* SocketAckManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAckManager.swift; sourceTree = "<group>"; };
+		B898766B1B0304B900B54926 /* SocketAnyEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAnyEvent.swift; sourceTree = "<group>"; };
+		B898766C1B0304B900B54926 /* SocketEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketEngine.swift; sourceTree = "<group>"; };
+		B898766D1B0304B900B54926 /* SocketEngineClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketEngineClient.swift; sourceTree = "<group>"; };
+		B898766E1B0304B900B54926 /* SocketEventHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketEventHandler.swift; sourceTree = "<group>"; };
+		B898766F1B0304B900B54926 /* SocketFixUTF8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketFixUTF8.swift; sourceTree = "<group>"; };
+		B89876701B0304B900B54926 /* SocketIOClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketIOClient.swift; sourceTree = "<group>"; };
+		B89876711B0304B900B54926 /* SocketLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketLogger.swift; sourceTree = "<group>"; };
+		B89876721B0304B900B54926 /* SocketPacket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketPacket.swift; sourceTree = "<group>"; };
+		B89876731B0304B900B54926 /* SocketParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketParser.swift; sourceTree = "<group>"; };
+		B89876741B0304B900B54926 /* SocketTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketTypes.swift; sourceTree = "<group>"; };
+		B89876751B0304B900B54926 /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
+		B89876761B0304B900B54926 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
+		B89876841B03050900B54926 /* GameManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
+		B89876861B03065100B54926 /* GameKitHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameKitHelper.swift; sourceTree = "<group>"; };
+		B89876881B03068300B54926 /* Movement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Movement.swift; sourceTree = "<group>"; };
+		B898768A1B0306A000B54926 /* GameCenterAuthorization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameCenterAuthorization.swift; sourceTree = "<group>"; };
+		B898768C1B03080D00B54926 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
+		B898768E1B03099100B54926 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		B89876901B03099900B54926 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		B89876941B0309EE00B54926 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +104,7 @@
 				B89876461B03038B00B54926 /* WalkOff */,
 				B898765C1B03038B00B54926 /* WalkOffTests */,
 				B89876451B03038B00B54926 /* Products */,
+				B89876691B0304B900B54926 /* SocketIOClientSwift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -77,11 +120,19 @@
 		B89876461B03038B00B54926 /* WalkOff */ = {
 			isa = PBXGroup;
 			children = (
+				B89876901B03099900B54926 /* Game.swift */,
+				B898768E1B03099100B54926 /* Player.swift */,
+				B89876861B03065100B54926 /* GameKitHelper.swift */,
+				B89876841B03050900B54926 /* GameManager.swift */,
+				B89876881B03068300B54926 /* Movement.swift */,
+				B898764B1B03038B00B54926 /* MainViewController.swift */,
+				B898768C1B03080D00B54926 /* NavigationController.swift */,
+				B89876941B0309EE00B54926 /* DetailViewController.swift */,
+				B898768A1B0306A000B54926 /* GameCenterAuthorization.swift */,
 				B89876491B03038B00B54926 /* AppDelegate.swift */,
-				B898764B1B03038B00B54926 /* ViewController.swift */,
 				B898764D1B03038B00B54926 /* Main.storyboard */,
-				B89876501B03038B00B54926 /* Images.xcassets */,
 				B89876521B03038B00B54926 /* LaunchScreen.xib */,
+				B89876501B03038B00B54926 /* Images.xcassets */,
 				B89876471B03038B00B54926 /* Supporting Files */,
 			);
 			path = WalkOff;
@@ -110,6 +161,26 @@
 				B898765E1B03038B00B54926 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B89876691B0304B900B54926 /* SocketIOClientSwift */ = {
+			isa = PBXGroup;
+			children = (
+				B898766A1B0304B900B54926 /* SocketAckManager.swift */,
+				B898766B1B0304B900B54926 /* SocketAnyEvent.swift */,
+				B898766C1B0304B900B54926 /* SocketEngine.swift */,
+				B898766D1B0304B900B54926 /* SocketEngineClient.swift */,
+				B898766E1B0304B900B54926 /* SocketEventHandler.swift */,
+				B898766F1B0304B900B54926 /* SocketFixUTF8.swift */,
+				B89876701B0304B900B54926 /* SocketIOClient.swift */,
+				B89876711B0304B900B54926 /* SocketLogger.swift */,
+				B89876721B0304B900B54926 /* SocketPacket.swift */,
+				B89876731B0304B900B54926 /* SocketParser.swift */,
+				B89876741B0304B900B54926 /* SocketTypes.swift */,
+				B89876751B0304B900B54926 /* SwiftRegex.swift */,
+				B89876761B0304B900B54926 /* WebSocket.swift */,
+			);
+			path = SocketIOClientSwift;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -161,6 +232,11 @@
 				TargetAttributes = {
 					B89876431B03038B00B54926 = {
 						CreatedOnToolsVersion = 6.3;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					B89876581B03038B00B54926 = {
 						CreatedOnToolsVersion = 6.3;
@@ -212,8 +288,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B898764C1B03038B00B54926 /* ViewController.swift in Sources */,
+				B898767D1B0304B900B54926 /* SocketIOClient.swift in Sources */,
+				B89876771B0304B900B54926 /* SocketAckManager.swift in Sources */,
+				B89876891B03068300B54926 /* Movement.swift in Sources */,
+				B898767A1B0304B900B54926 /* SocketEngineClient.swift in Sources */,
+				B898768F1B03099100B54926 /* Player.swift in Sources */,
+				B89876851B03050900B54926 /* GameManager.swift in Sources */,
+				B89876821B0304B900B54926 /* SwiftRegex.swift in Sources */,
+				B89876831B0304B900B54926 /* WebSocket.swift in Sources */,
+				B89876791B0304B900B54926 /* SocketEngine.swift in Sources */,
+				B898764C1B03038B00B54926 /* MainViewController.swift in Sources */,
+				B898767F1B0304B900B54926 /* SocketPacket.swift in Sources */,
+				B898767B1B0304B900B54926 /* SocketEventHandler.swift in Sources */,
+				B898767E1B0304B900B54926 /* SocketLogger.swift in Sources */,
+				B898767C1B0304B900B54926 /* SocketFixUTF8.swift in Sources */,
+				B89876951B0309EE00B54926 /* DetailViewController.swift in Sources */,
+				B89876811B0304B900B54926 /* SocketTypes.swift in Sources */,
+				B89876781B0304B900B54926 /* SocketAnyEvent.swift in Sources */,
+				B898768B1B0306A000B54926 /* GameCenterAuthorization.swift in Sources */,
+				B89876911B03099900B54926 /* Game.swift in Sources */,
 				B898764A1B03038B00B54926 /* AppDelegate.swift in Sources */,
+				B898768D1B03080D00B54926 /* NavigationController.swift in Sources */,
+				B89876871B03065100B54926 /* GameKitHelper.swift in Sources */,
+				B89876801B0304B900B54926 /* SocketParser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,6 +506,7 @@
 				B89876651B03038B00B54926 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B89876661B03038B00B54926 /* Build configuration list for PBXNativeTarget "WalkOffTests" */ = {
 			isa = XCConfigurationList;
@@ -417,6 +515,7 @@
 				B89876681B03038B00B54926 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
