@@ -22,6 +22,7 @@ class NavigationController: UINavigationController {
 	func showAuthenticationViewController() {
 		if let authenticateViewController =
 			GameCenterAuthorization.sharedInstance.authenticationViewController {
+				NSLog("Showing Game Center authentication view controller")
 				topViewController.presentViewController(
 					authenticateViewController,
 					animated: true,

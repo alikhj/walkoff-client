@@ -14,8 +14,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 
 
-	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-		// Override point for customization after application launch.
+	func application(
+		application: UIApplication,
+		didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?)
+		-> Bool {
+		let documentsPath = NSSearchPathForDirectoriesInDomains(
+			.DocumentDirectory,
+			.UserDomainMask,
+			true)[0] as! NSString
+		let fileName = "/WO \(NSDate())"
+		let logFilePath = (documentsPath as! String) + fileName
+		freopen(logFilePath.cStringUsingEncoding(
+			NSASCIIStringEncoding)!,
+			"a+",
+			stderr)
 		return true
 	}
 

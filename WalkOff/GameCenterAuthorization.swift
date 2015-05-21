@@ -9,10 +9,6 @@
 
 import GameKit
 
-protocol GameCenterAuthorizationDelegate: class {
-	func gameCenterAuthorizationIsComplete()
-}
-
 let gameCenterAuthorizationSingleton = GameCenterAuthorization()
 let PresentAuthenticationViewController =
 	"PresentAuthenticationViewController"
@@ -22,7 +18,6 @@ class GameCenterAuthorization: NSObject {
 		return gameCenterAuthorizationSingleton
 	}
 	
-	weak var delegate: GameCenterAuthorizationDelegate?
 	var authenticationViewController: UIViewController?
 	var gameCenterEnabled: Bool
 	var lastError: NSError?
@@ -36,18 +31,15 @@ class GameCenterAuthorization: NSObject {
 		let localPlayer = GKLocalPlayer.localPlayer()
 		localPlayer.authenticateHandler = {(viewController, error) in
 			self.lastError = error
-			
+			NSLog("Error in localplayer.authenticateHandler: \(error)")
 			if viewController != nil {
 				self.authenticationViewController = viewController
 				NSNotificationCenter.defaultCenter().postNotificationName(
 					PresentAuthenticationViewController,
 					object: self)
-			
 			} else if localPlayer.authenticated {
 				self.gameCenterEnabled = true
 				NSLog("Player authorized by Game Center")
-				self.delegate?.gameCenterAuthorizationIsComplete()
-				
 			} else {
 				self.gameCenterEnabled = false
 				NSLog("Player not authorized by Game Center")

@@ -22,14 +22,17 @@ GameKitHelperDelegate {
 	class var sharedInstance: GameManager {
 		return GameManagerSingleton
 	}
-
+	
 	let socket = SocketIOClient(socketURL: "http://pb.beardfury.com:80")
 	let localPlayer = GKLocalPlayer.localPlayer()
 	
+	var gameKitHelper = GameKitHelper()
 	var allGames = [String : Game]()
 	weak var delegate: GameManagerDelegate?
 	
 	func startNetworking() {
+		NSLog("Networking started...")
+		gameKitHelper.delegate = self
 		socket.connect()
 		handlers()
 		//debugHandlers()
@@ -72,7 +75,7 @@ GameKitHelperDelegate {
 	
 	func handlers() {
 		socket.on("connect") {[weak self] data, ack in
-			NSLog("Connected, with sid: \(self!.socket.sid)")
+			NSLog("Connected, with sid: \(self!.socket.sid!)")
 		}
 		
 		socket.on("disconnect") {[weak self] data, ack in

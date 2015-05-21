@@ -7,22 +7,29 @@
 //
 
 import UIKit
+import GameKit
 
 class MainViewController:
 UITableViewController,
 GameManagerDelegate {
 	
+	let PresentAuthenticationViewController =
+	"PresentAuthenticationViewController"
+
 	var allGames = [String]()
-	//dont forget to make this a delegate to GameManager
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		GameManager.sharedInstance.delegate = self
+		GameManager.sharedInstance.startNetworking()
 		//only show required rows
 		tableView.tableFooterView = UIView(frame: CGRectZero)
-		//create new game row is row 0, so...
+		//the row with startNewameButton is row 0, so...
 		//insert dummy index so array matches tableview rows
 		allGames.append("")
+		NSLog("test")
 	}
-
+	
 	func gameManager(newGameCreated gameID: String) {
 		let rowForNewGame = GameManager.sharedInstance.allGames.count + 1
 		let indexPath = NSIndexPath(forRow: rowForNewGame, inSection: 0)
@@ -57,9 +64,11 @@ GameManagerDelegate {
 		-> UITableViewCell {
 			var cell: UITableViewCell
 			if indexPath.row == 0 {
-				cell = tableView.dequeueReusableCellWithIdentifier("NewGameCell") as! UITableViewCell
+				cell = tableView.dequeueReusableCellWithIdentifier("StartNewGameCell")
+					as! UITableViewCell
 			} else {
-				cell = tableView.dequeueReusableCellWithIdentifier("GameCell") as! UITableViewCell
+				cell = tableView.dequeueReusableCellWithIdentifier("GameCell")
+					as! UITableViewCell
 				configureTextForCell(cell, row: indexPath.row)
 			}
 			return cell
@@ -68,10 +77,37 @@ GameManagerDelegate {
 	override func tableView(
 		tableView: UITableView,
 		didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		
-			//segue code
+			if indexPath.row == 0 {
+				if !GameCenterAuthorization.sharedInstance.gameCenterEnabled {
+					NSLog("No Game Center login.")
+					var alert = UIAlertController(title: "Woops!",
+						message:
+						"Please sign into Game Center to find other players and walk all over them.",
+						preferredStyle: UIAlertControllerStyle.Alert)
+					let gameCenterURL = NSURL(string: "gamecenter:")
+					alert.addAction(UIAlertAction(
+						title: "Open Game Center",
+						style: UIAlertActionStyle.Default) {
+						UIAlertAction in
+						UIApplication.sharedApplication().openURL(gameCenterURL!) })
+					alert.addAction(UIAlertAction(
+						title: "Maybe later",
+						style: UIAlertActionStyle.Cancel,
+						handler: nil))
+					self.presentViewController(alert, animated: true, completion: nil)
+				} else {
+					//open matchmaker
+					GameManager.sharedInstance.gameKitHelper.findMatch(
+						2,
+						maxPlayers: 16,
+						presentingViewController: self,
+						delegate: GameManager.sharedInstance)
+				}
+			} else {
+				//segue to games
+
+			}
 			tableView.deselectRowAtIndexPath(indexPath, animated: true)
-			
 	}
 	
 	func configureTextForCell(cell: UITableViewCell, row: Int) {

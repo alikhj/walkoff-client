@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Let&apos;s make sure you&apos;re actually moving to earn your steps, instead of shaking your iPhone.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Let&apos;s make sure you&apos;re actually moving to earn your steps, instead of shaking your iPhone.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -26,6 +22,10 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Let's make sure you're actually moving to earn your steps, instead of shaking your iPhone.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Let's make sure you're actually moving to earn your steps, instead of shaking your iPhone.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
@@ -38,6 +38,7 @@
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
+		<string>gamekit</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>

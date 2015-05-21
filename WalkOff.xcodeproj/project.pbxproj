@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B81295F91B0DA0400026F1BD /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B81295F81B0DA0400026F1BD /* GameKit.framework */; };
 		B898764A1B03038B00B54926 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876491B03038B00B54926 /* AppDelegate.swift */; };
 		B898764C1B03038B00B54926 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898764B1B03038B00B54926 /* MainViewController.swift */; };
 		B898764F1B03038B00B54926 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B898764D1B03038B00B54926 /* Main.storyboard */; };
@@ -47,6 +48,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B81295F81B0DA0400026F1BD /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		B89876441B03038B00B54926 /* WalkOff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WalkOff.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B89876481B03038B00B54926 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B89876491B03038B00B54926 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B81295F91B0DA0400026F1BD /* GameKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,6 +104,7 @@
 		B898763B1B03038B00B54926 = {
 			isa = PBXGroup;
 			children = (
+				B81295F81B0DA0400026F1BD /* GameKit.framework */,
 				B89876461B03038B00B54926 /* WalkOff */,
 				B898765C1B03038B00B54926 /* WalkOffTests */,
 				B89876451B03038B00B54926 /* Products */,
@@ -232,8 +236,12 @@
 				TargetAttributes = {
 					B89876431B03038B00B54926 = {
 						CreatedOnToolsVersion = 6.3;
+						DevelopmentTeam = PW9745554Y;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.GameCenter = {
 								enabled = 1;
 							};
 						};
@@ -437,9 +445,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = WalkOff/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -447,9 +458,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = WalkOff/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
