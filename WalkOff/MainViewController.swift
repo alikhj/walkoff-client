@@ -31,14 +31,9 @@ GameManagerDelegate {
 	
 	func gameManager(newGameCreated gameID: String) {
 		allGames.append(gameID)
-		println(allGames.count)
 		let indexPath = NSIndexPath(forRow: allGames.count, inSection: 0)
 		let indexPaths = [indexPath]
-		println(indexPaths)
 		tableView.reloadData()
-		tableView.insertRowsAtIndexPaths(
-			indexPaths,
-			withRowAnimation: .Automatic)
 	}
 	
 	func gameManager(scoreUpdatedForGame gameID: String) {
@@ -56,7 +51,7 @@ GameManagerDelegate {
 		tableView: UITableView,
 		numberOfRowsInSection section: Int)
 		-> Int {
-		return GameManager.sharedInstance.allGames.count + 1
+		return allGames.count
 	}
 	
 	override func tableView(
@@ -83,10 +78,10 @@ GameManagerDelegate {
 		let playerRank = game?.localRank
 		
 		let gameNameLabel = cell.viewWithTag(1000) as! UILabel
-		let gameNameLabelText = "\(gameID)"
+		gameNameLabel.text = "\(gameID)"
 		
 		let scoreAndRankLabel = cell.viewWithTag(1001) as! UILabel
-		let scoreAndRankLabelText = "\(gameScore) (\(playerRank))"
+		scoreAndRankLabel.text = "\(gameScore!) (\(playerRank!))"
 	}
 	
 	override func tableView(

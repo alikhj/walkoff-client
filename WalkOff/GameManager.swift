@@ -23,12 +23,13 @@ GameKitHelperDelegate {
 		return GameManagerSingleton
 	}
 	
-	let socket = SocketIOClient(socketURL: "http://pb.beardfury.com:80")
+	let socket = SocketIOClient(socketURL: "192.241.197.7:2000")
 	let localPlayer = GKLocalPlayer.localPlayer()
 	
 	var gameKitHelper = GameKitHelper()
 	var allGames = [String : Game]()
 	weak var delegate: GameManagerDelegate?
+	var gameJoinedIndex = 0
 	
 	func startNetworking() {
 		l.o.g("Networking started...")
@@ -54,13 +55,17 @@ GameKitHelperDelegate {
 			 "playerID"  : localPlayer.playerID ])
 		
 		socket.on("game-joined") {[weak self] data, ack in
-			l.o.g("\ngame-joined received, creating game")
-			let received = data?[0] as? NSDictionary
-			let gameID = received?.objectForKey("gameID") as! String
-			var game = Game(gameID: gameID, allGKPlayers: allGKPlayers)
-			self!.allGames[gameID] = game
-			self!.delegate?.gameManager(newGameCreated: gameID)
-			return
+			if self!.gameJoinedIndex == self!.allGames.count {
+				l.o.g("\ngame-joined received, creating game")
+				let received = data?[0] as? NSDictionary
+				let gameID = received?.objectForKey("gameID") as! String
+				var game = Game(gameID: gameID, allGKPlayers: allGKPlayers)
+				self!.allGames[gameID] = game
+				self!.delegate?.gameManager(newGameCreated: gameID)
+				self!.gameJoinedIndex = 0
+				return
+			}
+			self!.gameJoinedIndex++
 		}
 	}
 	
@@ -78,7 +83,7 @@ GameKitHelperDelegate {
 			l.o.g("Connected, with sid: \(self!.socket.sid!)")
 		}
 		
-		socket.on("disconnect") {[weak self] data, ack in
+		socket.on("reconnect") {[weak self] data, ack in
 			l.o.g("Disconnected,trying to reconnect...")
 			self!.socket.connect()
 		}
