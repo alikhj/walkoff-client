@@ -38,7 +38,7 @@ class Movement: NSObject, CLLocationManagerDelegate {
 		if(CMPedometer.isStepCountingAvailable()){
 			pedometer.startPedometerUpdatesFromDate(NSDate()) {
 				(data, error) in if error != nil {
-					NSLog("Error starting pedometer updates: \(error)")
+					l.o.g("Error starting pedometer updates: \(error)")
 				} else {
 					dispatch_async(dispatch_get_main_queue()) {
 						self.currentTotalSteps = data.numberOfSteps as Int
@@ -47,7 +47,7 @@ class Movement: NSObject, CLLocationManagerDelegate {
 					}
 				}
 			}
-		} else { NSLog("Pedometer not available") }
+		} else { l.o.g("Pedometer not available") }
 	}
 	
 	func movementType() {
@@ -57,18 +57,18 @@ class Movement: NSObject, CLLocationManagerDelegate {
 					(data: CMMotionActivity!) -> Void in
 					dispatch_async(dispatch_get_main_queue(), { () -> Void in
 						if (data.walking || data.running) {
-//						NSLog("resume location updates")
+//						l.o.g("resume location updates")
 						} else if (data.stationary) {
-//						NSLog("pause location updates")
+//						l.o.g("pause location updates")
 						}
 					})
 			})
-		} else { NSLog("Movement type not available") }
+		} else { l.o.g("Movement type not available") }
 	}
 	
 	func locationManager(
 		manager: CLLocationManager!,
 		didUpdateLocations locations: [AnyObject]!) {
-			NSLog("Location updated")
+			l.o.g("Location updated")
 	}
 }

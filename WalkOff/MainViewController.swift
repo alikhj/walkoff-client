@@ -27,14 +27,15 @@ GameManagerDelegate {
 		//the row with startNewameButton is row 0, so...
 		//insert dummy index so array matches tableview rows
 		allGames.append("")
-		NSLog("test")
 	}
 	
 	func gameManager(newGameCreated gameID: String) {
-		let rowForNewGame = GameManager.sharedInstance.allGames.count + 1
-		let indexPath = NSIndexPath(forRow: rowForNewGame, inSection: 0)
-		let indexPaths = [indexPath]
 		allGames.append(gameID)
+		println(allGames.count)
+		let indexPath = NSIndexPath(forRow: allGames.count, inSection: 0)
+		let indexPaths = [indexPath]
+		println(indexPaths)
+		tableView.reloadData()
 		tableView.insertRowsAtIndexPaths(
 			indexPaths,
 			withRowAnimation: .Automatic)
@@ -74,12 +75,26 @@ GameManagerDelegate {
 			return cell
 	}
 	
+	func configureTextForCell(cell: UITableViewCell, row: Int) {
+		let gameID = allGames[row]
+		let game = GameManager.sharedInstance.allGames[gameID]
+		let localPlayerID = GameManager.sharedInstance.localPlayer.playerID
+		let gameScore = game?.allPlayers[localPlayerID]?.score
+		let playerRank = game?.localRank
+		
+		let gameNameLabel = cell.viewWithTag(1000) as! UILabel
+		let gameNameLabelText = "\(gameID)"
+		
+		let scoreAndRankLabel = cell.viewWithTag(1001) as! UILabel
+		let scoreAndRankLabelText = "\(gameScore) (\(playerRank))"
+	}
+	
 	override func tableView(
 		tableView: UITableView,
 		didSelectRowAtIndexPath indexPath: NSIndexPath) {
 			if indexPath.row == 0 {
 				if !GameCenterAuthorization.sharedInstance.gameCenterEnabled {
-					NSLog("No Game Center login.")
+					l.o.g("No Game Center login.")
 					var alert = UIAlertController(title: "Woops!",
 						message:
 						"Please sign into Game Center to find other players and walk all over them.",
@@ -108,20 +123,6 @@ GameManagerDelegate {
 
 			}
 			tableView.deselectRowAtIndexPath(indexPath, animated: true)
-	}
-	
-	func configureTextForCell(cell: UITableViewCell, row: Int) {
-		let gameID = allGames[row]
-		let game = GameManager.sharedInstance.allGames[gameID]
-		let localPlayerID = GameManager.sharedInstance.localPlayer.playerID
-		let gameScore = game?.allPlayers[localPlayerID]?.score
-		let playerRank = game?.localRank
-		
-		let gameNameLabel = cell.viewWithTag(1000) as! UILabel
-		let gameNameLabelText = "\(gameID)"
-		
-		let scoreAndRankLabel = cell.viewWithTag(1001) as! UILabel
-		let scoreAndRankLabelText = "\(gameScore) (\(playerRank))"
 	}
 	
 	override func didReceiveMemoryWarning() {

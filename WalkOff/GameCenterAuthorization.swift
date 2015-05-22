@@ -31,7 +31,7 @@ class GameCenterAuthorization: NSObject {
 		let localPlayer = GKLocalPlayer.localPlayer()
 		localPlayer.authenticateHandler = {(viewController, error) in
 			self.lastError = error
-			NSLog("Error in localplayer.authenticateHandler: \(error)")
+			l.o.g("Error in localplayer.authenticateHandler: \(error)")
 			if viewController != nil {
 				self.authenticationViewController = viewController
 				NSNotificationCenter.defaultCenter().postNotificationName(
@@ -39,10 +39,10 @@ class GameCenterAuthorization: NSObject {
 					object: self)
 			} else if localPlayer.authenticated {
 				self.gameCenterEnabled = true
-				NSLog("Player authorized by Game Center")
+				l.o.g("Player authorized by Game Center")
 			} else {
 				self.gameCenterEnabled = false
-				NSLog("Player not authorized by Game Center")
+				l.o.g("Player not authorized by Game Center")
 			}
 		}
 	}

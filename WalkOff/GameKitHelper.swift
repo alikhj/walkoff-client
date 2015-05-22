@@ -30,7 +30,6 @@ GKMatchmakerViewControllerDelegate {
 	
 	override init() {
 		multiplayerMatchStarted = false
-
 		super.init()
 	}
 	
@@ -43,36 +42,6 @@ GKMatchmakerViewControllerDelegate {
 	
 	//assign the presentingViewController to the object calling this func
 	//setup the matchRequest terms and present the matchMakerViewController
-//	func findMatch(
-//		minPlayers: Int,
-//		maxPlayers: Int,
-//		presentingViewController viewController: UIViewController,
-//		delegate: GameKitHelperDelegate) {
-//			NSLog("Setting up GameKitHelper")
-//
-//			if !GameCenterAuthorization.sharedInstance.gameCenterEnabled {
-//				NSLog("Local player not authorized in Game Center")
-//				return
-//			}
-//			
-//			self.delegate = delegate
-//			presentingViewController = viewController
-//			let matchRequest = GKMatchRequest()
-//			matchRequest.minPlayers = minPlayers
-//			matchRequest.maxPlayers = maxPlayers
-//			let matchMakerViewController = GKMatchmakerViewController(
-//				matchRequest: matchRequest)
-//			matchMakerViewController.hosted = true
-//			matchMakerViewController.matchmakerDelegate = self
-//			println(matchMakerViewController.matchmakerDelegate)
-//			println(delegate)
-//			println(presentingViewController!)
-//			presentingViewController!.presentViewController(
-//				matchMakerViewController,
-//				animated: false,
-//				completion: nil)
-//	}
-	
 	func findMatch(
 		minPlayers: Int,
 		maxPlayers: Int,
@@ -103,7 +72,7 @@ GKMatchmakerViewControllerDelegate {
 	func matchmakerViewController(
 		viewController: GKMatchmakerViewController!,
 		didFindHostedPlayers players: [AnyObject]!) {
-			NSLog("Players found")
+			l.o.g("Players found")
 			let foundPlayers = players as! [GKPlayer]
 			delegate?.gameKitHelper(newPlayersFound: foundPlayers)
 			presentingViewController?.dismissViewControllerAnimated(
@@ -113,7 +82,7 @@ GKMatchmakerViewControllerDelegate {
 	
 	func matchmakerViewControllerWasCancelled(
 		viewController: GKMatchmakerViewController!) {
-			NSLog("matchmakerViewController was cancelled")
+			l.o.g("matchmakerViewController was cancelled")
 			presentingViewController?.dismissViewControllerAnimated(
 				true,
 				completion: nil)
@@ -125,6 +94,6 @@ GKMatchmakerViewControllerDelegate {
 		presentingViewController?.dismissViewControllerAnimated(
 			true,
 			completion: nil)
-		NSLog("Error finding players: \(error.localizedDescription)")
+		l.o.g("Error finding players: \(error.localizedDescription)")
 	}
 }

@@ -31,7 +31,7 @@ GameKitHelperDelegate {
 	weak var delegate: GameManagerDelegate?
 	
 	func startNetworking() {
-		NSLog("Networking started...")
+		l.o.g("Networking started...")
 		gameKitHelper.delegate = self
 		socket.connect()
 		handlers()
@@ -46,15 +46,15 @@ GameKitHelperDelegate {
 			playerIDs.append(player.playerID)
 		}
 		playerIDs.sort{ $0 > $1 }
-		NSLog("\nJoining game with playerIDs array: \(playerIDs)")
-		NSLog("\nLocal player ID is \(localPlayer.playerID)")
+		l.o.g("\nJoining game with playerIDs array: \(playerIDs)")
+		l.o.g("\nLocal player ID is \(localPlayer.playerID)")
 		
 		socket.emit("join-game",
 			["playerIDs" : playerIDs,
 			 "playerID"  : localPlayer.playerID ])
 		
 		socket.on("game-joined") {[weak self] data, ack in
-			NSLog("\ngame-joined received, creating game")
+			l.o.g("\ngame-joined received, creating game")
 			let received = data?[0] as? NSDictionary
 			let gameID = received?.objectForKey("gameID") as! String
 			var game = Game(gameID: gameID, allGKPlayers: allGKPlayers)
@@ -69,17 +69,17 @@ GameKitHelperDelegate {
 			[ "gameID"    : gameID,
 				"playerIDs" : localPlayer.playerID,
 				"newScore"  : updatedScore ])
-		NSLog("\(gameID) Sending new score as \(updatedScore)")
+		l.o.g("\(gameID) Sending new score as \(updatedScore)")
 		delegate?.gameManager(scoreUpdatedForGame: gameID)
 	}
 	
 	func handlers() {
 		socket.on("connect") {[weak self] data, ack in
-			NSLog("Connected, with sid: \(self!.socket.sid!)")
+			l.o.g("Connected, with sid: \(self!.socket.sid!)")
 		}
 		
 		socket.on("disconnect") {[weak self] data, ack in
-			NSLog("Disconnected,trying to reconnect...")
+			l.o.g("Disconnected,trying to reconnect...")
 			self!.socket.connect()
 		}
 		
@@ -88,7 +88,7 @@ GameKitHelperDelegate {
 			let gameID = received?.objectForKey("gameID") as! String
 			let playerID = received?.objectForKey("playerID") as! String
 			let newScore = received?.objectForKey("newScore") as! Int
-			NSLog("\n***score-update***\ngameID: \(gameID)\nplayerID: \(playerID)\nnewScore: \(newScore)")
+			l.o.g("\n***score-update***\ngameID: \(gameID)\nplayerID: \(playerID)\nnewScore: \(newScore)")
 			let game = self!.allGames[gameID]
 			game?.updateScoreForPlayer(playerID, newScore: newScore)
 		}
@@ -104,7 +104,7 @@ GameKitHelperDelegate {
 	
 	func debugHandlers() {
 		self.socket.onAny {
-			NSLog("Got event: \($0.event), with items: \($0.items)")
+			l.o.g("Got event: \($0.event), with items: \($0.items)")
 		}
 	}
 }

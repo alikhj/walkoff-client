@@ -31,10 +31,10 @@ class Game: NSObject {
 			context: nil)
 		for player in allGKPlayers {
 			allPlayers[player.playerID] = Player(gkPlayer: player)
-			NSLog("\(gameID) Player \(player.playerID) has joined the game")
+			l.o.g("\(gameID) Player \(player.playerID) has joined the game")
 		}
 		updateRanking()
-		NSLog("\(gameID) has initialized")
+		l.o.g("\(gameID) has initialized")
 	}
 	
 	//observe stepsUpdate variable in Movement class
@@ -45,13 +45,13 @@ class Game: NSObject {
 		context: UnsafeMutablePointer<Void>) {
 			if keyPath == "stepsUpdate" {
 				var newScoreUpdate = change[NSKeyValueChangeNewKey]! as! Int
-				NSLog("\(gameID) observing \(newScoreUpdate) new steps, emitting...")
+				l.o.g("\(gameID) observing \(newScoreUpdate) new steps, emitting...")
 				updateScoreForPlayer(localPlayer.playerID, newScore: newScoreUpdate)
 			}
 	}
 	
 	deinit {
-		NSLog("\(gameID) Deinit Movement observer")
+		l.o.g("\(gameID) Deinit Movement observer")
 		Movement.sharedInstance.removeObserver(
 			self,
 			forKeyPath: "stepsUpdate",
@@ -68,7 +68,7 @@ class Game: NSObject {
 				gameID,
 				updatedScore: updatedScore)
 		}
-		NSLog("\(gameID) Score updated for \(playerID) to \(allPlayers[playerID]?.score)")
+		l.o.g("\(gameID) Score updated for \(playerID) to \(allPlayers[playerID]?.score)")
 		//detailViewController to find old and new index to animate rank change
 	}
 	
@@ -84,6 +84,6 @@ class Game: NSObject {
 		}
 		rankedPlayerIDs = rankedPlayersArray as! [String]
 		localRank = find(rankedPlayerIDs, localPlayer.playerID)! + 1
-		NSLog("\(gameID) Ranking updated")
+		l.o.g("\(gameID) Ranking updated")
 	}
 }

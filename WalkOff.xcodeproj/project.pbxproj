@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B81295F91B0DA0400026F1BD /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B81295F81B0DA0400026F1BD /* GameKit.framework */; };
+		B859A3531B0EDB9F00409FF4 /* l.swift in Sources */ = {isa = PBXBuildFile; fileRef = B859A3521B0EDB9F00409FF4 /* l.swift */; };
 		B898764A1B03038B00B54926 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876491B03038B00B54926 /* AppDelegate.swift */; };
 		B898764C1B03038B00B54926 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898764B1B03038B00B54926 /* MainViewController.swift */; };
 		B898764F1B03038B00B54926 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B898764D1B03038B00B54926 /* Main.storyboard */; };
@@ -49,6 +50,7 @@
 
 /* Begin PBXFileReference section */
 		B81295F81B0DA0400026F1BD /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		B859A3521B0EDB9F00409FF4 /* l.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = l.swift; sourceTree = "<group>"; };
 		B89876441B03038B00B54926 /* WalkOff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WalkOff.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B89876481B03038B00B54926 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B89876491B03038B00B54926 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 				B89876521B03038B00B54926 /* LaunchScreen.xib */,
 				B89876501B03038B00B54926 /* Images.xcassets */,
 				B89876471B03038B00B54926 /* Supporting Files */,
+				B859A3521B0EDB9F00409FF4 /* l.swift */,
 			);
 			path = WalkOff;
 			sourceTree = "<group>";
@@ -302,6 +305,7 @@
 				B898767A1B0304B900B54926 /* SocketEngineClient.swift in Sources */,
 				B898768F1B03099100B54926 /* Player.swift in Sources */,
 				B89876851B03050900B54926 /* GameManager.swift in Sources */,
+				B859A3531B0EDB9F00409FF4 /* l.swift in Sources */,
 				B89876821B0304B900B54926 /* SwiftRegex.swift in Sources */,
 				B89876831B0304B900B54926 /* WebSocket.swift in Sources */,
 				B89876791B0304B900B54926 /* SocketEngine.swift in Sources */,
