@@ -23,13 +23,12 @@ GameKitHelperDelegate {
 		return GameManagerSingleton
 	}
 	
-	let socket = SocketIOClient(socketURL: "192.241.197.7:2000")
+	let socket = SocketIOClient(socketURL: "http://104.236.145.49:2000")
 	let localPlayer = GKLocalPlayer.localPlayer()
 	
 	var gameKitHelper = GameKitHelper()
 	var allGames = [String : Game]()
-	weak var delegate: GameManagerDelegate?
-	var gameJoinedIndex = 0
+	weak var delegate: GameManagerDelegate?    
 	
 	func startNetworking() {
 		l.o.g("Networking started...")
@@ -55,25 +54,27 @@ GameKitHelperDelegate {
 			 "playerID"  : localPlayer.playerID ])
 		
 		socket.on("game-joined") {[weak self] data, ack in
-			if self!.gameJoinedIndex == self!.allGames.count {
-				l.o.g("\ngame-joined received, creating game")
-				let received = data?[0] as? NSDictionary
-				let gameID = received?.objectForKey("gameID") as! String
-				var game = Game(gameID: gameID, allGKPlayers: allGKPlayers)
-				self!.allGames[gameID] = game
-				self!.delegate?.gameManager(newGameCreated: gameID)
-				self!.gameJoinedIndex = 0
-				return
-			}
-			self!.gameJoinedIndex++
+            l.o.g("\ngame-joined received by socket...")
+            let received = data?[0] as? NSDictionary
+            let gameID = received?.objectForKey("gameID") as! String
+            if find(self!.allGames.keys, gameID) == nil {
+                l.o.g("\n\(gameID) creating game...")
+                var game = Game(gameID: gameID, allGKPlayers: allGKPlayers)
+                self!.allGames[gameID] = game
+                self!.delegate?.gameManager(newGameCreated: gameID)
+                if Movement.sharedInstance.isCountingSteps == false {
+                    Movement.sharedInstance.startCountingSteps()
+                }
+                return
+            }
 		}
 	}
 	
 	func emitUpdatedScore(gameID: String, updatedScore: Int) {
 		socket.emit("update-score",
 			[ "gameID"    : gameID,
-				"playerIDs" : localPlayer.playerID,
-				"newScore"  : updatedScore ])
+              "playerID" : localPlayer.playerID,
+              "newScore"  : updatedScore ])
 		l.o.g("\(gameID) Sending new score as \(updatedScore)")
 		delegate?.gameManager(scoreUpdatedForGame: gameID)
 	}
@@ -84,7 +85,7 @@ GameKitHelperDelegate {
 		}
 		
 		socket.on("reconnect") {[weak self] data, ack in
-			l.o.g("Disconnected,trying to reconnect...")
+			l.o.g("Disconnected, trying to reconnect...")
 			self!.socket.connect()
 		}
 		

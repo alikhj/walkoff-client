@@ -9,8 +9,17 @@
 import UIKit
 import GameKit
 
+protocol GameDelegate: class {
+    func game(
+        scoreUpdatedForPlayer playerID: String,
+        previousRank: Int,
+        newRank: Int)
+}
+
 class Game: NSObject {
 	
+    weak var delegate: GameDelegate?
+    
 	var gameID: String
 	var gameTitle = "" //random name generator depending on total players
 	
@@ -45,13 +54,13 @@ class Game: NSObject {
 		context: UnsafeMutablePointer<Void>) {
 			if keyPath == "stepsUpdate" {
 				var newScoreUpdate = change[NSKeyValueChangeNewKey]! as! Int
-				l.o.g("\(gameID) observing \(newScoreUpdate) new steps, emitting...")
+				l.o.g("\(gameID) observing \(newScoreUpdate) new steps")
 				updateScoreForPlayer(localPlayer.playerID, newScore: newScoreUpdate)
 			}
 	}
 	
 	deinit {
-		l.o.g("\(gameID) Deinit Movement observer")
+		l.o.g("\(gameID) deinit Movement observer")
 		Movement.sharedInstance.removeObserver(
 			self,
 			forKeyPath: "stepsUpdate",
@@ -59,7 +68,8 @@ class Game: NSObject {
 	}
 
 	func updateScoreForPlayer(playerID: String, newScore: Int) {
-		if playerID != localPlayer.playerID {
+		let previousRank = find(rankedPlayerIDs, playerID)
+        if playerID != localPlayer.playerID {
 			allPlayers[playerID]?.score = newScore
 		} else if playerID == localPlayer.playerID {
 			allPlayers[localPlayer.playerID]?.score += newScore
@@ -68,8 +78,13 @@ class Game: NSObject {
 				gameID,
 				updatedScore: updatedScore)
 		}
-		l.o.g("\(gameID) Score updated for \(playerID) to \(allPlayers[playerID]?.score)")
-		//detailViewController to find old and new index to animate rank change
+		l.o.g("\(gameID) score updated for \(playerID) to \(allPlayers[playerID]!.score)")
+        updateRanking()
+        let newRank = find(rankedPlayerIDs, playerID)
+        delegate?.game(
+            scoreUpdatedForPlayer: playerID,
+            previousRank: previousRank!,
+            newRank: newRank!)
 	}
 	
 	func updateRanking() {
@@ -84,6 +99,6 @@ class Game: NSObject {
 		}
 		rankedPlayerIDs = rankedPlayersArray as! [String]
 		localRank = find(rankedPlayerIDs, localPlayer.playerID)! + 1
-		l.o.g("\(gameID) Ranking updated")
+		l.o.g("\(gameID) ranking updated")
 	}
 }

@@ -20,12 +20,14 @@ class Movement: NSObject, CLLocationManagerDelegate {
 	let pedometer = CMPedometer()
 	let activityManager = CMMotionActivityManager()
 	let locationManager = CLLocationManager()
+    var isCountingSteps = false
 	var previousTotalSteps = 0
 	var currentTotalSteps = 0
 	dynamic var stepsUpdate = 0
 	
 	override init() {
 		super.init()
+        l.o.g("Movement initialized")
 		locationManager.delegate = self
 		locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
 		locationManager.requestAlwaysAuthorization()
@@ -35,6 +37,8 @@ class Movement: NSObject, CLLocationManagerDelegate {
 	}
 	
 	func startCountingSteps() {
+        isCountingSteps = true
+        l.o.g("Start counting steps...")
 		if(CMPedometer.isStepCountingAvailable()){
 			pedometer.startPedometerUpdatesFromDate(NSDate()) {
 				(data, error) in if error != nil {

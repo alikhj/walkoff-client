@@ -11,7 +11,8 @@ import GameKit
 
 class MainViewController:
 UITableViewController,
-GameManagerDelegate {
+GameManagerDelegate,
+DetailViewControllerDelegate {
 	
 	let PresentAuthenticationViewController =
 	"PresentAuthenticationViewController"
@@ -24,16 +25,17 @@ GameManagerDelegate {
 		GameManager.sharedInstance.startNetworking()
 		//only show required rows
 		tableView.tableFooterView = UIView(frame: CGRectZero)
-		//the row with startNewameButton is row 0, so...
+		//the row with startNewGame cell is row 0, so...
 		//insert dummy index so array matches tableview rows
 		allGames.append("")
 	}
 	
 	func gameManager(newGameCreated gameID: String) {
 		allGames.append(gameID)
-		let indexPath = NSIndexPath(forRow: allGames.count, inSection: 0)
-		let indexPaths = [indexPath]
-		tableView.reloadData()
+//		let indexPath = NSIndexPath(forRow: allGames.count, inSection: 0)
+//		let indexPaths = [indexPath]
+		//this should be insertRowAtIndexPath
+        tableView.reloadData()
 	}
 	
 	func gameManager(scoreUpdatedForGame gameID: String) {
@@ -120,6 +122,24 @@ GameManagerDelegate {
 			tableView.deselectRowAtIndexPath(indexPath, animated: true)
 	}
 	
+    override func prepareForSegue(
+        segue: UIStoryboardSegue,
+        sender: AnyObject?) {
+            let navigationController = segue.destinationViewController as!
+                UINavigationController
+            let controller = navigationController.topViewController as!
+                DetailViewController
+            if let indexPath = tableView.indexPathForCell(sender as! UITableViewCell) {
+                controller.gameID = allGames[indexPath.row]
+                controller.delegate = self
+            }
+    }
+    
+    func detailViewControllerDidClose() {
+        tableView.reloadData()
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
