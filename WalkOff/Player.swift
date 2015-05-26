@@ -13,9 +13,11 @@ class Player: NSObject {
 	
 	var gkPlayer: GKPlayer
 	var score: Int
+    var connected: Bool
 	
 	init(gkPlayer: GKPlayer) {
 		self.gkPlayer = gkPlayer
 		score = 0
+        connected = true
 	}
 }

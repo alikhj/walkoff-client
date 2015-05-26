@@ -54,8 +54,10 @@ class Game: NSObject {
 		context: UnsafeMutablePointer<Void>) {
 			if keyPath == "stepsUpdate" {
 				var newScoreUpdate = change[NSKeyValueChangeNewKey]! as! Int
-				l.o.g("\(gameID) observing \(newScoreUpdate) new steps")
-				updateScoreForPlayer(localPlayer.playerID, newScore: newScoreUpdate)
+                if newScoreUpdate > 0 {
+                    l.o.g("\(gameID) observing \(newScoreUpdate) new steps")
+                    updateScoreForPlayer(localPlayer.playerID, newScore: newScoreUpdate)
+                }
 			}
 	}
 	

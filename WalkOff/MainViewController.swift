@@ -48,6 +48,18 @@ DetailViewControllerDelegate {
 		//mkae this an optional function that passed gameID,
 		//so you can only update the specific cell, and not the whole table
 	}
+    
+    func gameManagerWasDisconnected() {
+        var alert = UIAlertController(title: "Disconnected",
+            message:
+            "",
+            preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(
+            title: "Okay",
+            style: UIAlertActionStyle.Cancel,
+            handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
 
 	override func tableView(
 		tableView: UITableView,
