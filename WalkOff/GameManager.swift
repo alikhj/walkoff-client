@@ -24,7 +24,7 @@ GameKitHelperDelegate {
 		return GameManagerSingleton
 	}
 	
-	let socket = SocketIOClient(socketURL: "http://104.236.145.49:2000")
+	let socket = SocketIOClient(socketURL: "http://162.243.138.39:2000")
     //let socket = SocketIOClient(socketURL: "184.96.145.30:2000")
 
 	let localPlayer = GKLocalPlayer.localPlayer()
