@@ -62,7 +62,9 @@ GameDelegate {
     func configureTextForCell(cell: UITableViewCell, indexPath: NSIndexPath) {
         let playerID = game!.rankedPlayerIDs[indexPath.row - 1]
         let playerNameLabel = cell.viewWithTag(1000) as! UILabel
-        playerNameLabel.text = game!.allPlayers[playerID]?.gkPlayer.alias
+//       playerNameLabel.text = game!.allPlayers[playerID]?.gkPlayer.alias
+        playerNameLabel.text = game!.allPlayers[playerID]?.playerID
+
         let scoreLabel = cell.viewWithTag(1001) as! UILabel
         scoreLabel.text = "\(game!.allPlayers[playerID]!.score)"
     }

@@ -22,7 +22,7 @@ DetailViewControllerDelegate {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		GameManager.sharedInstance.delegate = self
-		GameManager.sharedInstance.startNetworking()
+		//GameManager.sharedInstance.startNetworking()
 		//only show required rows
 		tableView.tableFooterView = UIView(frame: CGRectZero)
 		//the row with startNewGame cell is row 0, so...
@@ -123,7 +123,7 @@ DetailViewControllerDelegate {
 					//open matchmaker
 					GameManager.sharedInstance.gameKitHelper.findMatch(
 						2,
-						maxPlayers: 16,
+						maxPlayers: 4,
 						presentingViewController: self,
 						delegate: GameManager.sharedInstance)
 				}
