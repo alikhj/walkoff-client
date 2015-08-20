@@ -45,6 +45,26 @@ class Game: NSObject {
 		updateRanking()
 		l.o.g("\(gameID) has initialized")
 	}
+    
+    //--------------------------------------------
+    
+//    init(gameID: String, playerIDs: [String]) {
+//        self.gameID = gameID
+//        super.init()
+//        Movement.sharedInstance.addObserver(
+//            self,
+//            forKeyPath: "stepsUpdate",
+//            options: .New,
+//            context: nil)
+//        for player in allGKPlayers {
+//            allPlayers[player.playerID] = Player(gkPlayer: player)
+//            l.o.g("\(gameID) Player \(player.playerID) has joined the game")
+//        }
+//        updateRanking()
+//        l.o.g("\(gameID) has initialized")
+//    }
+    
+    //--------------------------------------------
 	
 	//observe stepsUpdate variable in Movement class
 	override func observeValueForKeyPath(

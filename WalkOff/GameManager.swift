@@ -24,8 +24,8 @@ GameKitHelperDelegate {
 		return GameManagerSingleton
 	}
 	
-	let socket = SocketIOClient(socketURL: "http://162.243.138.39:2000")
-    //let socket = SocketIOClient(socketURL: "184.96.145.30:2000")
+	//let socket = SocketIOClient(socketURL: "http://162.243.138.39")
+    let socket = SocketIOClient(socketURL: "http://174.16.126.141:2000")
 
 	let localPlayer = GKLocalPlayer.localPlayer()
 	
@@ -47,16 +47,20 @@ GameKitHelperDelegate {
         allGKPlayers = arrayOfPlayersFound
 		allGKPlayers.append(localPlayer)
 		var playerIDs = [String]()
+        var players = [String : String]()
 		for player in allGKPlayers {
 			playerIDs.append(player.playerID)
+            players[player.playerID] = player.alias
 		}
 		playerIDs.sort{ $0 > $1 }
 		l.o.g("\nJoining game with playerIDs array: \(playerIDs)")
 		l.o.g("\nLocal player ID is \(localPlayer.playerID)")
 		
 		socket.emit("join-game",
-			["playerIDs" : playerIDs,
+            ["players" : players,
+             "playerIDs" : playerIDs,
 			 "playerID"  : localPlayer.playerID,
+                "alias" : localPlayer.alias,
              "count"     : playerIDs.count ])
 	}
 	
@@ -85,6 +89,9 @@ GameKitHelperDelegate {
                     "lastScoreUpdate" : lastScoreUpdate ])
                 }
             }
+            self!.socket.emit("player-connected",
+                ["playerID" : self!.localPlayer.playerID,
+                 "alias": self!.localPlayer.alias])
 		}
     
 		socket.on("reconnect") {[weak self] data, ack in
@@ -109,6 +116,27 @@ GameKitHelperDelegate {
                 return
             }
         }
+        
+        //--------------------------------------------
+        
+        socket.on("game-started2") {[weak self] data, ack in
+            l.o.g("\ngame-started received by socket...")
+            let received = data?[0] as? NSDictionary
+            let gameID = received?.objectForKey("gameID") as! String
+            if find(self!.allGames.keys, gameID) == nil {
+                l.o.g("\n\(gameID) creating game...")
+                var game = Game(gameID: gameID, allGKPlayers: self!.allGKPlayers)
+                self!.allGames[gameID] = game
+                self!.delegate?.gameManager(newGameCreated: gameID)
+                self!.allGKPlayers.removeAll(keepCapacity: false)
+                if Movement.sharedInstance.isCountingSteps == false {
+                    Movement.sharedInstance.startCountingSteps()
+                }
+                return
+            }
+        }
+        
+        //-------------------------------------------
         
         socket.on("game-rejoined") {[weak self] data, ack in
             let received = data?[0] as? NSDictionary
