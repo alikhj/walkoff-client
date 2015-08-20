@@ -40,8 +40,6 @@ class GameCenterAuthorization: NSObject {
 			} else if localPlayer.authenticated {
 				self.gameCenterEnabled = true
 				l.o.g("Player authorized by Game Center")
-                GameManager.sharedInstance.startNetworking()
-
 			} else {
 				self.gameCenterEnabled = false
 				l.o.g("Player not authorized by Game Center")

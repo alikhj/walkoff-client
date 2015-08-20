@@ -11,21 +11,12 @@ import GameKit
 
 class Player: NSObject {
 	
-    var gkPlayer: GKPlayer!
-    var playerID: String!
-    var score: Int
+	var gkPlayer: GKPlayer
+	var score: Int
     var connected: Bool
-    
-    init(gkPlayer: GKPlayer) {
-        self.gkPlayer = gkPlayer
-        score = 0
-        connected = true
-    }
-    
-
 	
-	init(playerID: String) {
-		self.playerID = playerID
+	init(gkPlayer: GKPlayer) {
+		self.gkPlayer = gkPlayer
 		score = 0
         connected = true
 	}
