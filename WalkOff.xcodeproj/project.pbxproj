@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		41EE080A1B8683D2003124EB /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41EE08091B8683D2003124EB /* Player.swift */; };
 		B81295F91B0DA0400026F1BD /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B81295F81B0DA0400026F1BD /* GameKit.framework */; };
 		B859A3531B0EDB9F00409FF4 /* l.swift in Sources */ = {isa = PBXBuildFile; fileRef = B859A3521B0EDB9F00409FF4 /* l.swift */; };
 		B898764A1B03038B00B54926 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876491B03038B00B54926 /* AppDelegate.swift */; };
@@ -33,7 +34,6 @@
 		B89876891B03068300B54926 /* Movement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876881B03068300B54926 /* Movement.swift */; };
 		B898768B1B0306A000B54926 /* GameCenterAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898768A1B0306A000B54926 /* GameCenterAuthorization.swift */; };
 		B898768D1B03080D00B54926 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898768C1B03080D00B54926 /* NavigationController.swift */; };
-		B898768F1B03099100B54926 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = B898768E1B03099100B54926 /* Player.swift */; };
 		B89876911B03099900B54926 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876901B03099900B54926 /* Game.swift */; };
 		B89876951B0309EE00B54926 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89876941B0309EE00B54926 /* DetailViewController.swift */; };
 /* End PBXBuildFile section */
@@ -49,6 +49,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		41EE08091B8683D2003124EB /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		B81295F81B0DA0400026F1BD /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		B859A3521B0EDB9F00409FF4 /* l.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = l.swift; sourceTree = "<group>"; };
 		B89876441B03038B00B54926 /* WalkOff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WalkOff.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -79,7 +80,6 @@
 		B89876881B03068300B54926 /* Movement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Movement.swift; sourceTree = "<group>"; };
 		B898768A1B0306A000B54926 /* GameCenterAuthorization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameCenterAuthorization.swift; sourceTree = "<group>"; };
 		B898768C1B03080D00B54926 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
-		B898768E1B03099100B54926 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		B89876901B03099900B54926 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		B89876941B0309EE00B54926 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -127,7 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				B89876901B03099900B54926 /* Game.swift */,
-				B898768E1B03099100B54926 /* Player.swift */,
+				41EE08091B8683D2003124EB /* Player.swift */,
 				B89876861B03065100B54926 /* GameKitHelper.swift */,
 				B89876841B03050900B54926 /* GameManager.swift */,
 				B89876881B03068300B54926 /* Movement.swift */,
@@ -303,8 +303,8 @@
 				B89876771B0304B900B54926 /* SocketAckManager.swift in Sources */,
 				B89876891B03068300B54926 /* Movement.swift in Sources */,
 				B898767A1B0304B900B54926 /* SocketEngineClient.swift in Sources */,
-				B898768F1B03099100B54926 /* Player.swift in Sources */,
 				B89876851B03050900B54926 /* GameManager.swift in Sources */,
+				41EE080A1B8683D2003124EB /* Player.swift in Sources */,
 				B859A3531B0EDB9F00409FF4 /* l.swift in Sources */,
 				B89876821B0304B900B54926 /* SwiftRegex.swift in Sources */,
 				B89876831B0304B900B54926 /* WebSocket.swift in Sources */,

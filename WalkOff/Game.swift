@@ -30,42 +30,46 @@ class Game: NSObject {
 	
 	//assign the game an ID and create a dictionary of [playerID : player]
 	//sort the keys alphabetically
-	init(gameID: String, allGKPlayers: [GKPlayer]) {
-		self.gameID = gameID
-		super.init()
-		Movement.sharedInstance.addObserver(
-			self,
-			forKeyPath: "stepsUpdate",
-			options: .New,
-			context: nil)
-		for player in allGKPlayers {
-			allPlayers[player.playerID] = Player(gkPlayer: player)
-			l.o.g("\(gameID) Player \(player.playerID) has joined the game")
-		}
-		updateRanking()
-		l.o.g("\(gameID) has initialized")
-	}
+
+    init(gameID: String, playersArray: NSArray) {
+        self.gameID = gameID
+        super.init()
+        Movement.sharedInstance.addObserver(
+          self,
+          forKeyPath: "stepsUpdate",
+          options: .New,
+          context: nil)
+        for player in playersArray {
+          var playerID = player["id"] as! String
+          var playerAlias = player["alias"] as! String
+
+          allPlayers[playerID] = Player(playerID: playerID, playerAlias: playerAlias)
+          l.o.g("\(gameID) Player \(playerID) has joined the game")
+        }
+        updateRanking()
+        l.o.g("\(gameID) has initialized")
+    }
     
-    //--------------------------------------------
-    
-//    init(gameID: String, playerIDs: [String]) {
-//        self.gameID = gameID
-//        super.init()
-//        Movement.sharedInstance.addObserver(
-//            self,
-//            forKeyPath: "stepsUpdate",
-//            options: .New,
-//            context: nil)
-//        for player in allGKPlayers {
-//            allPlayers[player.playerID] = Player(gkPlayer: player)
-//            l.o.g("\(gameID) Player \(player.playerID) has joined the game")
-//        }
-//        updateRanking()
-//        l.o.g("\(gameID) has initialized")
-//    }
-    
-    //--------------------------------------------
-	
+    init(gameID: String, playersArray: NSArray, playerScores: NSArray) {
+        self.gameID = gameID
+        super.init()
+        Movement.sharedInstance.addObserver(
+            self,
+            forKeyPath: "stepsUpdate",
+            options: .New,
+            context: nil)
+        for player in playersArray {
+            var playerID = player["id"] as! String
+            var playerAlias = player["alias"] as! String
+            //var score =
+            
+            allPlayers[playerID] = Player(playerID: playerID, playerAlias: playerAlias)
+            l.o.g("\(gameID) Player \(playerID) has joined the game")
+        }
+        updateRanking()
+        l.o.g("\(gameID) has initialized")
+    }
+  	
 	//observe stepsUpdate variable in Movement class
 	override func observeValueForKeyPath(
 		keyPath: String,

@@ -104,9 +104,10 @@ GameKitHelperDelegate {
             l.o.g("\ngame-started received by socket...")
             let received = data?[0] as? NSDictionary
             let gameID = received?.objectForKey("gameID") as! String
+            let playersArray = received?.objectForKey("players") as! NSArray
             if find(self!.allGames.keys, gameID) == nil {
                 l.o.g("\n\(gameID) creating game...")
-                var game = Game(gameID: gameID, allGKPlayers: self!.allGKPlayers)
+                var game = Game(gameID: gameID, playersArray: playersArray)
                 self!.allGames[gameID] = game
                 self!.delegate?.gameManager(newGameCreated: gameID)
                 self!.allGKPlayers.removeAll(keepCapacity: false)
@@ -114,35 +115,32 @@ GameKitHelperDelegate {
                     Movement.sharedInstance.startCountingSteps()
                 }
                 return
-            }
+            }          
         }
-        
-        //--------------------------------------------
-        
-        socket.on("game-started2") {[weak self] data, ack in
-            l.o.g("\ngame-started received by socket...")
-            let received = data?[0] as? NSDictionary
-            let gameID = received?.objectForKey("gameID") as! String
-            if find(self!.allGames.keys, gameID) == nil {
-                l.o.g("\n\(gameID) creating game...")
-                var game = Game(gameID: gameID, allGKPlayers: self!.allGKPlayers)
-                self!.allGames[gameID] = game
-                self!.delegate?.gameManager(newGameCreated: gameID)
-                self!.allGKPlayers.removeAll(keepCapacity: false)
-                if Movement.sharedInstance.isCountingSteps == false {
-                    Movement.sharedInstance.startCountingSteps()
-                }
-                return
-            }
-        }
-        
-        //-------------------------------------------
         
         socket.on("game-rejoined") {[weak self] data, ack in
+            l.o.g("\ngame-rejoined received by socket...")
             let received = data?[0] as? NSDictionary
             let gameID = received?.objectForKey("gameID") as! String
-            l.o.g("\n rejoined \(gameID)")
+            let playersArray = received?.objectForKey("players") as! NSArray
+            if find(self!.allGames.keys, gameID) == nil {
+                l.o.g("\n\(gameID) creating game...")
+                var game = Game(gameID: gameID, playersArray: playersArray)
+                self!.allGames[gameID] = game
+                self!.delegate?.gameManager(newGameCreated: gameID)
+                self!.allGKPlayers.removeAll(keepCapacity: false)
+                if Movement.sharedInstance.isCountingSteps == false {
+                    Movement.sharedInstance.startCountingSteps()
+                }
+                return
+            }
         }
+        
+//        socket.on("game-rejoined") {[weak self] data, ack in
+//            let received = data?[0] as? NSDictionary
+//            let gameID = received?.objectForKey("gameID") as! String
+//            l.o.g("\n rejoined \(gameID)")
+//        }
         
         socket.on("player-disconnected") {[weak self] data, ack in
             let received = data?[0] as? NSDictionary
