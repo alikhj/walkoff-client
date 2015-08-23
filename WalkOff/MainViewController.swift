@@ -31,6 +31,7 @@ DetailViewControllerDelegate {
 	
 	func gameManager(newGameCreated gameID: String) {
 		allGames.append(gameID)
+        println("allgames: \(allGames)")
 //		let indexPath = NSIndexPath(forRow: allGames.count, inSection: 0)
 //		let indexPaths = [indexPath]
 		//this should be insertRowAtIndexPath

@@ -81,12 +81,6 @@ GameKitHelperDelegate {
                     self!.socket.emit("rejoin-game",
                         ["gameID" : gameID,
                          "playerID" : self!.localPlayer.playerID])
-                let lastScoreUpdate = self!.allGames[gameID]!.allPlayers[self!.localPlayer.playerID]!.score
-                //this should be more targeted to the player that reconnected
-                self!.socket.emit("last-score-update",
-                    ["gameID" : gameID,
-                    "playerID"  : self!.localPlayer.playerID,
-                    "lastScoreUpdate" : lastScoreUpdate ])
                 }
             }
             self!.socket.emit("player-connected",
@@ -100,53 +94,32 @@ GameKitHelperDelegate {
 			self!.socket.connect()
 		}
         
-        socket.on("game-started") {[weak self] data, ack in
-            l.o.g("\ngame-started received by socket...")
-            let received = data?[0] as? NSDictionary
-            let gameID = received?.objectForKey("gameID") as! String
-            let playersArray = received?.objectForKey("players") as! NSArray
-            if find(self!.allGames.keys, gameID) == nil {
-                l.o.g("\n\(gameID) creating game...")
-                var game = Game(gameID: gameID, playersArray: playersArray)
-                self!.allGames[gameID] = game
-                self!.delegate?.gameManager(newGameCreated: gameID)
-                self!.allGKPlayers.removeAll(keepCapacity: false)
-                if Movement.sharedInstance.isCountingSteps == false {
-                    Movement.sharedInstance.startCountingSteps()
-                }
-                return
-            }          
-        }
         
-        socket.on("game-rejoined") {[weak self] data, ack in
-            l.o.g("\ngame-rejoined received by socket...")
-            let received = data?[0] as? NSDictionary
-            let gameID = received?.objectForKey("gameID") as! String
-            let playersArray = received?.objectForKey("players") as! NSArray
-            if find(self!.allGames.keys, gameID) == nil {
-                l.o.g("\n\(gameID) creating game...")
-                var game = Game(gameID: gameID, playersArray: playersArray)
-                self!.allGames[gameID] = game
+        //TO DO - check if game already existed so the delegate doesn't fire newGame
+        //unneccessarily - this only works when app is restarted
+        //games are duplicated if a connection is lost while app is running
+        socket.on("join-games") {[weak self] data, ack in
+            l.o.g("join-games received by socket...")
+            println("data: \(data)")
+            let currentGames = data?[0]["games"] as! NSArray
+            for game in currentGames {
+                var gameData = game as! NSDictionary
+                var gameID = gameData.valueForKey("id") as! String
+                var newGame = Game(gameData: gameData)
+                self!.allGames[gameID] = newGame
                 self!.delegate?.gameManager(newGameCreated: gameID)
                 self!.allGKPlayers.removeAll(keepCapacity: false)
                 if Movement.sharedInstance.isCountingSteps == false {
                     Movement.sharedInstance.startCountingSteps()
                 }
-                return
             }
         }
-        
-//        socket.on("game-rejoined") {[weak self] data, ack in
-//            let received = data?[0] as? NSDictionary
-//            let gameID = received?.objectForKey("gameID") as! String
-//            l.o.g("\n rejoined \(gameID)")
-//        }
         
         socket.on("player-disconnected") {[weak self] data, ack in
             let received = data?[0] as? NSDictionary
             let playerID = received?.objectForKey("playerID") as! String
             let gameID = received?.objectForKey("gameID") as! String
-            l.o.g("\n\(playerID) just disconnected from \(gameID)")
+            l.o.g("\n\(playerID) was disconnected from \(gameID)")
         }
         
         socket.on("player-reconnected") {[weak self] data, ack in

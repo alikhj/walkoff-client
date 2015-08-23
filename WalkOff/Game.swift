@@ -31,43 +31,29 @@ class Game: NSObject {
 	//assign the game an ID and create a dictionary of [playerID : player]
 	//sort the keys alphabetically
 
-    init(gameID: String, playersArray: NSArray) {
-        self.gameID = gameID
+        
+    init(gameData: NSDictionary) {
+        self.gameID = gameData.valueForKey("id") as! String
         super.init()
-        Movement.sharedInstance.addObserver(
-          self,
-          forKeyPath: "stepsUpdate",
-          options: .New,
-          context: nil)
-        for player in playersArray {
-          var playerID = player["id"] as! String
-          var playerAlias = player["alias"] as! String
-
-          allPlayers[playerID] = Player(playerID: playerID, playerAlias: playerAlias)
-          l.o.g("\(gameID) Player \(playerID) has joined the game")
-        }
-        updateRanking()
-        l.o.g("\(gameID) has initialized")
-    }
-    
-    init(gameID: String, playersArray: NSArray, playerScores: NSArray) {
-        self.gameID = gameID
-        super.init()
+        //println("gameData: \(gameData)")
         Movement.sharedInstance.addObserver(
             self,
             forKeyPath: "stepsUpdate",
             options: .New,
             context: nil)
-        for player in playersArray {
-            var playerID = player["id"] as! String
-            var playerAlias = player["alias"] as! String
-            //var score =
-            
+        var players = gameData["players"] as! NSDictionary
+        //println("player: \(players)")
+        for player in players {
+            let playerID = player.key as! String
+            let playerAlias = player.value["alias"] as! String
+            let score = player.value["score"] as! Int
             allPlayers[playerID] = Player(playerID: playerID, playerAlias: playerAlias)
-            l.o.g("\(gameID) Player \(playerID) has joined the game")
+            allPlayers[playerID]!.score = score
+            
         }
         updateRanking()
         l.o.g("\(gameID) has initialized")
+
     }
   	
 	//observe stepsUpdate variable in Movement class
@@ -115,6 +101,7 @@ class Game: NSObject {
 	
 	func updateRanking() {
 		var rankablePlayers = allPlayers as NSDictionary
+        println("allPlayers: \(rankablePlayers)")
 		var rankedPlayersArray = rankablePlayers.keysSortedByValueUsingComparator{
 			(playerA, playerB) in
 			let a = playerA as! Player

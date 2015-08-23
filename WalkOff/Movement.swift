@@ -45,9 +45,11 @@ class Movement: NSObject, CLLocationManagerDelegate {
 					l.o.g("Error starting pedometer updates: \(error)")
 				} else {
 					dispatch_async(dispatch_get_main_queue()) {
-						self.currentTotalSteps = data.numberOfSteps as Int
-						self.stepsUpdate = self.currentTotalSteps - self.previousTotalSteps
-						self.previousTotalSteps = self.currentTotalSteps
+                        if (data.numberOfSteps as Int > 0) {
+                            self.currentTotalSteps = data.numberOfSteps as Int
+                            self.stepsUpdate = self.currentTotalSteps - self.previousTotalSteps
+                            self.previousTotalSteps = self.currentTotalSteps
+                        }
 					}
 				}
 			}
