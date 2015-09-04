@@ -81,20 +81,34 @@ class Game: NSObject {
 		let previousRank = find(rankedPlayerIDs, playerID)
       if playerID != localPlayer.playerID {
         playerData[playerID]?.score = newScore
-      } else if playerID == localPlayer.playerID {
+				
+				//put this in its own function
+				updateRanking()
+				let newRank = find(rankedPlayerIDs, playerID)
+				delegate?.game(
+					scoreUpdatedForPlayer: playerID,
+					previousRank: previousRank!,
+					newRank: newRank!)
+				
+			} else if playerID == localPlayer.playerID {
         playerData[localPlayer.playerID]?.score! += newScore
-        var updatedScore = playerData[localPlayer.playerID]!.score
-        GameManager.sharedInstance.emitUpdatedScore(
-          gameID,
-          updatedScore: updatedScore!)
-		}
-		l.o.g("\(gameID) score updated for \(playerID) to \(playerData[playerID]!.score)")
-        updateRanking()
-        let newRank = find(rankedPlayerIDs, playerID)
-		delegate?.game(
-            scoreUpdatedForPlayer: playerID,
-            previousRank: previousRank!,
-            newRank: newRank!)
+				
+				//put this in its own function
+				var updatedScore = playerData[localPlayer.playerID]!.score
+				updateRanking()
+				let newRank = find(rankedPlayerIDs, playerID)
+				delegate?.game(
+					scoreUpdatedForPlayer: playerID,
+					previousRank: previousRank!,
+					newRank: newRank!)
+				
+				GameManager.sharedInstance.emitUpdatedScore(
+					gameID,
+					updatedScore: updatedScore!)
+			}
+		
+			l.o.g("\(gameID) score updated for \(playerID) to \(playerData[playerID]!.score)")
+
 	}
 	
   func updateRanking() {

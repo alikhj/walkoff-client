@@ -172,6 +172,7 @@ class GameManager: NSObject, GameKitHelperDelegate {
         l.o.g("\n***score-update***\ngameID: \(gameID)\nplayerID: \(playerID)\nnewScore: \(newScore)")
         let game = self!.games[gameID]
         game?.updateScoreForPlayer(playerID, newScore: newScore)
+				self!.delegate?.gameManager(scoreUpdatedForGame: gameID)
     }
     
     socket.on("item-received") {[weak self] data, ack in
