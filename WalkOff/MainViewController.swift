@@ -17,7 +17,7 @@ DetailViewControllerDelegate {
 	let PresentAuthenticationViewController =
 	"PresentAuthenticationViewController"
 
-	var allGames = [String]()
+	var gameIDs = [String]()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -26,20 +26,16 @@ DetailViewControllerDelegate {
 		tableView.tableFooterView = UIView(frame: CGRectZero)
 		//the row with startNewGame cell is row 0, so...
 		//insert dummy index so array matches tableview rows
-		allGames.append("")
+		gameIDs.append("")
 	}
 	
 	func gameManager(newGameCreated gameID: String) {
-		allGames.append(gameID)
-        println("allgames: \(allGames)")
-//		let indexPath = NSIndexPath(forRow: allGames.count, inSection: 0)
-//		let indexPaths = [indexPath]
-		//this should be insertRowAtIndexPath
-        tableView.reloadData()
+		gameIDs.append(gameID)
+    tableView.reloadData()
 	}
 	
 	func gameManager(scoreUpdatedForGame gameID: String) {
-		let indexOfGame = find(allGames, gameID)
+		let indexOfGame = find(gameIDs, gameID)
 		let indexPath = NSIndexPath(forRow: indexOfGame!, inSection: 0)
 		let indexPaths = [indexPath]
 		tableView.reloadRowsAtIndexPaths(
@@ -65,7 +61,7 @@ DetailViewControllerDelegate {
 		tableView: UITableView,
 		numberOfRowsInSection section: Int)
 		-> Int {
-		return allGames.count
+		return gameIDs.count
 	}
 	
 	override func tableView(
@@ -85,10 +81,10 @@ DetailViewControllerDelegate {
 	}
 	
 	func configureTextForCell(cell: UITableViewCell, row: Int) {
-		let gameID = allGames[row]
-		let game = GameManager.sharedInstance.allGames[gameID]
+		let gameID = gameIDs[row]
+		let game = GameManager.sharedInstance.games[gameID]
 		let localPlayerID = GameManager.sharedInstance.localPlayer.playerID
-		let gameScore = game?.allPlayers[localPlayerID]?.score
+		let gameScore = game?.playerData[localPlayerID]?.score
 		let playerRank = game?.localRank
 		
 		let gameNameLabel = cell.viewWithTag(1000) as! UILabel
@@ -142,7 +138,7 @@ DetailViewControllerDelegate {
             let controller = navigationController.topViewController as!
                 DetailViewController
             if let indexPath = tableView.indexPathForCell(sender as! UITableViewCell) {
-                controller.gameID = allGames[indexPath.row]
+                controller.gameID = gameIDs[indexPath.row]
                 controller.delegate = self
             }
     }

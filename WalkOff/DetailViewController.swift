@@ -22,7 +22,7 @@ GameDelegate {
 
     
     override func viewDidLoad() {
-        game = GameManager.sharedInstance.allGames[gameID!]!
+        game = GameManager.sharedInstance.games[gameID!]!
         game?.delegate = self
         super.viewDidLoad()
         title = gameID!
@@ -60,11 +60,13 @@ GameDelegate {
     }
     
     func configureTextForCell(cell: UITableViewCell, indexPath: NSIndexPath) {
-        let playerID = game!.rankedPlayerIDs[indexPath.row - 1]
-        let playerNameLabel = cell.viewWithTag(1000) as! UILabel
-        playerNameLabel.text = game!.allPlayers[playerID]?.playerAlias
-        let scoreLabel = cell.viewWithTag(1001) as! UILabel
-        scoreLabel.text = "\(game!.allPlayers[playerID]!.score)"
+      let playerID = game!.rankedPlayerIDs[indexPath.row - 1]
+      let playerAlias = GameManager.sharedInstance.players[playerID]?.playerAlias
+      
+      let playerNameLabel = cell.viewWithTag(1000) as! UILabel
+      playerNameLabel.text = playerAlias
+      let scoreLabel = cell.viewWithTag(1001) as! UILabel
+      scoreLabel.text = "\(game!.playerData[playerID]!.score)"
     }
     
     override func tableView(
