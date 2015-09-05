@@ -23,8 +23,8 @@ class GameManager: NSObject, GameKitHelperDelegate {
 		return GameManagerSingleton
 	}
 	
-	//let socket = SocketIOClient(socketURL: "http://162.243.138.39")
-  let socket = SocketIOClient(socketURL: "http://192.168.0.10:2000")
+	let socket = SocketIOClient(socketURL: "http://162.243.138.39")
+  //let socket = SocketIOClient(socketURL: "http://192.168.0.10:2000")
 
 	let localPlayer = GKLocalPlayer.localPlayer()
 	var gameKitHelper = GameKitHelper()
@@ -75,13 +75,35 @@ class GameManager: NSObject, GameKitHelperDelegate {
 		delegate?.gameManager(scoreUpdatedForGame: gameID)
 	}
 	
+  func createGame(gameData: NSDictionary) {
+    var newGame = Game(gameData: gameData)
+    games[newGame.gameID] = newGame
+    delegate?.gameManager(newGameCreated: newGame.gameID)
+    allGKPlayers.removeAll(keepCapacity: false)
+    if Movement.sharedInstance.isCountingSteps == false {
+      Movement.sharedInstance.startCountingSteps()
+    }
+  }
+  
+  func createPlayer(playerData: NSArray) {
+    for player in playerData {
+      let playerID = player.valueForKey("id") as! String
+      let playerAlias = player.valueForKey("alias") as! String
+      //only add player if player doesn't exist in dictionary
+      if((players[playerID]) == nil) {
+        players[playerID] = Player(playerID: playerID, playerAlias: playerAlias)
+      }
+    }
+  }
+  
 	func handlers() {
 		socket.on("connect") {[weak self] data, ack in
 			l.o.g("Connected, with sid: \(self!.socket.sid!)")
 			
 			self!.socket.emit("player-connected", [
 				"playerID": self!.localPlayer.playerID,
-				"playerAlias": self!.localPlayer.alias
+				"playerAlias": self!.localPlayer.alias,
+        "clientGamesCount": self!.games.count
 			])
 		}
     
@@ -97,24 +119,8 @@ class GameManager: NSObject, GameKitHelperDelegate {
 			let gameData = received?.objectForKey("gameData") as! NSDictionary
       let playerData = received?.objectForKey("playerData") as! NSArray
 			
-      for player in playerData {
-        let playerID = player.valueForKey("id") as! String
-        let playerAlias = player.valueForKey("alias") as! String
-        //only add player if player doesn't exist in dictionary
-        if((self!.players[playerID]) == nil) {
-          self!.players[playerID] =
-						Player(playerID: playerID, playerAlias: playerAlias)
-        }
-      }
-			
-			//put this in a function
-			var newGame = Game(gameData: gameData)
-			self!.games[newGame.gameID] = newGame
-      self!.delegate?.gameManager(newGameCreated: newGame.gameID)
-			self!.allGKPlayers.removeAll(keepCapacity: false)
-      if Movement.sharedInstance.isCountingSteps == false {
-        Movement.sharedInstance.startCountingSteps()
-      }
+			self!.createPlayer(playerData)
+      self!.createGame(gameData)
     }
     
     socket.on("all-data") {[weak self] data, ack in
@@ -127,23 +133,9 @@ class GameManager: NSObject, GameKitHelperDelegate {
       if (self!.games.count == 0) {
         for game in games {
           let gameData = game as! NSDictionary
-					
-					//put this in a function
-					var newGame = Game(gameData: gameData)
-          self!.games[newGame.gameID] = newGame
-          self!.delegate?.gameManager(newGameCreated: newGame.gameID)
-          self!.allGKPlayers.removeAll(keepCapacity: false)
-          if Movement.sharedInstance.isCountingSteps == false {
-              Movement.sharedInstance.startCountingSteps()
-          }
+          self!.createGame(gameData)
         }
-				for player in players {
-					let playerID = player.valueForKey("id") as! String
-					let playerAlias = player.valueForKey("alias") as! String
-					self!.players[playerID] =
-						Player(playerID: playerID, playerAlias: playerAlias)
-				}
-        
+      self!.createPlayer(players)
       }
     }
     

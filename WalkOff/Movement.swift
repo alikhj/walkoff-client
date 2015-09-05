@@ -20,36 +20,35 @@ class Movement: NSObject, CLLocationManagerDelegate {
 	let pedometer = CMPedometer()
 	let activityManager = CMMotionActivityManager()
 	let locationManager = CLLocationManager()
-    var isCountingSteps = false
+  var isCountingSteps = false
 	var previousTotalSteps = 0
 	var currentTotalSteps = 0
 	dynamic var stepsUpdate = 0
 	
 	override init() {
 		super.init()
-        l.o.g("Movement initialized")
+    l.o.g("Movement initialized")
 		locationManager.delegate = self
 		locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
 		locationManager.requestAlwaysAuthorization()
 		locationManager.pausesLocationUpdatesAutomatically = false //maybe?
 		locationManager.startUpdatingLocation()
-		
 	}
 	
 	func startCountingSteps() {
-        isCountingSteps = true
-        l.o.g("Start counting steps...")
+    isCountingSteps = true
+    l.o.g("Start counting steps...")
 		if(CMPedometer.isStepCountingAvailable()){
 			pedometer.startPedometerUpdatesFromDate(NSDate()) {
 				(data, error) in if error != nil {
 					l.o.g("Error starting pedometer updates: \(error)")
 				} else {
 					dispatch_async(dispatch_get_main_queue()) {
-                        if (data.numberOfSteps as Int > 0) {
-                            self.currentTotalSteps = data.numberOfSteps as Int
-                            self.stepsUpdate = self.currentTotalSteps - self.previousTotalSteps
-                            self.previousTotalSteps = self.currentTotalSteps
-                        }
+            if (data.numberOfSteps as Int > 0) {
+              self.currentTotalSteps = data.numberOfSteps as Int
+              self.stepsUpdate = self.currentTotalSteps - self.previousTotalSteps
+              self.previousTotalSteps = self.currentTotalSteps
+            }
 					}
 				}
 			}
@@ -75,6 +74,6 @@ class Movement: NSObject, CLLocationManagerDelegate {
 	func locationManager(
 		manager: CLLocationManager!,
 		didUpdateLocations locations: [AnyObject]!) {
-			l.o.g("Location updated")
+			//l.o.g("Location updated")
 	}
 }
