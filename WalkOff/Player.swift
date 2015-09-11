@@ -11,10 +11,10 @@ import GameKit
 
 class Player: NSObject {
   
-  var playerID: String!
-  var playerAlias: String!
-  var score: Int!
-  var connected: Bool!
+  var playerID: String?
+  var playerAlias: String?
+  var score: Int?
+  var connected: Bool?
   
   init(score: Int) {
     self.score = score

@@ -114,8 +114,8 @@ class Game: NSObject {
       (playerA, playerB) in
       let a = playerA as! Player
       let b = playerB as! Player
-      let aScore = a.score as NSNumber
-      let bScore = b.score as NSNumber
+      let aScore = a.score as NSNumber!
+      let bScore = b.score as NSNumber!
       return bScore.compare(aScore)
     }
     rankedPlayerIDs = rankedPlayersArray as! [String]
