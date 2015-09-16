@@ -26,6 +26,7 @@ GameDelegate {
         game?.delegate = self
         super.viewDidLoad()
         title = gameID!
+				tableView.rowHeight = 75
     }
     
     @IBAction func closeButton(sender: AnyObject) {
@@ -44,6 +45,10 @@ GameDelegate {
         let newIndexPath = NSIndexPath(forRow: newRank + 1, inSection: 0)
         tableView.moveRowAtIndexPath(previousIndexPath, toIndexPath: newIndexPath)
     }
+	
+		func reloadPlayerData() {
+			tableView.reloadData()
+		}
     
     override func tableView(
         tableView: UITableView,
@@ -66,9 +71,12 @@ GameDelegate {
       let playerNameLabel = cell.viewWithTag(1000) as! UILabel
       playerNameLabel.text = playerAlias
       let scoreLabel = cell.viewWithTag(1001) as! UILabel
-      scoreLabel.text = "\(game!.playerData[playerID]!.score)"
+      scoreLabel.text = "\(game!.playerData[playerID]!.score!)"
+			
+			let statusLabel = cell.viewWithTag(1003) as! UILabel
+			statusLabel.text = "\(game!.playerData[playerID]!.status!)"
     }
-    
+	
     override func tableView(
         tableView: UITableView,
         didSelectRowAtIndexPath indexPath: NSIndexPath) {

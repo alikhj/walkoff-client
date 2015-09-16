@@ -16,7 +16,7 @@ class Movement: NSObject, CLLocationManagerDelegate {
 	class var sharedInstance: Movement {
 		return MovementSingleton
 	}
-	
+		
 	let pedometer = CMPedometer()
 	let activityManager = CMMotionActivityManager()
 	let locationManager = CLLocationManager()
@@ -24,6 +24,7 @@ class Movement: NSObject, CLLocationManagerDelegate {
 	var previousTotalSteps = 0
 	var currentTotalSteps = 0
 	dynamic var stepsUpdate = 0
+	dynamic var movementType = ""
 	
 	override init() {
 		super.init()
@@ -55,16 +56,25 @@ class Movement: NSObject, CLLocationManagerDelegate {
 		} else { l.o.g("Pedometer not available") }
 	}
 	
-	func movementType() {
+	func startReadingMovementType() {
 		if(CMMotionActivityManager.isActivityAvailable()){
 			self.activityManager.startActivityUpdatesToQueue(
 				NSOperationQueue.mainQueue(), withHandler: {
 					(data: CMMotionActivity!) -> Void in
 					dispatch_async(dispatch_get_main_queue(), { () -> Void in
-						if (data.walking || data.running) {
-//						l.o.g("resume location updates")
+						
+						if (data.walking) {
+							self.movementType = "walking"
+							//l.o.g("\(self.movementType)")
+
+						} else if (data.running) {
+							self.movementType = "running"
+							//l.o.g("\(self.movementType)")
+
 						} else if (data.stationary) {
-//						l.o.g("pause location updates")
+							self.movementType = "stationary"
+							//l.o.g("\(self.movementType)")
+
 						}
 					})
 			})

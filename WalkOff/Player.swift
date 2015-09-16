@@ -14,10 +14,12 @@ class Player: NSObject {
   var playerID: String?
   var playerAlias: String?
   var score: Int?
+	var status: String?
   var connected: Bool?
   
-  init(score: Int) {
+	init(score: Int, status: String) {
     self.score = score
+		self.status = status
   }
   
   init(playerID: String, playerAlias: String) {
