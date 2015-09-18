@@ -22,9 +22,10 @@ class Milestones: NSObject {
   override init() {
     
     milestones = [
-      (5, "getting started", PowerUp.skateboard),
-      (20, "20 steps!!", PowerUp.jetpack),
-      (50, "aww yeah", PowerUp.unicorn)
+      (20, "getting started", PowerUp.skateboard),
+      (50, "20 steps!!", PowerUp.jetpack),
+      (80, "aww yeah", PowerUp.unicorn),
+			(1020, "challenge!", PowerUp.challenge)
     ]
   }
   
@@ -36,7 +37,7 @@ class Milestones: NSObject {
       
     for milestone in milestones {
       
-      if ((previousScore < milestone.steps) && (currentScore <= milestone.steps)) {
+      if ((previousScore < milestone.steps) && (currentScore >= milestone.steps)) {
         
         name = milestone.name
         powerUpID = milestone.powerUpID

@@ -23,8 +23,8 @@ class GameManager: NSObject, GameKitHelperDelegate {
 		return GameManagerSingleton
 	}
 	
-	let socket = SocketIOClient(socketURL: "http://162.243.138.39")
-  //let socket = SocketIOClient(socketURL: "http://192.168.0.10:2000")
+	//let socket = SocketIOClient(socketURL: "http://162.243.138.39")
+  let socket = SocketIOClient(socketURL: "http://192.168.0.3:2000")
 
 	let localPlayer = GKLocalPlayer.localPlayer()
 	var gameKitHelper = GameKitHelper()
@@ -72,7 +72,7 @@ class GameManager: NSObject, GameKitHelperDelegate {
 			"newScore"  : updatedScore
 		])
 		
-		l.o.g("\(gameID) Sending new score as \(updatedScore)")
+		l.o.g("\(gameID) emitting new score as \(updatedScore)")
 		delegate?.gameManager(scoreUpdatedForGame: gameID)
 	}
 	
@@ -82,8 +82,6 @@ class GameManager: NSObject, GameKitHelperDelegate {
 			"playerID": localPlayer.playerID,
 			"newStatus"  : newStatus
 			])
-		
-		l.o.g("\(gameID) Sending new status as \(newStatus)")
 	}
 	
   func createGame(gameData: NSDictionary) {
@@ -175,7 +173,7 @@ class GameManager: NSObject, GameKitHelperDelegate {
         let newScore = received?.objectForKey("newScore") as! Int
         l.o.g("\n***score-update***\ngameID: \(gameID)\nplayerID: \(playerID)\nnewScore: \(newScore)")
         let game = self!.games[gameID]
-        game?.updateScoreForPlayer(playerID, scoreUpdate: newScore)
+        game?.updateScoreForOtherPlayer(playerID, newScore: newScore)
 				self!.delegate?.gameManager(scoreUpdatedForGame: gameID)
     }
 		
