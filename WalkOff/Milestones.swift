@@ -12,21 +12,37 @@ let MilestonesSingleton = Milestones()
 
 
 class Milestones: NSObject {
-	
-	var mileStones = [
-		5,
-		20,
-		40
-	]
-	
-	class var sharedInstance: Milestones {
-		return MilestonesSingleton
-}
+  class var sharedInstance: Milestones {
+    return MilestonesSingleton
+  }
 
-//	func evaluateScoreForMilestone(score: Double, lastMileStone: Int) ->
-//	(mileStoneName: String?, powerUp: PowerUp) {
-//		
-//			
-//	}
 	
+  var milestones: [(steps: Int, name: String, powerUpID: PowerUp)]
+  
+  override init() {
+    
+    milestones = [
+      (5, "getting started", PowerUp.skateboard),
+      (20, "20 steps!!", PowerUp.jetpack),
+      (50, "aww yeah", PowerUp.unicorn)
+    ]
+  }
+  
+	func evaluateScoreForMilestone(currentScore: Int, previousScore: Int) -> (
+  name: String?, powerUpID: PowerUp?) {
+		
+    var name: String?
+    var powerUpID: PowerUp?
+      
+    for milestone in milestones {
+      
+      if ((previousScore < milestone.steps) && (currentScore <= milestone.steps)) {
+        
+        name = milestone.name
+        powerUpID = milestone.powerUpID
+      } 
+    }
+      
+    return (name, powerUpID)
+	}
 }
