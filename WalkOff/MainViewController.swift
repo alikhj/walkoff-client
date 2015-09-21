@@ -35,7 +35,7 @@ DetailViewControllerDelegate {
 	}
 	
 	func gameManager(scoreUpdatedForGame gameID: String) {
-		let indexOfGame = find(gameIDs, gameID)
+		let indexOfGame = gameIDs.indexOf(gameID)
 		let indexPath = NSIndexPath(forRow: indexOfGame!, inSection: 0)
 		let indexPaths = [indexPath]
 		tableView.reloadRowsAtIndexPaths(
@@ -47,7 +47,7 @@ DetailViewControllerDelegate {
 	
     
 	func gameManagerWasDisconnected() {
-			var alert = UIAlertController(title: "Disconnected",
+			let alert = UIAlertController(title: "Disconnected",
 					message:
 					"",
 					preferredStyle: UIAlertControllerStyle.Alert)
@@ -72,10 +72,10 @@ DetailViewControllerDelegate {
 			var cell: UITableViewCell
 			if indexPath.row == 0 {
 				cell = tableView.dequeueReusableCellWithIdentifier("StartNewGameCell")
-					as! UITableViewCell
+					as UITableViewCell!
 			} else {
 				cell = tableView.dequeueReusableCellWithIdentifier("GameCell")
-					as! UITableViewCell
+					as UITableViewCell!
 				configureTextForCell(cell, row: indexPath.row)
 			}
 			return cell
@@ -85,7 +85,7 @@ DetailViewControllerDelegate {
 		let gameID = gameIDs[row]
 		let game = GameManager.sharedInstance.games[gameID]
 		let localPlayerID = GameManager.sharedInstance.localPlayer.playerID
-		let gameScore = game?.playerData[localPlayerID]?.score
+		let gameScore = game?.playerData[localPlayerID!]?.score
 		let playerRank = game?.localRank
 		
 		let gameNameLabel = cell.viewWithTag(1000) as! UILabel
@@ -101,7 +101,7 @@ DetailViewControllerDelegate {
 			if indexPath.row == 0 {
 				if !GameCenterAuthorization.sharedInstance.gameCenterEnabled {
 					l.o.g("No Game Center login.")
-					var alert = UIAlertController(title: "Woops!",
+					let alert = UIAlertController(title: "Woops!",
 						message:
 						"Please sign into Game Center to find other players and walk all over them.",
 						preferredStyle: UIAlertControllerStyle.Alert)
@@ -131,24 +131,37 @@ DetailViewControllerDelegate {
 			tableView.deselectRowAtIndexPath(indexPath, animated: true)
 	}
 	
-    override func prepareForSegue(
-        segue: UIStoryboardSegue,
-        sender: AnyObject?) {
-            let navigationController = segue.destinationViewController as!
-                UINavigationController
-            let controller = navigationController.topViewController as!
-                DetailViewController
-            if let indexPath = tableView.indexPathForCell(sender as! UITableViewCell) {
-                controller.gameID = gameIDs[indexPath.row]
-                controller.delegate = self
-            }
-    }
-    
-    func detailViewControllerDidClose() {
-        tableView.reloadData()
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-    
+	override func prepareForSegue(
+			segue: UIStoryboardSegue,
+			sender: AnyObject?) {
+					let navigationController = segue.destinationViewController as!
+							UINavigationController
+					let controller = navigationController.topViewController as!
+							DetailViewController
+					if let indexPath = tableView.indexPathForCell(sender as! UITableViewCell) {
+							controller.gameID = gameIDs[indexPath.row]
+							controller.delegate = self
+					}
+	}
+	
+	func detailViewControllerDidClose() {
+		tableView.reloadData()
+		dismissViewControllerAnimated(true, completion: nil)
+		
+	}
+	
+	func detailViewControllerDidLeaveGame(gameID: String) {
+		let index = gameIDs.indexOf(gameID)
+		gameIDs.removeAtIndex(index!)
+		GameManager.sharedInstance.games.removeValueForKey(gameID)
+		tableView.reloadData()
+		dismissViewControllerAnimated(true, completion: nil)
+		
+		print("games: \(GameManager.sharedInstance.games) players: \(GameManager.sharedInstance.players)")
+	}
+	
+	
+	
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.

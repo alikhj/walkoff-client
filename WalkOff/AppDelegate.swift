@@ -19,9 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let documentsPath = NSSearchPathForDirectoriesInDomains(
 			.DocumentDirectory,
 			.UserDomainMask,
-			true)[0] as! NSString
+			true)[0] as NSString
 		let fileName = "/WO \(NSDate())"
-		let logFilePath = (documentsPath as! String) + fileName
+		let logFilePath = (documentsPath as String) + fileName
 		freopen(logFilePath.cStringUsingEncoding(
 			NSASCIIStringEncoding)!,
 			"a+",

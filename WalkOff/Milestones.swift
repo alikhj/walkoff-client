@@ -22,10 +22,10 @@ class Milestones: NSObject {
   override init() {
     
     milestones = [
-      (20, "getting started", PowerUp.skateboard),
-      (50, "20 steps!!", PowerUp.jetpack),
-      (80, "aww yeah", PowerUp.unicorn),
-			(1020, "challenge!", PowerUp.challenge)
+      (10, "getting started", PowerUp.secretariat),
+      (30, "20 steps!!", PowerUp.dancingBeans),
+      (60, "aww yeah", PowerUp.rocket),
+			(100, "challenge!", PowerUp.challenge)
     ]
   }
   

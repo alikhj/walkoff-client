@@ -1,6 +1,6 @@
 //
 //  SocketLogger.swift
-//  SocketIO-Swift
+//  Socket.IO-Client-Swift
 //
 //  Created by Erik Little on 4/11/15.
 //
@@ -24,31 +24,38 @@
 
 import Foundation
 
-protocol SocketLogClient {
-    var log:Bool {get set}
-    var logType:String {get}
+var Logger: SocketLogger = DefaultSocketLogger()
+
+public protocol SocketLogger {
+    /// Whether to log or not
+    var log: Bool {get set}
+    
+    /// Normal log messages
+    func log(message: String, type: String, args: AnyObject...)
+    
+    /// Error Messages
+    func error(message: String, type: String, args: AnyObject...)
 }
 
-final class SocketLogger {
-    private static let printQueue = dispatch_queue_create("printQueue", DISPATCH_QUEUE_SERIAL)
-    
-    static func log(message:String, client:SocketLogClient, altType:String? = nil) {
-        if !client.log {
-            return
-        }
-        
-        dispatch_async(printQueue) {[type = client.logType] in
-            NSLog("%@: %@", altType ?? type, message)
-        }
+public extension SocketLogger {
+    func log(message: String, type: String, args: AnyObject...) {
+        abstractLog("Log", message: message, type: type, args: args)
     }
     
-    static func err(message:String, client:SocketLogClient, altType:String? = nil) {
-        if !client.log {
-            return
-        }
-        
-        dispatch_async(printQueue) {[type = client.logType] in
-            NSLog("ERROR %@: %@", altType ?? type, message)
-        }
+    func error(message: String, type: String, args: AnyObject...) {
+        abstractLog("ERROR", message: message, type: type, args: args)
     }
+    
+    private func abstractLog(logType: String, message: String, type: String, args: [AnyObject]) {
+        guard log else { return }
+        
+        let newArgs = args.map {arg -> CVarArgType in String(arg)}
+        let replaced = String(format: message, arguments: newArgs)
+        
+        NSLog("%@ %@: %@", logType, type, replaced)
+    }
+}
+
+struct DefaultSocketLogger: SocketLogger {
+    var log = false
 }

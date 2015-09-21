@@ -45,8 +45,8 @@ class Movement: NSObject, CLLocationManagerDelegate {
 					l.o.g("Error starting pedometer updates: \(error)")
 				} else {
 					dispatch_async(dispatch_get_main_queue()) {
-            if (data.numberOfSteps as Int > 0) {
-              self.currentTotalSteps = data.numberOfSteps as Int
+            if (data!.numberOfSteps as Int > 0) {
+              self.currentTotalSteps = data!.numberOfSteps as Int
               self.stepsUpdate = self.currentTotalSteps - self.previousTotalSteps
               self.previousTotalSteps = self.currentTotalSteps
             }
@@ -57,33 +57,36 @@ class Movement: NSObject, CLLocationManagerDelegate {
 	}
 	
 	func startReadingMovementType() {
+		
 		if(CMMotionActivityManager.isActivityAvailable()){
 			self.activityManager.startActivityUpdatesToQueue(
 				NSOperationQueue.mainQueue(), withHandler: {
-					(data: CMMotionActivity!) -> Void in
-					dispatch_async(dispatch_get_main_queue(), { () -> Void in
+					
+					data in dispatch_async(dispatch_get_main_queue(), {
+						() -> Void in
 						
-						if (data.walking) {
-							self.movementType = "walking"
+						if (data!.walking) {
+							self.movementType = "🚶"
 							//l.o.g("\(self.movementType)")
 
-						} else if (data.running) {
-							self.movementType = "running"
+						} else if (data!.running) {
+							self.movementType = "🏃"
 							//l.o.g("\(self.movementType)")
 
-						} else if (data.stationary) {
-							self.movementType = "stationary"
+						} else if (data!.stationary) {
+							self.movementType = "💤"
 							//l.o.g("\(self.movementType)")
 
 						}
 					})
+					
 			})
 		} else { l.o.g("Movement type not available") }
 	}
 	
 	func locationManager(
-		manager: CLLocationManager!,
-		didUpdateLocations locations: [AnyObject]!) {
+		manager: CLLocationManager,
+		didUpdateLocations locations: [CLLocation]) {
 			//l.o.g("Location updated")
 	}
 }

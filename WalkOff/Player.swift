@@ -15,8 +15,10 @@ class Player: NSObject {
   var playerAlias: String?
   var score: Int?
 	var status: String?
+	
   var connected: Bool?
-  
+	var games: [String] = []
+	
 	init(score: Int, status: String) {
     self.score = score
 		self.status = status

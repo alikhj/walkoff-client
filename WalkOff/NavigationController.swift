@@ -23,7 +23,7 @@ class NavigationController: UINavigationController {
 		if let authenticateViewController =
 			GameCenterAuthorization.sharedInstance.authenticationViewController {
 				l.o.g("Showing Game Center authentication view controller")
-				topViewController.presentViewController(
+				topViewController!.presentViewController(
 					authenticateViewController,
 					animated: true,
 					completion: nil)

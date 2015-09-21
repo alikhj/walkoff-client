@@ -48,7 +48,7 @@ GKMatchmakerViewControllerDelegate {
 		presentingViewController viewController: UIViewController,
 		delegate: GameKitHelperDelegate) {
 			if !GameCenterAuthorization.sharedInstance.gameCenterEnabled {
-				println("local player not auth")
+				print("local player not auth")
 				return
 			}
 			multiplayerMatchStarted = false
@@ -59,7 +59,7 @@ GKMatchmakerViewControllerDelegate {
 			matchRequest.minPlayers = minPlayers
 			matchRequest.maxPlayers = maxPlayers
 			let matchMakerViewController = GKMatchmakerViewController(
-				matchRequest: matchRequest)
+				matchRequest: matchRequest)!
 			matchMakerViewController.hosted = true
 			matchMakerViewController.matchmakerDelegate = self
 			presentingViewController?.presentViewController(
@@ -70,10 +70,10 @@ GKMatchmakerViewControllerDelegate {
 	
 	//send an array to the delegate when all players are found
 	func matchmakerViewController(
-		viewController: GKMatchmakerViewController!,
-		didFindHostedPlayers players: [AnyObject]!) {
+		viewController: GKMatchmakerViewController,
+		didFindHostedPlayers players: [GKPlayer]) {
 			l.o.g("Players found")
-			let foundPlayers = players as! [GKPlayer]
+			let foundPlayers = players 
 			delegate?.gameKitHelper(newPlayersFound: foundPlayers)
 			presentingViewController?.dismissViewControllerAnimated(
 				true,
@@ -81,7 +81,7 @@ GKMatchmakerViewControllerDelegate {
 	}
 	
 	func matchmakerViewControllerWasCancelled(
-		viewController: GKMatchmakerViewController!) {
+		viewController: GKMatchmakerViewController) {
 			l.o.g("matchmakerViewController was cancelled")
 			presentingViewController?.dismissViewControllerAnimated(
 				true,
@@ -89,8 +89,8 @@ GKMatchmakerViewControllerDelegate {
 	}
 	
 	func matchmakerViewController(
-		viewController: GKMatchmakerViewController!,
-		didFailWithError error: NSError!) {
+		viewController: GKMatchmakerViewController,
+		didFailWithError error: NSError) {
 		presentingViewController?.dismissViewControllerAnimated(
 			true,
 			completion: nil)

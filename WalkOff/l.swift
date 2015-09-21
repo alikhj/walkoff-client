@@ -17,7 +17,7 @@ class l: NSObject {
 	
 	func g(text: String) {
 		NSLog(text)
-		println(text)
+		print(text)
 	}
 	
 }

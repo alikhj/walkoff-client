@@ -16,7 +16,7 @@ protocol GameDelegate: class {
 		newRank: Int
 	)
 	
-	func reloadPlayerData()
+	func playerDataWasUpdated()
 }
 
 class Game: NSObject {
@@ -26,17 +26,17 @@ class Game: NSObject {
 	var gameID: String
 	var gameTitle = "" //random name generator depending on total players
 	
-	let localPlayerID = GKLocalPlayer.localPlayer().playerID
+	let localPlayerID = GKLocalPlayer.localPlayer().playerID!
   var playerData = [String : Player]()
 	var previousScore: Int
   
   var isPowerUpReady = false
   var multiplier: Double = 1.0
   var timer = NSTimer()
+	var previousActivity = ""
   
 	var rankedPlayerIDs = [String]()
 	var localRank = 0
-	var status = ""
 	
 	//assign the game an ID and create a dictionary of [playerID : player]
 	//sort the keys alphabetically
@@ -64,23 +64,27 @@ class Game: NSObject {
         
 		for player in playerData {
 			let playerID = player.key as! String
-			let score = player.value["score"] as! Int
-			let status = player.value["status"] as! String
+			let playerDict = player.value as! NSDictionary
+			let score = playerDict.objectForKey("score") as! Int
+			let status = playerDict.objectForKey("status") as! String
 			self.playerData[playerID] = Player(score: score, status: status)
+			GameManager.sharedInstance.players[playerID]!.games.append(gameID)
 		}
 		
+		previousActivity = self.playerData[localPlayerID]!.status!
 		updateRankedPlayerIDs()
 		l.o.g("\(gameID) has initialized")
 	}
 
 	override func observeValueForKeyPath(
-	keyPath: String,
-	ofObject object: AnyObject,
-	change: [NSObject : AnyObject],
+	keyPath: String?,
+	ofObject object: AnyObject?,
+	change: [String : AnyObject]?,
+		
 	context: UnsafeMutablePointer<Void>) {
 	
 		if keyPath == "stepsUpdate" {
-		var stepsUpdate = change[NSKeyValueChangeNewKey]! as! Int
+			var stepsUpdate = 123 //change[NSKeyValueChangeNewKey]! as! Int
 			if stepsUpdate > 0 {
 					l.o.g("\(gameID) observing \(stepsUpdate) new steps")
 					updateScoreForLocalPlayer(stepsUpdate)
@@ -88,31 +92,30 @@ class Game: NSObject {
 		}
 	
 		else if keyPath == "movementType" {
-			var newStatus = change[NSKeyValueChangeNewKey]! as! String
-			if (newStatus != status) {
-				status = newStatus
-				updateStatusForPlayer(localPlayerID, newStatus: status)
+			var newActivity = "w"//change[NSKeyValueChangeNewKey]! as! String
+			if (newActivity != previousActivity) {
+				updateStatusForLocalPlayer(previousActivity, newActivity: newActivity)
+				previousActivity = newActivity
+
 			}
 		}
 	}
 	
 	func updateScoreForOtherPlayer(playerID: String, newScore: Int) {
-		playerData[playerID]!.score = newScore
-		
+		playerData[playerID]!.score = newScore		
 		updateRanking(playerID)
-		//refresh
 		
 		l.o.g("\(gameID) score updated for \(playerID) to \(playerData[playerID]!.score!)")
 	}
 	
 	func updateScoreForLocalPlayer(stepsUpdate: Int) {
 		previousScore = playerData[localPlayerID]!.score!
-		var scoreUpdate = Int(multiplier * Double(stepsUpdate))
+		let scoreUpdate = Int(multiplier * Double(stepsUpdate))
 		playerData[localPlayerID]!.score! += scoreUpdate
 		
 		updateRanking(localPlayerID)
 		
-		var newScore = playerData[localPlayerID]!.score!
+		let newScore = playerData[localPlayerID]!.score!
 		evaluateScoreForPowerUp(newScore, previousScore: previousScore)
 		
 		GameManager.sharedInstance.emitUpdatedScore(
@@ -123,15 +126,15 @@ class Game: NSObject {
 	
   func evaluateScoreForPowerUp(currentScore: Int, previousScore: Int) {
 		
-    var milestone = Milestones.sharedInstance.evaluateScoreForMilestone(
+    let milestone = Milestones.sharedInstance.evaluateScoreForMilestone(
       currentScore, previousScore: previousScore)
 		
     if let _ = milestone.name {
-      var powerUp = getPowerUp(milestone.powerUpID!)
+      //var powerUp = getPowerUp(milestone.powerUpID!)
       isPowerUpReady = true
 			
-			l.o.g("\(gameID) milestone reached: \(milestone.name)")
-			l.o.g("\(gameID) powerUp available: \(milestone.powerUpID)")
+			l.o.g("\n\(gameID) milestone : \(milestone.name!)")
+			l.o.g("\(gameID) powerUp available: \(milestone.powerUpID!.rawValue)\n")
 
       //temporary, this should be activated by a button:
       startPowerUp(milestone.powerUpID!)
@@ -140,7 +143,7 @@ class Game: NSObject {
   
   func startPowerUp(powerUpID: PowerUp) {
 		
-    var powerUp = getPowerUp(powerUpID)
+    let powerUp = getPowerUp(powerUpID)
     var powerUpInfo = [Int : String]()
     
     let powerUpRawValue = powerUpID.rawValue
@@ -150,11 +153,10 @@ class Game: NSObject {
 		
 		multiplier *= powerUp.multiplier
 		
-		l.o.g("\(gameID) powerUp started: \(powerUp.name)")
+		l.o.g("\n\(gameID) powerUp started: \(powerUp.name)")
 		l.o.g("\(gameID) multiplier: \(powerUp.multiplier)")
 		l.o.g("\(gameID) duration: \(powerUp.duration)")
-
-		l.o.g("\(gameID) updated multiplier: \(multiplier)")
+		l.o.g("\(gameID) updated multiplier: \(multiplier)\n")
 		
     timer = NSTimer.scheduledTimerWithTimeInterval(
       powerUp.duration,
@@ -163,10 +165,12 @@ class Game: NSObject {
       userInfo: powerUpInfo,
       repeats: false
     )
+		
+		playerData[localPlayerID]!.status! = powerUp.name + playerData[localPlayerID]!.status!
+		updateStatusForLocalPlayer(nil, newActivity: nil)
   }
   
   func stopPowerUp(timer: NSTimer) {
-    println("stopPowerUp")
 		
 		let currentScore = playerData[localPlayerID]!.score!
 		let powerUpInfo = timer.userInfo as! [Int: String]
@@ -174,33 +178,53 @@ class Game: NSObject {
 		for (scoreBeforePowerUp, rawValue) in powerUpInfo {
 			
 			let powerUpID = PowerUp(rawValue: rawValue)!
-			var powerUp = getPowerUp(powerUpID)
+			let powerUp = getPowerUp(powerUpID)
+			
+			let powerUpNameRange = playerData[localPlayerID]!.status!.rangeOfString(powerUp.name)
+			playerData[localPlayerID]!.status!.removeRange(powerUpNameRange!)
+
+			updateStatusForLocalPlayer(nil, newActivity: nil)
+			
 			multiplier /= powerUp.multiplier
 			
-			if let verify = powerUp.verifyFunc {
-				var k = verify(scoreBeforePowerUp, currentScore)
-				multiplier = k.multiplier!
-				println("goal achieved, granting new pUp")
-				startPowerUp(k.powerUpID!)
+			if let verify = powerUp.verify {
+				let verification = verify(scoreBeforePowerUp, currentScore)
+				multiplier *= verification.multiplier!
+				
+				l.o.g("\n\(gameID) stopping powerup: \(rawValue)\n")
+
+				//temporary - this will fail if nil
+				//startPowerUp(verification.powerUpID!)
 				
 			}
+      l.o.g("\n\(gameID) stopping powerup: \(rawValue)\n")
+
 		}
   }
   
-	func updateStatusForPlayer(playerID: String, newStatus: String) {
-		playerData[playerID]?.status = newStatus
-		delegate?.reloadPlayerData()
+	func updateStatusForLocalPlayer(previousActivity: String?, newActivity: String?) {
 		
-		if(playerID == localPlayerID) {
-			GameManager.sharedInstance.emitUpdatedStatus(gameID, newStatus: newStatus)
+		if let _ = newActivity {
+			let range = playerData[localPlayerID]!.status!.rangeOfString(previousActivity!)
+			playerData[localPlayerID]!.status!.removeRange(range!)
+			playerData[localPlayerID]!.status! += newActivity!
 		}
+		
+		delegate?.playerDataWasUpdated()
+		GameManager.sharedInstance.emitUpdatedStatus(
+			gameID, newStatus: playerData[localPlayerID]!.status!)
+	}
+	
+	func updateStatusForOtherPlayer(playerID: String, newStatus: String) {
+		playerData[playerID]!.status = newStatus
+		delegate?.playerDataWasUpdated()
 	}
 	
 	func updateRanking(playerID: String) {
 		
-		let previousRank = find(rankedPlayerIDs, playerID)
+		let previousRank = rankedPlayerIDs.indexOf(playerID)
 		updateRankedPlayerIDs()
-		let newRank = find(rankedPlayerIDs, playerID)
+		let newRank = rankedPlayerIDs.indexOf(playerID)
 		
 		delegate?.game(
 			scoreUpdatedForPlayer: playerID,
@@ -210,8 +234,8 @@ class Game: NSObject {
 	}
 	
 	func updateRankedPlayerIDs() {
-		var playersToRank = playerData as NSDictionary
-		var rankedPlayersArray = playersToRank.keysSortedByValueUsingComparator{
+		let playersToRank = playerData as NSDictionary
+		let rankedPlayersArray = playersToRank.keysSortedByValueUsingComparator{
 			(playerA, playerB) in
 			let a = playerA as! Player
 			let b = playerB as! Player
@@ -220,8 +244,8 @@ class Game: NSObject {
 			return bScore.compare(aScore)
 		}
 		rankedPlayerIDs = rankedPlayersArray as! [String]
-		localRank = find(rankedPlayerIDs, localPlayerID)! + 1
-		l.o.g("\(gameID) ranking updated")
+		localRank = rankedPlayerIDs.indexOf(localPlayerID)! + 1
+		//l.o.g("\(gameID) ranking updated")
 	}
 	
   deinit {
@@ -230,9 +254,9 @@ class Game: NSObject {
       self,
       forKeyPath: "stepsUpdate",
       context: nil)
+		Movement.sharedInstance.removeObserver(
+			self,
+			forKeyPath: "movementType",
+			context: nil)
   }
-
 }
-
-
-
