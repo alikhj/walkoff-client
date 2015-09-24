@@ -23,8 +23,8 @@ class GameManager: NSObject, GameKitHelperDelegate {
 		return GameManagerSingleton
 	}
 	
-	//let socket = SocketIOClient(socketURL: "http://162.243.138.39")
-  let socket = SocketIOClient(socketURL: "192.168.0.3:2000")
+	let socket = SocketIOClient(socketURL: "http://162.243.138.39")
+  //let socket = SocketIOClient(socketURL: "192.168.0.3:2000")
 
 	let localPlayer = GKLocalPlayer.localPlayer()
 	var gameKitHelper = GameKitHelper()
@@ -57,7 +57,7 @@ class GameManager: NSObject, GameKitHelperDelegate {
 		//make the playerIDs array consistent across players by sorting it
 		//alphabetically – this will be used as the tmpGameIDKey
 		playerIDs.sortInPlace{ $0 > $1 }
-		l.o.g("\nLocal player ID is \(localPlayer.playerID)")
+		l.o.g("\nLocal player ID is \(localPlayer.playerID!)")
 		l.o.g("\nJoining game with playerIDs array: \(playerIDs)")
 		
 		socket.emit("new-game", [
@@ -138,7 +138,7 @@ class GameManager: NSObject, GameKitHelperDelegate {
   }
   
 	func handlers() {
-		socket.on("connect") {data, ack in
+		socket.on("connect") { data, ack in
 			l.o.g("Connected, with sid: \(self.socket.sid!)")
 			
 			let gamesCount = self.games.count
@@ -150,79 +150,78 @@ class GameManager: NSObject, GameKitHelperDelegate {
 			])
 		}
     
-		socket.on("reconnect") {[weak self] data, ack in
+		socket.on("reconnect") { data, ack in
 			l.o.g("Disconnected, trying to reconnect...")
-			self!.delegate?.gameManagerWasDisconnected()
-			self!.socket.connect()
+			self.delegate?.gameManagerWasDisconnected()
+			self.socket.connect()
 		}
 		
-    socket.on("game-started") {[weak self] data, ack in
+    socket.on("game-started") { data, ack in
       l.o.g("game-started received by socket")
       let received = data[0] as? NSDictionary
 			let gameData = received?.objectForKey("gameData") as! NSDictionary
       let playerData = received?.objectForKey("playerData") as! NSArray
-			
-			self!.createPlayer(playerData)
-      self!.createGame(gameData)
+			self.createPlayer(playerData)
+      self.createGame(gameData)
     }
     
-    socket.on("all-data") {[weak self] data, ack in
+    socket.on("all-data") { data, ack in
       l.o.g("all-data received by socket... ")
 			let received = data[0] as? NSDictionary
 			let games = received?.objectForKey("gamesData") as! NSArray
 			let players = received?.objectForKey("playerData") as! NSArray
 
       //only add games if they don't exist already
-      if (self!.games.count == 0) {
-				self!.createPlayer(players)
+      if (self.games.count == 0) {
+				self.createPlayer(players)
 
 				for game in games {
           let gameData = game as! NSDictionary
-          self!.createGame(gameData)
+          self.createGame(gameData)
         }
       }
     }
     
-    socket.on("player-disconnected") {[weak self] data, ack in
+    socket.on("player-disconnected") { data, ack in
       let received = data[0] as? NSDictionary
       let playerID = received?.objectForKey("playerID") as! String
       let gameID = received?.objectForKey("gameID") as! String
-      self!.players[playerID]?.connected = false
+      self.players[playerID]?.connected = false
       l.o.g("\n\(playerID) was disconnected from \(gameID)")
     }
     
-    socket.on("player-reconnected") {[weak self] data, ack in
+    socket.on("player-reconnected") { data, ack in
       let received = data[0] as? NSDictionary
       let playerID = received?.objectForKey("playerID") as! String
       let gameID = received?.objectForKey("gameID") as! String
-      self!.players[playerID]?.connected = true
+      self.players[playerID]?.connected = true
       l.o.g("\n\(playerID) has reconnected to \(gameID)")
     }
     
-    socket.on("score-updated") {[weak self] data, ack in
+    socket.on("score-updated") { data, ack in
         print("score-updated received")
         let received = data[0] as? NSDictionary
         let gameID = received?.objectForKey("gameID") as! String
         let playerID = received?.objectForKey("playerID") as! String
         let newScore = received?.objectForKey("newScore") as! Int
         l.o.g("\nscore-update\ngameID: \(gameID)\nplayerID: \(playerID)\nnewScore: \(newScore)")
-        let game = self!.games[gameID]
+        let game = self.games[gameID]
         game?.updateScoreForOtherPlayer(playerID, newScore: newScore)
-				self!.delegate?.gameManager(scoreUpdatedForGame: gameID)
+				self.delegate?.gameManager(scoreUpdatedForGame: gameID)
     }
 		
-		socket.on("status-updated") {[weak self] data, ack in
+		socket.on("status-updated") { data, ack in
 			print("status-updated received")
 			let received = data[0] as? NSDictionary
 			let gameID = received?.objectForKey("gameID") as! String
 			let playerID = received?.objectForKey("playerID") as! String
 			let newStatus = received?.objectForKey("newStatus") as! String
-			let game = self!.games[gameID]
+			let game = self.games[gameID]
 			game?.updateStatusForOtherPlayer(playerID, newStatus: newStatus)
 
 		}
 		
-    socket.on("item-received") {[weak self] data, ack in
+    socket.on("item-received") { data, ack in
         let received = data[0] as? NSDictionary
         let gameID = received?.objectForKey("gameID") as! String
         let playerID = received?.objectForKey("playerID") as! String

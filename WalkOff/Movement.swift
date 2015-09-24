@@ -67,17 +67,20 @@ class Movement: NSObject, CLLocationManagerDelegate {
 						
 						if (data!.walking) {
 							self.movementType = "🚶"
-							//l.o.g("\(self.movementType)")
 
 						} else if (data!.running) {
 							self.movementType = "🏃"
-							//l.o.g("\(self.movementType)")
 
 						} else if (data!.stationary) {
 							self.movementType = "💤"
-							//l.o.g("\(self.movementType)")
 
-						}
+            } else if (data!.cycling) {
+              self.movementType = "🚴"
+            
+            } else if (data!.automotive) {
+              self.movementType = "🚗"
+            }
+            
 					})
 					
 			})

@@ -23,7 +23,7 @@ class Milestones: NSObject {
     
     milestones = [
       (10, "getting started", PowerUp.secretariat),
-      (30, "20 steps!!", PowerUp.dancingBeans),
+      (30, "bees", PowerUp.bees),
       (60, "aww yeah", PowerUp.rocket),
 			(100, "challenge!", PowerUp.challenge)
     ]
