@@ -14,14 +14,19 @@ class Player: NSObject {
   var playerID: String?
   var playerAlias: String?
   var score: Int?
-	var status: String?
 	
+	var activity = ""
+	var powerUps = [String]()
+	var powerDowns = [String]()
+	var challenges = [String]()
+  
   var connected: Bool?
 	var games: [String] = []
 	
-	init(score: Int, status: String) {
+	init(score: Int) {
     self.score = score
-		self.status = status
+		powerUps.reserveCapacity(10)
+		
   }
   
   init(playerID: String, playerAlias: String) {

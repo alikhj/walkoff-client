@@ -124,20 +124,25 @@ GameDelegate {
     let playerID = game!.rankedPlayerIDs[indexPath.row]
     var playerAlias = GameManager.sharedInstance.players[playerID]?.playerAlias
 		
-		var status = game!.playerData[playerID]!.status!
-		let activity = status[status.startIndex]
-		status.removeAtIndex(status.startIndex)
-    
+		let activity = game!.playerData[playerID]!.activity
+		let powerUpsArray = game!.playerData[playerID]!.powerUps
+		let powerDownsArray = game!.playerData[playerID]!.powerDowns
+		let challengesArray = game!.playerData[playerID]!.challenges
+		
+		let powerUps = powerUpsArray.joinWithSeparator("")
+		let powerDowns = powerDownsArray.joinWithSeparator("")
+		let challenges = challengesArray.joinWithSeparator("")
+		
     if playerID == game.localPlayerID {
       playerAlias = "Me"
       cell.playerLabel.font = UIFont.boldSystemFontOfSize(17.0)
       localPlayerIndexPath = indexPath
     }
 
-		cell.playerLabel.text = "\(activity) \(playerAlias!)"
+		cell.playerLabel.text = "\(activity) \(challenges) \(powerDowns) \(playerAlias!)"
 		
     cell.scoreLabel.text =
-		"\(status) \(game!.playerData[playerID]!.score!)"
+		"\(powerUps) \(game!.playerData[playerID]!.score!)"
     
   }
   

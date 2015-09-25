@@ -16,34 +16,33 @@ class Milestones: NSObject {
     return MilestonesSingleton
   }
 
-	
-  var milestones: [(steps: Int, name: String, powerUpID: PowerUp)]
+  var milestones: [(steps: Int, name: String, itemRawValue: String)]
   
   override init() {
     
     milestones = [
-      (10, "getting started", PowerUp.secretariat),
-      (30, "bees", PowerUp.bees),
-      (60, "aww yeah", PowerUp.rocket),
-			(100, "challenge!", PowerUp.challenge)
+      (10, "getting started", PowerUp.secretariat.rawValue),
+			(20, "getting started", Challenge.bees.rawValue),
+			(30, "getting started", PowerUp.secretariat.rawValue),
+      (40, "bees challenge", Challenge.bees.rawValue),
+      (60, "aww yeah", PowerUp.rocket.rawValue)
     ]
   }
   
 	func evaluateScoreForMilestone(currentScore: Int, previousScore: Int) -> (
-  name: String?, powerUpID: PowerUp?) {
-		
-    var name: String?
-    var powerUpID: PowerUp?
-      
+  name: String, itemRawValue: String)? {
+	
+
     for milestone in milestones {
       
       if ((previousScore < milestone.steps) && (currentScore >= milestone.steps)) {
         
-        name = milestone.name
-        powerUpID = milestone.powerUpID
-      } 
+        return (milestone.name, milestone.itemRawValue)
+      }
+    
     }
-      
-    return (name, powerUpID)
-	}
+    return nil
+	
+  }
+  
 }

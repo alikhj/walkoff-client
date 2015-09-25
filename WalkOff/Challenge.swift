@@ -32,7 +32,7 @@ func getChallenge(challengeName: Challenge) -> (
 			func verification(previousScore: Int, currentScore: Int) -> AnyObject? {
 				let difference = currentScore - previousScore
 				if difference < 10 {
-					return PowerUp.bees as? AnyObject
+					return PowerDown.dead as? AnyObject
 				} else {
 					return (nil)
 				}
@@ -45,5 +45,4 @@ func getChallenge(challengeName: Challenge) -> (
 		
 		return challenge
 	}
-	
 }

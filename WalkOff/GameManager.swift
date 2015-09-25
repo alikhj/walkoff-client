@@ -23,8 +23,8 @@ class GameManager: NSObject, GameKitHelperDelegate {
 		return GameManagerSingleton
 	}
 	
-	let socket = SocketIOClient(socketURL: "http://162.243.138.39")
-  //let socket = SocketIOClient(socketURL: "192.168.0.3:2000")
+	//let socket = SocketIOClient(socketURL: "http://162.243.138.39")
+  let socket = SocketIOClient(socketURL: "192.168.0.3:2000")
 
 	let localPlayer = GKLocalPlayer.localPlayer()
 	var gameKitHelper = GameKitHelper()
@@ -80,12 +80,20 @@ class GameManager: NSObject, GameKitHelperDelegate {
 		delegate?.gameManager(scoreUpdatedForGame: gameID)
 	}
 	
-	func emitUpdatedStatus(gameID: String, newStatus: String) {
-		socket.emit("update-status", [
+	func emitUpdatedItem(
+		gameID: String,
+		itemType: String,
+		itemIndex: Int,
+		itemName: String
+	) {
+		
+		socket.emit("update-item", [
 			"gameID": gameID,
 			"playerID": localPlayer.playerID!,
-			"newStatus"  : newStatus
-			])
+			"itemType": itemType,
+			"itemIndex": itemIndex,
+			"itemName": itemName
+		])
 	}
   
   func leaveGame(gameID: String, playerID: String) {
@@ -210,24 +218,24 @@ class GameManager: NSObject, GameKitHelperDelegate {
 				self.delegate?.gameManager(scoreUpdatedForGame: gameID)
     }
 		
-		socket.on("status-updated") { data, ack in
-			print("status-updated received")
+		socket.on("item-updated") { data, ack in
+			print("item-updated received")
 			let received = data[0] as? NSDictionary
 			let gameID = received?.objectForKey("gameID") as! String
 			let playerID = received?.objectForKey("playerID") as! String
-			let newStatus = received?.objectForKey("newStatus") as! String
+			let itemType = received?.objectForKey("itemType") as! String
+			let itemIndex = received?.objectForKey("itemIndex") as! Int
+			let itemName = received?.objectForKey("itemName") as! String
+			
 			let game = self.games[gameID]
-			game?.updateStatusForOtherPlayer(playerID, newStatus: newStatus)
-
+			
+			game?.updateItemForOtherPlayer(
+				playerID,
+				itemType: itemType,
+				itemIndex: itemIndex,
+				itemName: itemName
+			)
 		}
-		
-    socket.on("item-received") { data, ack in
-        let received = data[0] as? NSDictionary
-        let gameID = received?.objectForKey("gameID") as! String
-        let playerID = received?.objectForKey("playerID") as! String
-        let itemID = received?.objectForKey("itemID") as! Int
-        //add more, maybe a time received?
-    }
 	}
 	
 	func debugHandlers() {
