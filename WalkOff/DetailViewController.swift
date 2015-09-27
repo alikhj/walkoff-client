@@ -63,22 +63,31 @@ GameDelegate {
       NSIndexSet(index: standbyPowerUps),
       withRowAnimation: .Top)
   }
-  
-  func powerDownStarted() {
-    
-    localPlayerCell = tableView.cellForRowAtIndexPath(localPlayerIndexPath) as! PlayerCell
-    localPlayerCell.tipsLabel.text = "k"
+	
+	func powerUpStarted(standbyPowerUpIndex: Int) {
+		let indexPath = NSIndexPath(forRow: standbyPowerUpIndex, inSection: 0)
+		tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+		
+		tableView.reloadRowsAtIndexPaths([localPlayerIndexPath], withRowAnimation: .None)
 
-      tableView.reloadData()
+	}
+	
+  func localPlayerUpdated() {
+
+		tableView.reloadRowsAtIndexPaths([localPlayerIndexPath], withRowAnimation: .None)
   }
-  
-  func powerDownStopped() {
-
-    powerDownLabel.removeFromSuperview()
-    tableView.reloadRowsAtIndexPaths([localPlayerIndexPath], withRowAnimation: .Top)
-
-  }
-  
+	
+	func challengeStarted(challengeID: Challenge) {
+		
+		let challenge = getChallenge(challengeID)
+		
+		let alert = UIAlertController(title: challenge.name, message: challenge.description, preferredStyle: .Alert)
+		alert.addAction(UIAlertAction(title: "Got it", style: .Default, handler: nil))
+		
+		self.presentViewController(alert, animated: true, completion: nil)
+		
+	}
+	
   override func tableView(
   tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
   -> UITableViewCell {
@@ -87,7 +96,7 @@ GameDelegate {
     
     if indexPath.section == standbyPowerUps {
       cell = tableView.dequeueReusableCellWithIdentifier("StandbyPowerUpCell") as UITableViewCell!
-      configureTextForstandbyPowerUpCell(cell, indexPath: indexPath)
+      configureTextForStandbyPowerUpCell(cell, indexPath: indexPath)
     }
     
     if indexPath.section == players {
@@ -103,7 +112,7 @@ GameDelegate {
     return cell
   }
 	
-	func configureTextForstandbyPowerUpCell(cell: UITableViewCell, indexPath: NSIndexPath) {
+	func configureTextForStandbyPowerUpCell(cell: UITableViewCell, indexPath: NSIndexPath) {
 		
 		let descriptionLabel = cell.viewWithTag(1002) as! UILabel
 		let powerUpLabel = cell.viewWithTag(1003) as! UILabel
@@ -139,7 +148,7 @@ GameDelegate {
       localPlayerIndexPath = indexPath
     }
 
-		cell.playerLabel.text = "\(activity) \(challenges) \(powerDowns) \(playerAlias!)"
+		cell.playerLabel.text = "\(activity)\(challenges)\(powerDowns)\(playerAlias!)"
 		
     cell.scoreLabel.text =
 		"\(powerUps) \(game!.playerData[playerID]!.score!)"
@@ -155,7 +164,9 @@ GameDelegate {
     tableView.deselectRowAtIndexPath(indexPath, animated: true)
     
     if (indexPath.section == standbyPowerUps) {
+			print(indexPath)
       let powerUpID = game.standbyPowerUpIDs[indexPath.row]
+
       game.startPowerUp(powerUpID, standbyPowerUpIndex: indexPath.row)
     }
     

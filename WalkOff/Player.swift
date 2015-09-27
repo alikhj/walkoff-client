@@ -26,6 +26,7 @@ class Player: NSObject {
 	init(score: Int) {
     self.score = score
 		powerUps.reserveCapacity(10)
+		powerDowns.reserveCapacity(10)
 		
   }
   
