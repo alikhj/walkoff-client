@@ -42,6 +42,7 @@ func getChallenge(challengeName: Challenge) -> (
 			challenge.itemRawValue = PowerDown.dead.rawValue
 			challenge.itemType = String(PowerDown.self)
 			
+			//make a function out of this
 			let itemID = PowerDown(rawValue: challenge.itemRawValue)!
 			let powerDown = getPowerDown(itemID)
 			
