@@ -39,7 +39,13 @@ GameDelegate {
     game.delegate = self
     super.viewDidLoad()
     title = gameID
-    
+		
+		localPlayerIndexPath = NSIndexPath(
+			forRow: game!.rankedPlayerIDs.indexOf(game!.localPlayerID)!,
+			inSection: players
+		)
+	
+		
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 44.0
 
@@ -100,7 +106,7 @@ GameDelegate {
     }
     
     if indexPath.section == players {
-      cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as UITableViewCell!
+			cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as UITableViewCell!
       configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPath)
     }
     
@@ -142,12 +148,14 @@ GameDelegate {
 		let powerDowns = powerDownsArray.joinWithSeparator("")
 		let challenges = challengesArray.joinWithSeparator("")
 		
-    if playerID == game.localPlayerID {
+    if indexPath == localPlayerIndexPath {
       playerAlias = "Me"
       cell.playerLabel.font = UIFont.boldSystemFontOfSize(17.0)
-      localPlayerIndexPath = indexPath
     }
 
+		//if challenge is A, place after activity
+		//if challenge is B, place before activity
+		
 		cell.playerLabel.text = "\(activity)\(challenges)\(powerDowns)\(playerAlias!)"
 		
     cell.scoreLabel.text =

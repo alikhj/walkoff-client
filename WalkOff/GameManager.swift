@@ -24,7 +24,7 @@ class GameManager: NSObject, GameKitHelperDelegate {
 	}
 	
 	//let socket = SocketIOClient(socketURL: "http://162.243.138.39")
-  let socket = SocketIOClient(socketURL: "192.168.0.3:2000")
+  let socket = SocketIOClient(socketURL: "192.168.0.9:2000")
 
 	let localPlayer = GKLocalPlayer.localPlayer()
 	var gameKitHelper = GameKitHelper()
@@ -87,6 +87,7 @@ class GameManager: NSObject, GameKitHelperDelegate {
 		itemName: String
 	) {
 		
+		print("emitting type: \(itemType)")
 		socket.emit("update-item", [
 			"gameID": gameID,
 			"playerID": localPlayer.playerID!,
@@ -106,13 +107,13 @@ class GameManager: NSObject, GameKitHelperDelegate {
 		for player in games[gameID]!.rankedPlayerIDs {
 			
 			if (player != localPlayer.playerID) {
-			if (players[player]!.games.count > 1) {
-				let index = players[player]!.games.indexOf(gameID)
-				players[player]!.games.removeAtIndex(index!)
-			
-			} else {
-				players.removeValueForKey(player)
-			}
+				if (players[player]!.games.count > 1) {
+					let index = players[player]!.games.indexOf(gameID)
+					players[player]!.games.removeAtIndex(index!)
+				
+				} else {
+					players.removeValueForKey(player)
+				}
 			}
 		}
 		
@@ -228,6 +229,8 @@ class GameManager: NSObject, GameKitHelperDelegate {
 			let itemName = received?.objectForKey("itemName") as! String
 			
 			let game = self.games[gameID]
+			
+			print(itemType)
 			
 			game?.updateItemForOtherPlayer(
 				playerID,

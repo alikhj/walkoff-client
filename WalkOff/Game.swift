@@ -153,7 +153,6 @@ class Game: NSObject {
           delegate?.powerUpOnStandby()
         }
 				
-				
         if let powerDownID = PowerDown(rawValue: milestone.itemRawValue) {
 					startPowerDown(powerDownID)
 
@@ -174,12 +173,20 @@ class Game: NSObject {
 		playerData[localPlayerID]?.challenges.append(challenge.name)
 		delegate?.challengeStarted(challengeID)
 		delegate?.localPlayerUpdated()
+		
+		let challengeIndex = playerData[localPlayerID]?.challenges.endIndex.predecessor()
+		
+		GameManager.sharedInstance.emitUpdatedItem(
+			gameID,
+			itemType: "challenge",
+			itemIndex: challengeIndex!,
+			itemName: challenge.name
+		)
 
 		timerInfo["rawValue"] = challengeID.rawValue
 		timerInfo["previousScore"] = playerData[localPlayerID]!.score!
-		timerInfo["challengeIndex"] = playerData[localPlayerID]?.challenges.endIndex.predecessor()
+		timerInfo["challengeIndex"] = challengeIndex
 
-		
 		timer = NSTimer.scheduledTimerWithTimeInterval(
 			challenge.duration,
 			target: self,
@@ -196,6 +203,8 @@ class Game: NSObject {
 		let rawValue = timerInfo["rawValue"] as! String
 		let challengeIndex = timerInfo["challengeIndex"] as! Int
 		
+		//emit challenge is over
+		
 		playerData[localPlayerID]?.challenges.removeAtIndex(challengeIndex)
 		
 		let challengeID = Challenge(rawValue: rawValue)
@@ -209,7 +218,20 @@ class Game: NSObject {
 				let powerDownID = PowerDown(rawValue: item.rawValue)!
 				startPowerDown(powerDownID)
 			}
+			
+			if item.type == String(PowerUp.self) {
+				let powerUpID = PowerUp(rawValue: item.rawValue)!
+				standbyPowerUpIDs.append(powerUpID)
+				delegate?.powerUpOnStandby()
+			}
 		}
+		
+		GameManager.sharedInstance.emitUpdatedItem(
+			gameID,
+			itemType: "challenge",
+			itemIndex: challengeIndex,
+			itemName: ""
+		)
 
 	}
 	
@@ -336,13 +358,11 @@ class Game: NSObject {
 			
 			case "activity":
 				playerData[playerID]!.activity = itemName
-
 			
 			case "powerUp":
 				
 				if itemName == "" {
-					playerData[playerID]!.powerUps
-						.removeAtIndex(itemIndex)
+					playerData[playerID]!.powerUps.removeAtIndex(itemIndex)
 				
 				} else {
 					playerData[playerID]!.powerUps

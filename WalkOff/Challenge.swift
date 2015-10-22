@@ -10,9 +10,10 @@ import Foundation
 
 enum Challenge: String {
 	case bees = "bees"
+	case liftOff = "liftOff"
 }
 
-func getChallenge(challengeName: Challenge) -> (
+func getChallenge(challengeID: Challenge) -> (
 	name: String,
 	numberOfSteps: Int,
 	duration: Double,
@@ -21,54 +22,69 @@ func getChallenge(challengeName: Challenge) -> (
 	description: String,
 	verification: ((Int, Int) -> (type: String, rawValue: String)?)
 ) {
-		
-  var challenge: (
-		name: String,
-		numberOfSteps: Int,
-		duration: Double,
-		itemType: String,
-		itemRawValue: String,
-		description: String,
-		verification: ((Int, Int) -> (type: String, rawValue: String)?)
-  )
-		
-  switch challengeName {
+
+	var challengeName: String
+	var numberOfSteps: Int
+	var duration: Double
+	var item: (type: String, rawValue: String)
+	var description: String
+	var verificationFunc: (previousScore: Int, currentScore: Int) ->
+	(type: String, rawValue: String)?
+	
+  switch challengeID {
 		
 		case .bees:
 			
-			challenge.name = "🐝"
-			challenge.numberOfSteps = 50
-			challenge.duration = 10
-			challenge.itemRawValue = PowerDown.dead.rawValue
-			challenge.itemType = String(PowerDown.self)
-			
+			challengeName = "🐝"
+			numberOfSteps = 50
+			duration = 10
+			item = (String(PowerDown.self), PowerDown.dizzy.rawValue)
+
 			//make a function out of this
-			let itemID = PowerDown(rawValue: challenge.itemRawValue)!
+			let itemID = PowerDown(rawValue: item.rawValue)!
 			let powerDown = getPowerDown(itemID)
 			
-			challenge.description =
-			"\(challenge.numberOfSteps) steps in \(challenge.duration) seconds or else \(powerDown.name)"
-
-			
-			func verification(previousScore: Int, currentScore: Int) ->
-				(type: String, rawValue: String)? {
-					
-					let difference = currentScore - previousScore
-					
-					if difference < 10 {
-						
-						return (String(PowerDown.self), PowerDown.dead.rawValue)
-						
-					} else {
-						print("diff is else")
-						return (nil)
-					}
-			}
-			
-			challenge.verification = verification
-			
-
+			description =
+			"\(numberOfSteps) steps in \(duration) seconds or else \(powerDown.name)"
 		
-		return challenge
+		case .liftOff:
+			
+			challengeName = "🚦"
+			numberOfSteps = 2
+			duration = 10
+			item = (String(PowerUp.self), PowerUp.rocket.rawValue)
+			
+			//make a function out of this
+			let itemID = PowerUp(rawValue: item.rawValue)!
+			let powerUp = getPowerUp(itemID)
+			
+			description =
+			"\(numberOfSteps) steps in \(duration) seconds or else \(powerUp.name)"
+		
 	}
+	
+	func verification(previousScore: Int, currentScore: Int) ->
+		(type: String, rawValue: String)? {
+			
+			let difference = currentScore - previousScore
+			
+			if difference < numberOfSteps {
+				
+				return (item.type, item.rawValue)
+				
+			} else {
+				print("diff is else")
+				return (nil)
+			}
+	}
+	
+	return (
+		challengeName,
+		numberOfSteps,
+		duration,
+		item.type,
+		item.rawValue,
+		description,
+		verification
+	)
 }

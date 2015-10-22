@@ -17,8 +17,6 @@ class PlayerCell: UITableViewCell {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    
-    playerLabel.font = UIFont.systemFontOfSize(17.0)
-  
+		
   }
 }
