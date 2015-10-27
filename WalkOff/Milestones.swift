@@ -24,7 +24,7 @@ class Milestones: NSObject {
   override init() {
     
     milestones = [
-      (10, "getting started", Challenge.liftOff.rawValue),
+      (10, "getting started", Challenge.rocketFuel.rawValue),
 			(280, "getting started", Challenge.bees.rawValue),
 			(30, "getting started", PowerUp.secretariat.rawValue),
       (40, "bees challenge", Challenge.bees.rawValue),

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2616F8731BDF2C8800C89B4B /* LocalPlayerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2616F8721BDF2C8800C89B4B /* LocalPlayerCell.swift */; settings = {ASSET_TAGS = (); }; };
 		261DC58F1BAFE86F00C1C93E /* SocketAckEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261DC57F1BAFE86F00C1C93E /* SocketAckEmitter.swift */; settings = {ASSET_TAGS = (); }; };
 		261DC5901BAFE86F00C1C93E /* SocketAckManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261DC5801BAFE86F00C1C93E /* SocketAckManager.swift */; settings = {ASSET_TAGS = (); }; };
 		261DC5911BAFE86F00C1C93E /* SocketAnyEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261DC5811BAFE86F00C1C93E /* SocketAnyEvent.swift */; settings = {ASSET_TAGS = (); }; };
@@ -57,6 +58,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2616F8721BDF2C8800C89B4B /* LocalPlayerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalPlayerCell.swift; sourceTree = "<group>"; };
 		261DC57F1BAFE86F00C1C93E /* SocketAckEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAckEmitter.swift; sourceTree = "<group>"; };
 		261DC5801BAFE86F00C1C93E /* SocketAckManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAckManager.swift; sourceTree = "<group>"; };
 		261DC5811BAFE86F00C1C93E /* SocketAnyEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAnyEvent.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 		419F60111BB3063A00E13E06 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				2616F8721BDF2C8800C89B4B /* LocalPlayerCell.swift */,
 				B898764B1B03038B00B54926 /* MainViewController.swift */,
 				B898768C1B03080D00B54926 /* NavigationController.swift */,
 				B89876941B0309EE00B54926 /* DetailViewController.swift */,
@@ -368,6 +371,7 @@
 				419C79471BB45F4900C526A4 /* PowerDown.swift in Sources */,
 				261DC58F1BAFE86F00C1C93E /* SocketAckEmitter.swift in Sources */,
 				261DC59B1BAFE86F00C1C93E /* SocketStringReader.swift in Sources */,
+				2616F8731BDF2C8800C89B4B /* LocalPlayerCell.swift in Sources */,
 				261DC5981BAFE86F00C1C93E /* SocketLogger.swift in Sources */,
 				261DC5991BAFE86F00C1C93E /* SocketPacket.swift in Sources */,
 				261DC59C1BAFE86F00C1C93E /* SocketTypes.swift in Sources */,

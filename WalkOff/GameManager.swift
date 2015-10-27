@@ -24,7 +24,7 @@ class GameManager: NSObject, GameKitHelperDelegate {
 	}
 	
 	//let socket = SocketIOClient(socketURL: "http://162.243.138.39")
-  let socket = SocketIOClient(socketURL: "192.168.0.9:2000")
+  let socket = SocketIOClient(socketURL: "192.168.0.4:2000")
 
 	let localPlayer = GKLocalPlayer.localPlayer()
 	var gameKitHelper = GameKitHelper()

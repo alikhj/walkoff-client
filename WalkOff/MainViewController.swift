@@ -151,11 +151,11 @@ DetailViewControllerDelegate {
 	}
 	
 	func detailViewControllerDidLeaveGame(gameID: String) {
+		dismissViewControllerAnimated(true, completion: nil)
 		let index = gameIDs.indexOf(gameID)
 		gameIDs.removeAtIndex(index!)
 		GameManager.sharedInstance.games.removeValueForKey(gameID)
 		tableView.reloadData()
-		dismissViewControllerAnimated(true, completion: nil)
 		
 		print("games: \(GameManager.sharedInstance.games) players: \(GameManager.sharedInstance.players)")
 	}

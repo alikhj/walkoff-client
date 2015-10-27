@@ -45,18 +45,15 @@ GameDelegate {
 			inSection: players
 		)
 	
-		
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 44.0
-
   }
   
   func game(scoreUpdatedForPlayer playerID: String, previousRank: Int, newRank: Int) {
-    tableView.reloadData()
-    
+
     let previousIndexPath = NSIndexPath(forRow: previousRank, inSection: players)
     let newIndexPath = NSIndexPath(forRow: newRank, inSection: players)
-
+		
     tableView.moveRowAtIndexPath(previousIndexPath, toIndexPath: newIndexPath)
   }
 
@@ -75,7 +72,6 @@ GameDelegate {
 		tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
 		
 		tableView.reloadRowsAtIndexPaths([localPlayerIndexPath], withRowAnimation: .None)
-
 	}
 	
   func localPlayerUpdated() {
@@ -106,8 +102,14 @@ GameDelegate {
     }
     
     if indexPath.section == players {
-			cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as UITableViewCell!
-      configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPath)
+			if indexPath.row == game!.rankedPlayerIDs.indexOf(game!.localPlayerID)! {
+				cell = tableView.dequeueReusableCellWithIdentifier("LocalPlayerCell") as UITableViewCell!
+				configureTextForLocalPlayerCell(cell as! LocalPlayerCell, indexPath: indexPath)
+			} else {
+				cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as UITableViewCell!
+				configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPath)
+			}
+
     }
     
     if indexPath.section == menu {
@@ -148,7 +150,7 @@ GameDelegate {
 		let powerDowns = powerDownsArray.joinWithSeparator("")
 		let challenges = challengesArray.joinWithSeparator("")
 		
-    if indexPath == localPlayerIndexPath {
+    if indexPath.row == game!.rankedPlayerIDs.indexOf(game!.localPlayerID)! {
       playerAlias = "Me"
       cell.playerLabel.font = UIFont.boldSystemFontOfSize(17.0)
     }
@@ -162,7 +164,35 @@ GameDelegate {
 		"\(powerUps) \(game!.playerData[playerID]!.score!)"
     
   }
-  
+	
+	func configureTextForLocalPlayerCell(cell: LocalPlayerCell, indexPath: NSIndexPath) {
+		let playerID = game!.rankedPlayerIDs[indexPath.row]
+		var playerAlias = GameManager.sharedInstance.players[playerID]?.playerAlias
+		
+		let activity = game!.playerData[playerID]!.activity
+		let powerUpsArray = game!.playerData[playerID]!.powerUps
+		let powerDownsArray = game!.playerData[playerID]!.powerDowns
+		let challengesArray = game!.playerData[playerID]!.challenges
+		
+		let powerUps = powerUpsArray.joinWithSeparator("")
+		let powerDowns = powerDownsArray.joinWithSeparator("")
+		let challenges = challengesArray.joinWithSeparator("")
+		
+		if indexPath.row == game!.rankedPlayerIDs.indexOf(game!.localPlayerID)! {
+			playerAlias = "Me"
+			cell.playerLabel.font = UIFont.boldSystemFontOfSize(17.0)
+		}
+		
+		//if challenge is A, place after activity
+		//if challenge is B, place before activity
+		
+		cell.playerLabel.text = "\(activity)\(challenges)\(powerDowns)\(playerAlias!)"
+		
+		cell.scoreLabel.text =
+		"\(powerUps) \(game!.playerData[playerID]!.score!)"
+		
+	}
+	
   func configureTextForMenuCell(cell: UITableViewCell, indexPath: NSIndexPath) {
     
   }
@@ -177,6 +207,20 @@ GameDelegate {
 
       game.startPowerUp(powerUpID, standbyPowerUpIndex: indexPath.row)
     }
+		
+		if indexPath.section == players &&
+			indexPath.row == game!.rankedPlayerIDs.indexOf(game!.localPlayerID)! {
+				let cell = tableView.cellForRowAtIndexPath(indexPath) as! LocalPlayerCell
+				print("kk")
+
+				tableView.beginUpdates()
+				localPlayerCellHeight = 88.0
+
+				
+				tableView.endUpdates()
+				cell.playerLabel.frame = CGRectMake(cell.playerLabel.frame.minX, cell.playerLabel.frame.minY + 44, 50, 20)
+
+		}
     
     if (indexPath.section == menu) {
       if (indexPath.row == 0) {
@@ -185,6 +229,16 @@ GameDelegate {
       }
     }
   }
+	
+	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+		if indexPath.section == players &&
+			indexPath.row == game!.rankedPlayerIDs.indexOf(game!.localPlayerID)! {
+				
+				return localPlayerCellHeight
+		} else {
+			return 44.0
+		}
+	}
 	
 	override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
 		

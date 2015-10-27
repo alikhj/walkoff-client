@@ -10,7 +10,7 @@ import Foundation
 
 enum Challenge: String {
 	case bees = "bees"
-	case liftOff = "liftOff"
+	case rocketFuel = "rocketFuel"
 }
 
 func getChallenge(challengeID: Challenge) -> (
@@ -47,9 +47,9 @@ func getChallenge(challengeID: Challenge) -> (
 			description =
 			"\(numberOfSteps) steps in \(duration) seconds or else \(powerDown.name)"
 		
-		case .liftOff:
+		case .rocketFuel:
 			
-			challengeName = "🚦"
+			challengeName = "🔥"
 			numberOfSteps = 2
 			duration = 10
 			item = (String(PowerUp.self), PowerUp.rocket.rawValue)

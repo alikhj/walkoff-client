@@ -13,7 +13,6 @@ class PlayerCell: UITableViewCell {
   
   @IBOutlet var playerLabel: UILabel!
   @IBOutlet var scoreLabel: UILabel!
-  @IBOutlet weak var tipsLabel: UILabel!
   
   override func layoutSubviews() {
     super.layoutSubviews()

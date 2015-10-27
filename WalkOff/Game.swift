@@ -226,6 +226,8 @@ class Game: NSObject {
 			}
 		}
 		
+		delegate?.playerDataWasUpdated()
+		
 		GameManager.sharedInstance.emitUpdatedItem(
 			gameID,
 			itemType: "challenge",
@@ -424,7 +426,6 @@ class Game: NSObject {
 		}
 		rankedPlayerIDs = rankedPlayersArray as! [String]
 		localRank = rankedPlayerIDs.indexOf(localPlayerID)! + 1
-		//l.o.g("\(gameID) ranking updated")
 	}
 	
   deinit {
