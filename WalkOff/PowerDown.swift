@@ -1,48 +1,40 @@
 //
-//  PowerUp.swift
+//  PowerDown_.swift
 //  WalkOff
 //
-//  Created by Ali Khawaja on 9/15/15.
-//  Copyright (c) 2015 Candy Snacks. All rights reserved.
+//  Created by Ali Khawaja on 10/28/15.
+//  Copyright © 2015 Candy Snacks. All rights reserved.
 //
 
 import Foundation
 
 enum PowerDown: String {
-  case dizzy = "dizzy"
-	case rain = "rain"
+    
+    case dizzy = "dizzy"
 }
 
-
-func getPowerDown(powerDownName: PowerDown) -> (
-  name: String,
-  description: String,
-  divider: Double,
-  duration: Double) {
+func getPowerDown(powerDownID: PowerDown) -> (
+name: String,
+description: String,
+divider: Double,
+duration: Double
+) {
     
     var powerDown: (
-      name: String,
-      description: String,
-      divider: Double,
-      duration: Double
+    name: String,
+    description: String,
+    divider: Double,
+    duration: Double
     )
     
-    switch powerDownName {
-      
+    switch powerDownID {
+        
     case .dizzy:
-      powerDown.name = "😵"
-      powerDown.description = "dizzy"
-      powerDown.divider = 2
-      powerDown.duration = 15
-		
-		case .rain:
-			powerDown.name = "☔️"
-			powerDown.description = "its raining"
-			powerDown.divider = 1.5
-			powerDown.duration = 15
-		}
-		
-		return powerDown
-
+        powerDown.name = "😵"
+        powerDown.description = "😵 = 💤🚶💤"
+        powerDown.divider = 2.0
+        powerDown.duration = 10.0
+    }
+    
+    return powerDown
 }
-

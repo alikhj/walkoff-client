@@ -1,5 +1,5 @@
 //
-//  Challenge.swift
+//  Chase.swift
 //  WalkOff
 //
 //  Created by Ali Khawaja on 10/28/15.
@@ -8,19 +8,19 @@
 
 import Foundation
 
-enum Challenge: String {
+enum Chase: String {
     
-    case poo = "poo"
+    case bees = "bees"
 }
 
-func getChallenge(challengeID: Challenge) -> ((
+func getChase(chaseID: Chase) -> ((
 name: String,
 description: String,
 numberOfSteps: Int,
 duration: Double,
 verification: ((previousScore: Int, currentScore: Int) -> Item?)
 )) {
-    
+        
     var name: String
     var description: String
     var numberOfSteps: Int
@@ -28,11 +28,11 @@ verification: ((previousScore: Int, currentScore: Int) -> Item?)
     
     var item: Item?
     
-    switch challengeID {
+    switch chaseID {
         
-    case .poo:
-        name = "💩"
-        description = "💩🏃⏱🔟"
+    case .bees:
+        name = "🐝"
+        description = "🏃🐝⏱🔟"
         numberOfSteps = 20
         duration = 10.0
         item = Item(powerDownID: PowerDown.dizzy)
@@ -54,4 +54,3 @@ verification: ((previousScore: Int, currentScore: Int) -> Item?)
         verification
     )
 }
-        

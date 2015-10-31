@@ -12,41 +12,39 @@ let MilestonesSingleton = Milestones()
 
 
 class Milestones: NSObject {
-  class var sharedInstance: Milestones {
-    return MilestonesSingleton
-  }
-
-  var milestones: [(
-		steps: Int,
-		name: String,
-		itemRawValue: String)]
-	
-  override init() {
     
-    milestones = [
-      (10, "getting started", Challenge.rocketFuel.rawValue),
-			(280, "getting started", Challenge.bees.rawValue),
-			(30, "getting started", PowerUp.secretariat.rawValue),
-      (40, "bees challenge", Challenge.bees.rawValue),
-      (60, "aww yeah", PowerUp.rocket.rawValue)
-    ]
-
-  }
-	
-	func evaluateScoreForMilestone(currentScore: Int, previousScore: Int) -> (
-  name: String, itemRawValue: String)? {
-	
-
-    for milestone in milestones {
-      
-      if ((previousScore < milestone.steps) && (currentScore >= milestone.steps)) {
-        
-        return (milestone.name, milestone.itemRawValue)
-      }
-    
+    class var sharedInstance: Milestones {
+        return MilestonesSingleton
     }
-    return nil
+
+    var milestones: [(
+        steps: Int,
+        name: String,
+        item: Item
+    )]
 	
-  }
-  
+    override init() {
+    
+        milestones = [
+            (15, "getting started", Item(powerUpID: PowerUp.rocket)),
+            (30, "getting started", Item(powerDownID: PowerDown.dizzy)),
+            (45, "getting started", Item(challengeID: Challenge.poo)),
+            (60, "bees challenge", Item(chaseID: Chase.bees)),
+            (70, "offense", Item(offenseID: Offense.bees))
+        ]
+    }
+	
+	func evaluateScoreForMilestone(currentScore: Int, previousScore: Int) ->
+    (name: String, item: Item)? {
+	
+        var thisMilestone: (name: String, item: Item)?
+
+        for milestone in milestones {
+            if ((previousScore < milestone.steps) && (currentScore >= milestone.steps)) {
+                thisMilestone = (milestone.name, milestone.item)
+            }
+        }
+        
+        return thisMilestone
+    }
 }

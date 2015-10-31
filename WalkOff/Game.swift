@@ -10,17 +10,18 @@ import UIKit
 import GameKit
 
 protocol GameDelegate: class {
-	func game(
+	
+    func game(
 		scoreUpdatedForPlayer playerID: String,
 		previousRank: Int,
 		newRank: Int
 	)
-	
-	func playerDataWasUpdated()
-  func powerUpOnStandby()
-	func powerUpStarted(standbyPowerUpIndex: Int)
-	func challengeStarted(challengeID: Challenge)
-	func localPlayerUpdated()
+    func game(itemUpdatedForPlayer playerID: String)
+    func gamePowerUpOnStandby()
+    func game(powerUpStarted standbyPowerUpIndex: Int)
+    func game(challengeStartedWithID challengeID: Challenge)
+    func game(chaseStartedWithID chaseID: Chase)
+    func gameOffenseOnStandby()
 }
 
 class Game: NSObject {
@@ -31,26 +32,27 @@ class Game: NSObject {
 	var gameTitle = "" //random name generator depending on total players
 	
 	let localPlayerID = GKLocalPlayer.localPlayer().playerID!
-  var previousScore: Int
+    var previousScore: Int
   
-  var playerData = [String : Player]()
+    var playerData = [String : Player]()
   
-  var standbyPowerUpIDs = [PowerUp]()
+    var standbyPowerUpIDs = [PowerUp]()
+    var offenses = [Offense]()
   
-  var multiplier: Double = 1.0
-  var timer = NSTimer()
+    var multiplier: Double = 1.0
+    var timer = NSTimer()
 	var previousActivity = ""
   
 	var rankedPlayerIDs = [String]()
 	var localRank = 0
 	
-	//assign the game an ID and create a dictionary of [playerID : player]
+    //initialize the game by assigning the game an ID and creating
+	//a dictionary of [playerID : player]
 	//sort the keys alphabetically
-        
 	init(gameData: NSDictionary) {
 		self.gameID = gameData.valueForKey("id") as! String
 		let playerData = gameData.objectForKey("playerData") as! NSDictionary
-		previousScore = playerData[localPlayerID]?.objectForKey("score") as! Int
+		previousScore = playerData[localPlayerID]!.objectForKey("score") as! Int
 
 		super.init()
 
@@ -87,11 +89,12 @@ class Game: NSObject {
 		l.o.g("\(gameID) has initialized")
 	}
 
+    //begin observering the movement steps counter
+    //each update calls updateScoreForLocalPlayer
 	override func observeValueForKeyPath(
 	keyPath: String?,
 	ofObject object: AnyObject?,
 	change: [String : AnyObject]?,
-		
 	context: UnsafeMutablePointer<Void>) {
 	
 		if keyPath == "stepsUpdate" {
@@ -114,11 +117,29 @@ class Game: NSObject {
 					itemIndex: 0,
 					itemName: newActivity
 				)
-				delegate?.playerDataWasUpdated() //change this to rowupdate
-			}
+				delegate?.game(itemUpdatedForPlayer: localPlayerID)
+            }
 		}
 	}
 	
+    //called by observer method
+    func updateScoreForLocalPlayer(stepsUpdate: Int) {
+        previousScore = playerData[localPlayerID]!.score!
+        let scoreUpdate = Int(multiplier * Double(stepsUpdate))
+        playerData[localPlayerID]!.score! += scoreUpdate
+        
+        updateRanking(localPlayerID)
+        
+        let newScore = playerData[localPlayerID]!.score!
+        evaluateScoreForItem(newScore, previousScore: previousScore)
+        
+        GameManager.sharedInstance.emitUpdatedScore(
+            gameID,
+            updatedScore: newScore
+        )
+    }
+    
+    //this is called by the GameManager
 	func updateScoreForOtherPlayer(playerID: String, newScore: Int) {
 		playerData[playerID]!.score = newScore		
 		updateRanking(playerID)
@@ -126,234 +147,252 @@ class Game: NSObject {
 		l.o.g("\(gameID) score updated for \(playerID) to \(playerData[playerID]!.score!)")
 	}
 	
-	func updateScoreForLocalPlayer(stepsUpdate: Int) {
-		previousScore = playerData[localPlayerID]!.score!
-		let scoreUpdate = Int(multiplier * Double(stepsUpdate))
-		playerData[localPlayerID]!.score! += scoreUpdate
-		
-		updateRanking(localPlayerID)
-		
-		let newScore = playerData[localPlayerID]!.score!
-		evaluateScoreForPowerUp(newScore, previousScore: previousScore)
-		
-		GameManager.sharedInstance.emitUpdatedScore(
-			gameID,
-			updatedScore: newScore
-		)
-	}
-	
-  func evaluateScoreForPowerUp(currentScore: Int, previousScore: Int) {
-		
-    if let milestone = Milestones.sharedInstance.evaluateScoreForMilestone(
-      currentScore, previousScore: previousScore) {
-				
-				//change this to check for type instead of through rawValue
-        if let powerUpID = PowerUp(rawValue: milestone.itemRawValue) {
-          standbyPowerUpIDs.append(powerUpID)
-          delegate?.powerUpOnStandby()
+    //called by updateScoreForLocalPlayer after each update
+    func evaluateScoreForItem(currentScore: Int, previousScore: Int) {
+        
+        if let milestone = Milestones.sharedInstance.evaluateScoreForMilestone(
+        currentScore, previousScore: previousScore) {
+            
+            evaluateItemForID(milestone.item)
         }
-				
-        if let powerDownID = PowerDown(rawValue: milestone.itemRawValue) {
-					startPowerDown(powerDownID)
-
+    }
+    
+    func evaluateItemForID(item: Item) {
+        
+        if let powerUpID = item.powerUpID {
+            print("power up")
+            standbyPowerUpIDs.append(powerUpID)
+            delegate?.gamePowerUpOnStandby()
         }
         
-        if let challengeID = Challenge(rawValue: milestone.itemRawValue) {
-          print("challenge started")
-					startChallenge(challengeID)
-
+        if let powerDownID = item.powerDownID {
+            print("power down")
+            startPowerDown(powerDownID)
         }
-      }
-  }
+        
+        if let challengeID = item.challengeID {
+            print("challenge")
+            startChallenge(challengeID)
+        }
+        
+        if let chaseID = item.chaseID {
+            print("chase")
+            startChase(chaseID)
+        }
+        
+        if let offenseID = item.offenseID {
+            print("offense")
+            
+        }
+    }
+    
+    //called by detailViewController, or a challenge verification
+    func startPowerUp(powerUpID: PowerUp, standbyPowerUpIndex: Int) {
+        
+        standbyPowerUpIDs.removeAtIndex(standbyPowerUpIndex)
+        let powerUp = getPowerUp(powerUpID)
+        multiplier *= powerUp.multiplier
+        playerData[localPlayerID]!.powerUps.append(powerUp.name)
+        let powerUpIndex = playerData[localPlayerID]!.powerUps.endIndex.predecessor()
+
+        delegate?.game(powerUpStarted: standbyPowerUpIndex)
+        
+        l.o.g("\n\(gameID) powerUp started: \(powerUp.name)")
+        l.o.g("\(gameID) multiplier: \(powerUp.multiplier)")
+        l.o.g("\(gameID) duration: \(powerUp.duration)")
+        l.o.g("\(gameID) updated multiplier: \(multiplier)\n")
+
+        timer = NSTimer.scheduledTimerWithTimeInterval(
+            powerUp.duration,
+            target: self,
+            selector: "stopPowerUp:",
+            userInfo: TimerInfo(item: Item(powerUpID: powerUpID), index: powerUpIndex),
+            repeats: false
+        )
+        
+        GameManager.sharedInstance.emitUpdatedItem(
+            gameID,
+            itemType: "powerUp",
+            itemIndex: powerUpIndex,
+            itemName: powerUp.name
+        )
+    }
+    
+    func stopPowerUp(timer: NSTimer) {
+        
+        let timerInfo = timer.userInfo as! TimerInfo
+        let powerUp = getPowerUp(timerInfo.item.powerUpID!)
+        
+        playerData[localPlayerID]!.powerUps.removeAtIndex(timerInfo.index)
+        multiplier /= powerUp.multiplier
+        delegate?.game(itemUpdatedForPlayer: localPlayerID)
+        
+        GameManager.sharedInstance.emitUpdatedItem(
+            gameID,
+            itemType: "powerUp",
+            itemIndex: timerInfo.index,
+            itemName: ""
+        )
+    }
+    
+    func startPowerDown(powerDownID: PowerDown) {
+        
+        let powerDown = getPowerDown(powerDownID)
+        playerData[localPlayerID]!.powerDowns.append(powerDown.name)
+        let powerDownIndex = playerData[localPlayerID]!.powerDowns.endIndex.predecessor()
+        multiplier /= powerDown.divider
+        delegate?.game(itemUpdatedForPlayer: localPlayerID)
+        
+        l.o.g("\n\(gameID) powerDown started: \(powerDown.name)")
+        l.o.g("\(gameID) divider: \(powerDown.divider)")
+        l.o.g("\(gameID) duration: \(powerDown.duration)")
+        l.o.g("\(gameID) updated multiplier: \(multiplier)\n")
+        
+        timer = NSTimer.scheduledTimerWithTimeInterval(
+            powerDown.duration,
+            target: self,
+            selector: "stopPowerDown:",
+            userInfo: TimerInfo(item: Item(powerDownID: powerDownID), index: powerDownIndex),
+            repeats: false
+        )
+        
+        GameManager.sharedInstance.emitUpdatedItem(
+            gameID,
+            itemType: "powerDown",
+            itemIndex: powerDownIndex,
+            itemName: powerDown.name
+        )
+    }
+    
+    func stopPowerDown(timer: NSTimer) {
+        
+        let timerInfo = timer.userInfo as! TimerInfo
+        let powerDown = getPowerDown(timerInfo.item.powerDownID!)
+        
+        playerData[localPlayerID]!.powerDowns.removeAtIndex(timerInfo.index)
+        multiplier *= powerDown.divider
+        delegate?.game(itemUpdatedForPlayer: localPlayerID)
+        
+        GameManager.sharedInstance.emitUpdatedItem(
+            gameID,
+            itemType: "powerDown",
+            itemIndex: timerInfo.index,
+            itemName: ""
+        )
+    }
 	
 	func startChallenge(challengeID: Challenge) {
-		let challenge = getChallenge(challengeID)
-		var timerInfo = [String : AnyObject]()
-
-		playerData[localPlayerID]?.challenges.append(challenge.name)
-		delegate?.challengeStarted(challengeID)
-		delegate?.localPlayerUpdated()
 		
-		let challengeIndex = playerData[localPlayerID]?.challenges.endIndex.predecessor()
+        let challenge = getChallenge(challengeID)
+		playerData[localPlayerID]!.challenges.append(challenge.name)
+		delegate?.game(challengeStartedWithID: challengeID)
+        delegate?.game(itemUpdatedForPlayer: localPlayerID)
 		
-		GameManager.sharedInstance.emitUpdatedItem(
-			gameID,
-			itemType: "challenge",
-			itemIndex: challengeIndex!,
-			itemName: challenge.name
-		)
-
-		timerInfo["rawValue"] = challengeID.rawValue
-		timerInfo["previousScore"] = playerData[localPlayerID]!.score!
-		timerInfo["challengeIndex"] = challengeIndex
-
-		timer = NSTimer.scheduledTimerWithTimeInterval(
-			challenge.duration,
-			target: self,
-			selector: "stopChallenge:",
-			userInfo: timerInfo,
-			repeats: false
-		)
-		
-	}
-	
-	func stopChallenge(timer: NSTimer) {
-		
-		let timerInfo = timer.userInfo as! [String: AnyObject]
-		let rawValue = timerInfo["rawValue"] as! String
-		let challengeIndex = timerInfo["challengeIndex"] as! Int
-		
-		//emit challenge is over
-		
-		playerData[localPlayerID]?.challenges.removeAtIndex(challengeIndex)
-		
-		let challengeID = Challenge(rawValue: rawValue)
-		let challenge = getChallenge(challengeID!)
-		let previousScore = timerInfo["previousScore"] as! Int
-		let currentScore = playerData[localPlayerID]!.score!
-		
-		if let item = challenge.verification(previousScore, currentScore) {
-			
-			if item.type == String(PowerDown.self) {
-				let powerDownID = PowerDown(rawValue: item.rawValue)!
-				startPowerDown(powerDownID)
-			}
-			
-			if item.type == String(PowerUp.self) {
-				let powerUpID = PowerUp(rawValue: item.rawValue)!
-				standbyPowerUpIDs.append(powerUpID)
-				delegate?.powerUpOnStandby()
-			}
-		}
-		
-		delegate?.playerDataWasUpdated()
+		let challengeIndex = playerData[localPlayerID]!.challenges.endIndex.predecessor()
 		
 		GameManager.sharedInstance.emitUpdatedItem(
 			gameID,
 			itemType: "challenge",
 			itemIndex: challengeIndex,
-			itemName: ""
+			itemName: challenge.name
 		)
 
-	}
-	
-	func startPowerDown(powerDownID: PowerDown) {
-		let powerDown = getPowerDown(powerDownID)
-		playerData[localPlayerID]!.powerDowns.append(powerDown.name)
-		let powerDownIndex = playerData[localPlayerID]!.powerDowns.endIndex.predecessor()
-		multiplier /= powerDown.divider
-		delegate?.localPlayerUpdated()
-		
-		l.o.g("\n\(gameID) powerDown started: \(powerDown.name)")
-		l.o.g("\(gameID) divider: \(powerDown.divider)")
-		l.o.g("\(gameID) duration: \(powerDown.duration)")
-		l.o.g("\(gameID) updated multiplier: \(multiplier)\n")
-		
-		var timerInfo = [String : AnyObject]()
-		timerInfo["rawValue"] = powerDownID.rawValue
-		timerInfo["powerDownIndex"] = powerDownIndex
-		
 		timer = NSTimer.scheduledTimerWithTimeInterval(
-			powerDown.duration,
+			challenge.duration,
 			target: self,
-			selector: "stopPowerDown:",
-			userInfo: timerInfo,
+			selector: "stopChallenge:",
+            userInfo: TimerInfo(
+                item: Item(challengeID: challengeID),
+                index: challengeIndex,
+                previousScore: playerData[localPlayerID]!.score!),
 			repeats: false
 		)
-		
-		GameManager.sharedInstance.emitUpdatedItem(
-			gameID,
-			itemType: "powerDown",
-			itemIndex: powerDownIndex,
-			itemName: powerDown.name
-		)
-
 	}
 	
-	func stopPowerDown(timer: NSTimer) {
+	func stopChallenge(timer: NSTimer) {
+		
+        let timerInfo = timer.userInfo as! TimerInfo
 
-		let timerInfo = timer.userInfo as! [String: AnyObject]
-		let rawValue = timerInfo["rawValue"] as! String
-		let powerDownIndex = timerInfo["powerDownIndex"] as! Int
+		//emit challenge is over
 		
-		let powerDownID = PowerDown(rawValue: rawValue)!
-		let powerDown = getPowerDown(powerDownID)
+		playerData[localPlayerID]!.challenges.removeAtIndex(timerInfo.index)
+		let challenge = getChallenge(timerInfo.item.challengeID!)
+		let previousScore = timerInfo.previousScore
+		let currentScore = playerData[localPlayerID]!.score!
 		
-		playerData[localPlayerID]!.powerDowns.removeAtIndex(powerDownIndex)
-		multiplier *= powerDown.divider
-		delegate?.localPlayerUpdated()
+		if let challengeItem = challenge.verification(previousScore: previousScore!,
+        currentScore: currentScore) {
+			
+            evaluateItemForID(challengeItem)
+		}
+        
+        delegate?.game(itemUpdatedForPlayer: localPlayerID)
 		
 		GameManager.sharedInstance.emitUpdatedItem(
 			gameID,
-			itemType: "powerDown",
-			itemIndex: powerDownIndex,
+			itemType: "challenge",
+			itemIndex: timerInfo.index,
 			itemName: ""
 		)
 	}
-	
-  func startPowerUp(powerUpID: PowerUp, standbyPowerUpIndex: Int) {
-		standbyPowerUpIDs.removeAtIndex(standbyPowerUpIndex)
 
-		let powerUp = getPowerUp(powerUpID)
-		
-		multiplier *= powerUp.multiplier
-		playerData[localPlayerID]!.powerUps.append(powerUp.name)
+    func startChase(chaseID: Chase) {
+        
+        let chase = getChase(chaseID)
+        playerData[localPlayerID]!.chases.append(chase.name)
+        delegate?.game(chaseStartedWithID: chaseID)
+        delegate?.game(itemUpdatedForPlayer: localPlayerID)
+        
+        let chaseIndex = playerData[localPlayerID]!.chases.endIndex.predecessor()
 
-		delegate?.powerUpStarted(standbyPowerUpIndex)
-
-		let powerUpIndex = playerData[localPlayerID]!.powerUps.endIndex.predecessor()
-		
-		l.o.g("\n\(gameID) powerUp started: \(powerUp.name)")
-		l.o.g("\(gameID) multiplier: \(powerUp.multiplier)")
-		l.o.g("\(gameID) duration: \(powerUp.duration)")
-		l.o.g("\(gameID) updated multiplier: \(multiplier)\n")
-		
-		var timerInfo = [String : AnyObject]()
-    timerInfo["rawValue"] = powerUpID.rawValue
-		timerInfo["powerUpIndex"] = powerUpIndex
-
-    timer = NSTimer.scheduledTimerWithTimeInterval(
-      powerUp.duration,
-      target: self,
-      selector: "stopPowerUp:",
-      userInfo: timerInfo,
-      repeats: false
-    )
-		
-		GameManager.sharedInstance.emitUpdatedItem(
-			gameID,
-			itemType: "powerUp",
-			itemIndex: powerUpIndex,
-			itemName: powerUp.name
-		)
-	}
-  
-  func stopPowerUp(timer: NSTimer) {
-		let timerInfo = timer.userInfo as! [String: AnyObject]
-    let rawValue = timerInfo["rawValue"] as! String
-		let powerUpIndex = timerInfo["powerUpIndex"] as! Int
-		
-    let powerUpID = PowerUp(rawValue: rawValue)!
-    let powerUp = getPowerUp(powerUpID)
+        GameManager.sharedInstance.emitUpdatedItem(
+            gameID,
+            itemType: "chase",
+            itemIndex: chaseIndex,
+            itemName: chase.name
+        )
+        
+        timer = NSTimer.scheduledTimerWithTimeInterval(
+            chase.duration,
+            target: self,
+            selector: "stopChase:",
+            userInfo: TimerInfo(
+                item: Item(chaseID: chaseID),
+                index: chaseIndex,
+                previousScore: playerData[localPlayerID]!.score!),
+            repeats: false
+        )
+    }
     
-    playerData[localPlayerID]!.powerUps.removeAtIndex(powerUpIndex)
-		multiplier /= powerUp.multiplier
-		
-		delegate?.localPlayerUpdated()
-		
-		GameManager.sharedInstance.emitUpdatedItem(
-			gameID,
-			itemType: "powerUp",
-			itemIndex: powerUpIndex,
-			itemName: ""
-		)
-  }
-
+    func stopChase(timer: NSTimer) {
+        
+        let timerInfo = timer.userInfo as! TimerInfo
+        
+        playerData[localPlayerID]!.chases.removeAtIndex(timerInfo.index)
+        let chase = getChase(timerInfo.item.chaseID!)
+        let previousScore = timerInfo.previousScore
+        let currentScore = playerData[localPlayerID]!.score!
+        
+        if let chaseItem = chase.verification(previousScore: previousScore!,
+        currentScore: currentScore) {
+                evaluateItemForID(chaseItem)
+        }
+    }
+    
+    func loadOffense(offenseID: Offense) {
+        offenses.append(offenseID)
+        
+    }
+    
+    func fireOffense(index: Int) {
+        
+    }
+    
 	func updateItemForOtherPlayer(
-		playerID: String,
-		itemType: String,
-		itemIndex: Int,
-		itemName: String
+    playerID: String,
+    itemType: String,
+    itemIndex: Int,
+    itemName: String
 	) {
 		
 		switch itemType {
@@ -398,7 +437,7 @@ class Game: NSObject {
 				print("updateItemForOtherPlayer had an error")
 		}
 
-    delegate?.playerDataWasUpdated()
+        delegate?.game(itemUpdatedForPlayer: playerID)
 	}
 	
 	func updateRanking(playerID: String) {
@@ -414,7 +453,7 @@ class Game: NSObject {
 		)
 	}
 	
-	func updateRankedPlayerIDs() {
+    func updateRankedPlayerIDs() {
 		let playersToRank = playerData as NSDictionary
 		let rankedPlayersArray = playersToRank.keysSortedByValueUsingComparator{
 			(playerA, playerB) in
@@ -425,10 +464,11 @@ class Game: NSObject {
 			return bScore.compare(aScore)
 		}
 		rankedPlayerIDs = rankedPlayersArray as! [String]
+        //insert weapon here
 		localRank = rankedPlayerIDs.indexOf(localPlayerID)! + 1
 	}
 	
-  deinit {
+    deinit {
     l.o.g("\(gameID) deinit Movement observer")
     Movement.sharedInstance.removeObserver(
       self,
@@ -438,5 +478,5 @@ class Game: NSObject {
 			self,
 			forKeyPath: "movementType",
 			context: nil)
-  }
+    }
 }

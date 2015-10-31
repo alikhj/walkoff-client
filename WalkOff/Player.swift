@@ -11,29 +11,31 @@ import GameKit
 
 class Player: NSObject {
   
-  var playerID: String?
-  var playerAlias: String?
-  var score: Int?
+    var playerID: String?
+    var playerAlias: String?
+    var score: Int?
 	
-	var activity = ""
-	var powerUps = [String]()
-	var powerDowns = [String]()
-	var challenges = [String]()
+    var activity = ""
+    
+    var powerUps = [String]()
+    var powerDowns = [String]()
+    var challenges = [String]()
+    var chases = [String]()
+
+    var connected: Bool?
+    var games: [String] = []
+
+    init(score: Int) {
+        self.score = score
+        powerUps.reserveCapacity(10)
+        powerDowns.reserveCapacity(10)
+        challenges.reserveCapacity(10)
+        chases.reserveCapacity(10)
+    }
   
-  var connected: Bool?
-	var games: [String] = []
-	
-	init(score: Int) {
-    self.score = score
-		powerUps.reserveCapacity(10)
-		powerDowns.reserveCapacity(10)
-		
-  }
-  
-  init(playerID: String, playerAlias: String) {
-    self.playerID = playerID
-    self.playerAlias = playerAlias
-    connected = true
-  }
-  
+    init(playerID: String, playerAlias: String) {
+        self.playerID = playerID
+        self.playerAlias = playerAlias
+        connected = true
+    }
 }

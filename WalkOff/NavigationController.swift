@@ -26,7 +26,8 @@ class NavigationController: UINavigationController {
 				topViewController!.presentViewController(
 					authenticateViewController,
 					animated: true,
-					completion: nil)
+					completion: nil
+                )
 		}
 	}
 	

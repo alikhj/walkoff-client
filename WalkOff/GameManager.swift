@@ -23,8 +23,8 @@ class GameManager: NSObject, GameKitHelperDelegate {
 		return GameManagerSingleton
 	}
 	
-	//let socket = SocketIOClient(socketURL: "http://162.243.138.39")
-  let socket = SocketIOClient(socketURL: "192.168.0.4:2000")
+    //let socket = SocketIOClient(socketURL: "http://162.243.138.39")
+    let socket = SocketIOClient(socketURL: "192.168.0.9:2000")
 
 	let localPlayer = GKLocalPlayer.localPlayer()
 	var gameKitHelper = GameKitHelper()
@@ -60,17 +60,68 @@ class GameManager: NSObject, GameKitHelperDelegate {
 		l.o.g("\nLocal player ID is \(localPlayer.playerID!)")
 		l.o.g("\nJoining game with playerIDs array: \(playerIDs)")
 		
-		socket.emit("new-game", [
-		 "playerIDs": playerIDs,
-		 "playerID": localPlayer.playerID!,
-		 "alias": localPlayer.alias!,
-		 "playerCount": playerIDsCount,
-		 "clientGamesCount": gamesCount
-		])
+        socket.emit("new-game", [
+            "playerIDs": playerIDs,
+            "playerID": localPlayer.playerID!,
+            "alias": localPlayer.alias!,
+            "playerCount": playerIDsCount,
+            "clientGamesCount": gamesCount
+        ])
 	}
 	
-	func emitUpdatedScore(gameID: String, updatedScore: Int) {
-		socket.emit("update-score", [
+    func createGame(gameData: NSDictionary) {
+        let newGame = Game(gameData: gameData)
+        games[newGame.gameID] = newGame
+        delegate?.gameManager(newGameCreated: newGame.gameID)
+        allGKPlayers.removeAll(keepCapacity: false)
+        if Movement.sharedInstance.isCountingSteps == false {
+            Movement.sharedInstance.startCountingSteps()
+            Movement.sharedInstance.startReadingMovementType()
+        }
+    }
+    
+    func leaveGame(gameID: String, playerID: String) {
+        
+        socket.emit("leave-game", [
+            "gameID": gameID,
+            "playerID": playerID
+            ])
+        
+        
+        for player in games[gameID]!.rankedPlayerIDs {
+            
+            if (player != localPlayer.playerID) {
+                if (players[player]!.games.count > 1) {
+                    let index = players[player]!.games.indexOf(gameID)
+                    players[player]!.games.removeAtIndex(index!)
+                    
+                } else {
+                    players.removeValueForKey(player)
+                }
+            }
+        }
+        
+        games.removeValueForKey(gameID)
+        
+        //		do this after game timer has ended:
+        //		let index = find(players[playerID]!.games, gameID)
+        //		players[playerID]!.games.removeAtIndex(index!)
+    }
+    
+    func createPlayer(playerData: NSArray) {
+        for player in playerData {
+            let playerID = player.valueForKey("id") as! String
+            let playerAlias = player.valueForKey("alias") as! String
+            //only add player if player doesn't exist in dictionary
+            if((players[playerID]) == nil) {
+                players[playerID] = Player(playerID: playerID, playerAlias: playerAlias)
+            }
+        }
+    }
+
+    func emitUpdatedScore(gameID: String, updatedScore: Int) {
+		
+        socket.emit("update-score", [
 			"gameID": gameID,
 			"playerID": localPlayer.playerID!,
 			"newScore"  : updatedScore
@@ -81,10 +132,10 @@ class GameManager: NSObject, GameKitHelperDelegate {
 	}
 	
 	func emitUpdatedItem(
-		gameID: String,
-		itemType: String,
-		itemIndex: Int,
-		itemName: String
+    gameID: String,
+    itemType: String,
+    itemIndex: Int,
+    itemName: String
 	) {
 		
 		print("emitting type: \(itemType)")
@@ -97,57 +148,9 @@ class GameManager: NSObject, GameKitHelperDelegate {
 		])
 	}
   
-  func leaveGame(gameID: String, playerID: String) {
-    socket.emit("leave-game", [
-      "gameID": gameID,
-      "playerID": playerID
-    ])
-		
-		
-		for player in games[gameID]!.rankedPlayerIDs {
-			
-			if (player != localPlayer.playerID) {
-				if (players[player]!.games.count > 1) {
-					let index = players[player]!.games.indexOf(gameID)
-					players[player]!.games.removeAtIndex(index!)
-				
-				} else {
-					players.removeValueForKey(player)
-				}
-			}
-		}
-		
-		games.removeValueForKey(gameID)
-		
-//		do this after game timer has ended:
-//		let index = find(players[playerID]!.games, gameID)
-//		players[playerID]!.games.removeAtIndex(index!)
-  }
-	
-  func createGame(gameData: NSDictionary) {
-    let newGame = Game(gameData: gameData)
-    games[newGame.gameID] = newGame
-    delegate?.gameManager(newGameCreated: newGame.gameID)
-    allGKPlayers.removeAll(keepCapacity: false)
-    if Movement.sharedInstance.isCountingSteps == false {
-      Movement.sharedInstance.startCountingSteps()
-			Movement.sharedInstance.startReadingMovementType()
-    }
-  }
-  
-  func createPlayer(playerData: NSArray) {
-    for player in playerData {
-      let playerID = player.valueForKey("id") as! String
-      let playerAlias = player.valueForKey("alias") as! String
-      //only add player if player doesn't exist in dictionary
-      if((players[playerID]) == nil) {
-        players[playerID] = Player(playerID: playerID, playerAlias: playerAlias)
-      }
-    }
-  }
-  
 	func handlers() {
-		socket.on("connect") { data, ack in
+		
+        socket.on("connect") { data, ack in
 			l.o.g("Connected, with sid: \(self.socket.sid!)")
 			
 			let gamesCount = self.games.count
@@ -155,7 +158,7 @@ class GameManager: NSObject, GameKitHelperDelegate {
 			self.socket.emit("player-connected", [
 				"playerID": self.localPlayer.playerID!,
 				"playerAlias": self.localPlayer.alias!,
-        "clientGamesCount": gamesCount
+                "clientGamesCount": gamesCount
 			])
 		}
     
@@ -165,59 +168,60 @@ class GameManager: NSObject, GameKitHelperDelegate {
 			self.socket.connect()
 		}
 		
-    socket.on("game-started") { data, ack in
-      l.o.g("game-started received by socket")
-      let received = data[0] as? NSDictionary
+        socket.on("game-started") { data, ack in
+            l.o.g("game-started received by socket")
+            let received = data[0] as? NSDictionary
 			let gameData = received?.objectForKey("gameData") as! NSDictionary
-      let playerData = received?.objectForKey("playerData") as! NSArray
+            let playerData = received?.objectForKey("playerData") as! NSArray
 			self.createPlayer(playerData)
-      self.createGame(gameData)
-    }
+            self.createGame(gameData)
+        }
     
-    socket.on("all-data") { data, ack in
-      l.o.g("all-data received by socket... ")
-			let received = data[0] as? NSDictionary
+        socket.on("all-data") { data, ack in
+            l.o.g("all-data received by socket... ")
+            let received = data[0] as? NSDictionary
 			let games = received?.objectForKey("gamesData") as! NSArray
 			let players = received?.objectForKey("playerData") as! NSArray
 
-      //only add games if they don't exist already
-      if (self.games.count == 0) {
+            //only add games if they don't exist already
+            if (self.games.count == 0) {
 				self.createPlayer(players)
 
 				for game in games {
-          let gameData = game as! NSDictionary
-          self.createGame(gameData)
+                    let gameData = game as! NSDictionary
+                    self.createGame(gameData)
+                }
+            }
         }
-      }
-    }
     
-    socket.on("player-disconnected") { data, ack in
-      let received = data[0] as? NSDictionary
-      let playerID = received?.objectForKey("playerID") as! String
-      let gameID = received?.objectForKey("gameID") as! String
-      self.players[playerID]?.connected = false
-      l.o.g("\n\(playerID) was disconnected from \(gameID)")
-    }
+        socket.on("player-disconnected") { data, ack in
+          let received = data[0] as? NSDictionary
+          let playerID = received?.objectForKey("playerID") as! String
+          let gameID = received?.objectForKey("gameID") as! String
+          self.players[playerID]?.connected = false
+          l.o.g("\n\(playerID) was disconnected from \(gameID)")
+        }
     
-    socket.on("player-reconnected") { data, ack in
-      let received = data[0] as? NSDictionary
-      let playerID = received?.objectForKey("playerID") as! String
-      let gameID = received?.objectForKey("gameID") as! String
-      self.players[playerID]?.connected = true
-      l.o.g("\n\(playerID) has reconnected to \(gameID)")
-    }
+        socket.on("player-reconnected") { data, ack in
+          let received = data[0] as? NSDictionary
+          let playerID = received?.objectForKey("playerID") as! String
+          let gameID = received?.objectForKey("gameID") as! String
+          self.players[playerID]?.connected = true
+          l.o.g("\n\(playerID) has reconnected to \(gameID)")
+        }
     
-    socket.on("score-updated") { data, ack in
-        print("score-updated received")
-        let received = data[0] as? NSDictionary
-        let gameID = received?.objectForKey("gameID") as! String
-        let playerID = received?.objectForKey("playerID") as! String
-        let newScore = received?.objectForKey("newScore") as! Int
-        l.o.g("\nscore-update\ngameID: \(gameID)\nplayerID: \(playerID)\nnewScore: \(newScore)")
-        let game = self.games[gameID]
-        game?.updateScoreForOtherPlayer(playerID, newScore: newScore)
-				self.delegate?.gameManager(scoreUpdatedForGame: gameID)
-    }
+        socket.on("score-updated") { data, ack in
+            print("score-updated received")
+            let received = data[0] as? NSDictionary
+            let gameID = received?.objectForKey("gameID") as! String
+            let playerID = received?.objectForKey("playerID") as! String
+            let newScore = received?.objectForKey("newScore") as! Int
+            l.o.g("\nscore-update\ngameID: \(gameID)\nplayerID: \(playerID)\nnewScore: \(newScore)")
+            let game = self.games[gameID]
+            
+            game?.updateScoreForOtherPlayer(playerID, newScore: newScore)
+            self.delegate?.gameManager(scoreUpdatedForGame: gameID)
+        }
 		
 		socket.on("item-updated") { data, ack in
 			print("item-updated received")
@@ -229,17 +233,15 @@ class GameManager: NSObject, GameKitHelperDelegate {
 			let itemName = received?.objectForKey("itemName") as! String
 			
 			let game = self.games[gameID]
-			
-			print(itemType)
-			
+						
 			game?.updateItemForOtherPlayer(
 				playerID,
 				itemType: itemType,
 				itemIndex: itemIndex,
 				itemName: itemName
 			)
-		}
-	}
+        }
+    }
 	
 	func debugHandlers() {
 		self.socket.onAny {
