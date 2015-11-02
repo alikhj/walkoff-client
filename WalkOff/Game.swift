@@ -196,6 +196,7 @@ class Game: NSObject {
         let powerUpIndex = playerData[localPlayerID]!.powerUps.endIndex.predecessor()
 
         delegate?.game(powerUpStarted: standbyPowerUpIndex)
+        delegate?.game(itemUpdatedForPlayer: localPlayerID)
         
         l.o.g("\n\(gameID) powerUp started: \(powerUp.name)")
         l.o.g("\(gameID) multiplier: \(powerUp.multiplier)")
@@ -340,6 +341,7 @@ class Game: NSObject {
         
         let chase = getChase(chaseID)
         playerData[localPlayerID]!.chases.append(chase.name)
+        
         delegate?.game(chaseStartedWithID: chaseID)
         delegate?.game(itemUpdatedForPlayer: localPlayerID)
         
@@ -478,5 +480,10 @@ class Game: NSObject {
 			self,
 			forKeyPath: "movementType",
 			context: nil)
+    }
+    
+    func addTestSteps() {
+        updateScoreForLocalPlayer(5)
+
     }
 }

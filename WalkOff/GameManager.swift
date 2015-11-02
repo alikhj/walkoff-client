@@ -22,9 +22,20 @@ class GameManager: NSObject, GameKitHelperDelegate {
 	class var sharedInstance: GameManager {
 		return GameManagerSingleton
 	}
-	
+    
+    #if arch(i386) || arch(x86_64)
+    let socket = SocketIOClient(socketURL: "localhost:2000")
+
+    #else
+    let socket = SocketIOClient(socketURL: "192.168.0.13:2000")
+
+    #endif
+    
+    
+    
+
     //let socket = SocketIOClient(socketURL: "http://162.243.138.39")
-    let socket = SocketIOClient(socketURL: "192.168.0.9:2000")
+
 
 	let localPlayer = GKLocalPlayer.localPlayer()
 	var gameKitHelper = GameKitHelper()

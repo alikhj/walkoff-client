@@ -27,7 +27,7 @@ class Milestones: NSObject {
     
         milestones = [
             (15, "getting started", Item(powerUpID: PowerUp.rocket)),
-            (30, "getting started", Item(powerDownID: PowerDown.dizzy)),
+            (30, "getting started", Item(powerDownID: PowerDown.hurt)),
             (45, "getting started", Item(challengeID: Challenge.poo)),
             (60, "bees challenge", Item(chaseID: Chase.bees)),
             (70, "offense", Item(offenseID: Offense.bees))

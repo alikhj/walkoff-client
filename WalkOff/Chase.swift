@@ -35,7 +35,7 @@ verification: ((previousScore: Int, currentScore: Int) -> Item?)
         description = "🏃🐝⏱🔟"
         numberOfSteps = 20
         duration = 10.0
-        item = Item(powerDownID: PowerDown.dizzy)
+        item = Item(powerDownID: PowerDown.hurt)
     }
     
     func verification(previousScore: Int, currentScore: Int) -> Item? {

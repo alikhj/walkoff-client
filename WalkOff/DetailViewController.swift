@@ -23,7 +23,7 @@ GameDelegate {
   
     var timer = NSTimer()
   
-    var menuItems = ["Leave game"]
+    var menuItems = ["Leave game", "TEST – Add 5 steps"]
   
     let standbyPowerUps = 0
     let players = 1
@@ -62,6 +62,7 @@ GameDelegate {
     func game(itemUpdatedForPlayer playerID: String) {
         let indexPath = NSIndexPath(forRow: game!.rankedPlayerIDs.indexOf(playerID)!, inSection: players)
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+        tableView.reloadData()
     }
   
     func gamePowerUpOnStandby() {
@@ -103,38 +104,28 @@ GameDelegate {
         var cell = UITableViewCell()
     
         if indexPath.section == standbyPowerUps {
-            cell = tableView.dequeueReusableCellWithIdentifier("StandbyPowerUpCell") as UITableViewCell!
-            configureTextForStandbyPowerUpCell(cell, indexPath: indexPath)
+            cell = tableView.dequeueReusableCellWithIdentifier("StandbyPowerUpCell") as! StandbyPowerUpCell
+            configureTextForStandbyPowerUpCell(cell as! StandbyPowerUpCell, indexPath: indexPath)
         }
         
         if indexPath.section == players {
-            cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as UITableViewCell!
+            cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as! PlayerCell
             configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPath)
         }
     
         if indexPath.section == menu {
-            cell = tableView.dequeueReusableCellWithIdentifier("MenuCell") as UITableViewCell!
-            configureTextForMenuCell(cell, indexPath: indexPath)
+            cell = tableView.dequeueReusableCellWithIdentifier("MenuCell") as! MenuCell
+            configureTextForMenuCell(cell as! MenuCell, indexPath: indexPath)
         }
 
         return cell
     }
 	
-    func configureTextForStandbyPowerUpCell(cell: UITableViewCell, indexPath: NSIndexPath) {
+    func configureTextForStandbyPowerUpCell(cell: StandbyPowerUpCell, indexPath: NSIndexPath) {
 		
-        let descriptionLabel = cell.viewWithTag(1002) as! UILabel
-		let powerUpLabel = cell.viewWithTag(1003) as! UILabel
-		
-		if game.standbyPowerUpIDs.count > 0 {
-			let powerUp = getPowerUp(game.standbyPowerUpIDs[indexPath.row])
-			descriptionLabel.text = powerUp.description
-			powerUpLabel.text = powerUp.name
-			
-		} else {
-			descriptionLabel.textColor = UIColor.lightGrayColor()
-			descriptionLabel.text = "Keep moving!"
-			powerUpLabel.text = "⌛️"
-		}
+        let powerUp = getPowerUp(game.standbyPowerUpIDs[indexPath.row])
+        cell.powerUpDescriptionLabel.text = powerUp.description
+        cell.powerUpNameLabel.text = powerUp.name
 	}
 	
     func configureTextForPlayerCell(cell: PlayerCell, indexPath: NSIndexPath) {
@@ -143,30 +134,36 @@ GameDelegate {
         var playerAlias = GameManager.sharedInstance.players[playerID]?.playerAlias
 		
 		let activity = game!.playerData[playerID]!.activity
-		let powerUpsArray = game!.playerData[playerID]!.powerUps
-		let powerDownsArray = game!.playerData[playerID]!.powerDowns
-		let challengesArray = game!.playerData[playerID]!.challenges
 		
-		let powerUps = powerUpsArray.joinWithSeparator("")
-		let powerDowns = powerDownsArray.joinWithSeparator("")
-		let challenges = challengesArray.joinWithSeparator("")
+		let powerUps = game!.playerData[playerID]!.powerUps.joinWithSeparator("")
+		let powerDowns = game!.playerData[playerID]!.powerDowns.joinWithSeparator("")
+		let challenges = game!.playerData[playerID]!.challenges.joinWithSeparator("")
+        let chases = game!.playerData[playerID]!.chases.joinWithSeparator("")
 		
-        if indexPath == localPlayerIndexPath {
+        if indexPath.row == game!.rankedPlayerIDs.indexOf(game!.localPlayerID)! {
             playerAlias = "Me"
             cell.playerLabel.font = UIFont.boldSystemFontOfSize(17.0)
+        } else {
+            cell.playerLabel.font = UIFont.systemFontOfSize(17.0)
         }
 
 		//if challenge is A, place after activity
 		//if challenge is B, place before activity
 		
-		cell.playerLabel.text = "\(activity)\(challenges)\(powerDowns)\(playerAlias!)"
+		cell.playerLabel.text = "\(challenges)\(activity)\(powerDowns)\(chases)\(playerAlias!)"
 		
         cell.scoreLabel.text =
         "\(powerUps) \(game!.playerData[playerID]!.score!)"
     }
   
-    func configureTextForMenuCell(cell: UITableViewCell, indexPath: NSIndexPath) {
-    
+    func configureTextForMenuCell(cell: MenuCell, indexPath: NSIndexPath) {
+        if indexPath.row == 0 {
+            cell.menuItemLabel.text = "Leave Game"
+        }
+        
+        if indexPath.row == 1 {
+            cell.menuItemLabel.text = "TEST – add 5 steps"
+        }
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -182,6 +179,10 @@ GameDelegate {
             if (indexPath.row == 0) {
                 GameManager.sharedInstance.leaveGame(gameID!, playerID: game!.localPlayerID)
                 delegate?.detailViewControllerDidLeaveGame(gameID!)
+            }
+            
+            if (indexPath.row == 1) {
+                game!.addTestSteps()
             }
         }
     }

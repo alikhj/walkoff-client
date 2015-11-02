@@ -10,7 +10,7 @@ import Foundation
 
 enum PowerDown: String {
     
-    case dizzy = "dizzy"
+    case hurt = "hurt"
 }
 
 func getPowerDown(powerDownID: PowerDown) -> (
@@ -29,9 +29,9 @@ duration: Double
     
     switch powerDownID {
         
-    case .dizzy:
-        powerDown.name = "😵"
-        powerDown.description = "😵 = 💤🚶💤"
+    case .hurt:
+        powerDown.name = "🤕"
+        powerDown.description = "🤕  = 💤🚶💤"
         powerDown.divider = 2.0
         powerDown.duration = 10.0
     }

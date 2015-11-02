@@ -34,6 +34,7 @@ class Movement: NSObject, CLLocationManagerDelegate {
 		locationManager.requestAlwaysAuthorization()
 		locationManager.pausesLocationUpdatesAutomatically = false //maybe?
 		locationManager.startUpdatingLocation()
+        locationManager.allowsBackgroundLocationUpdates = true
 	}
 	
 	func startCountingSteps() {
