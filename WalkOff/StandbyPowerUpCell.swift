@@ -11,7 +11,6 @@ import UIKit
 
 class StandbyPowerUpCell: UITableViewCell {
     
-    
     @IBOutlet weak var powerUpDescriptionLabel: UILabel!
     @IBOutlet weak var powerUpNameLabel: UILabel!
     

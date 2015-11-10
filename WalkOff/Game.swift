@@ -269,8 +269,10 @@ class Game: NSObject {
         
         let timerInfo = timer.userInfo as! TimerInfo
         let powerDown = getPowerDown(timerInfo.item.powerDownID!)
+        print("INDEX \(timerInfo.index) + \(playerData[localPlayerID]!.powerDowns)")
+        playerData[localPlayerID]!.powerDowns[timerInfo.index] = ""
         
-        playerData[localPlayerID]!.powerDowns.removeAtIndex(timerInfo.index)
+        //playerData[localPlayerID]!.powerDowns.removeAtIndex(timerInfo.index)
         multiplier *= powerDown.divider
         delegate?.game(itemUpdatedForPlayer: localPlayerID)
         
@@ -379,6 +381,13 @@ class Game: NSObject {
         currentScore: currentScore) {
                 evaluateItemForID(chaseItem)
         }
+        
+        GameManager.sharedInstance.emitUpdatedItem(
+            gameID,
+            itemType: "chase",
+            itemIndex: timerInfo.index,
+            itemName: ""
+        )
     }
     
     func loadOffense(offenseID: Offense) {
@@ -416,12 +425,12 @@ class Game: NSObject {
 			case "powerDown":
 				
 				if itemName == "" {
-					playerData[playerID]!.powerDowns
-						.removeAtIndex(itemIndex)
+					playerData[playerID]!.powerDowns[itemIndex] = ""
 					
 				} else {
-					playerData[playerID]!.powerDowns
-						.insert(itemName, atIndex: itemIndex)
+                    print("IAA \(itemIndex) + \(playerData[localPlayerID]!.powerDowns)")
+					//playerData[playerID]!.powerDowns[itemIndex] = itemName
+                    playerData[playerID]!.powerDowns.insert(itemName, atIndex: itemIndex)
 				}
 			
 			case "challenge":
@@ -434,6 +443,17 @@ class Game: NSObject {
 					playerData[playerID]!.challenges
 						.insert(itemName, atIndex: itemIndex)
 				}
+            
+            case "chase":
+                
+                if itemName == "" {
+                    playerData[playerID]!.chases
+                        .removeAtIndex(itemIndex)
+                    
+                } else {
+                    playerData[playerID]!.chases
+                        .insert(itemName, atIndex: itemIndex)
+                }
 			
 			default:
 				print("updateItemForOtherPlayer had an error")

@@ -27,13 +27,10 @@ class GameManager: NSObject, GameKitHelperDelegate {
     let socket = SocketIOClient(socketURL: "localhost:2000")
 
     #else
-    let socket = SocketIOClient(socketURL: "192.168.0.13:2000")
+    let socket = SocketIOClient(socketURL: "192.168.0.4:2000")
 
     #endif
     
-    
-    
-
     //let socket = SocketIOClient(socketURL: "http://162.243.138.39")
 
 
