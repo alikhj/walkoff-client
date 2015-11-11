@@ -18,10 +18,17 @@ class Player: NSObject {
     var activity = ""
     
     var powerUps = [String]()
+    var powerUpUUIDs = [String]()
+    
     var powerDowns = [String]()
+    var powerDownUUIDs = [String]()
+    
     var challenges = [String]()
+    var challengeUUIDs  = [String]()
+    
     var chases = [String]()
-
+    var chaseUUIDs = [String]()
+    
     var connected: Bool?
     var games: [String] = []
 

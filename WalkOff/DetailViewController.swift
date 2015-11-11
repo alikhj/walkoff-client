@@ -150,7 +150,7 @@ GameDelegate {
 		//if challenge is A, place after activity
 		//if challenge is B, place before activity
 		
-		cell.playerLabel.text = "\(challenges)\(activity)\(powerDowns)\(chases)\(playerAlias!)"
+		cell.playerLabel.text = "\(challenges)\(activity)\(powerDowns)\(chases) \(playerAlias!)"
 		
         cell.scoreLabel.text =
         "\(powerUps) \(game!.playerData[playerID]!.score!)"

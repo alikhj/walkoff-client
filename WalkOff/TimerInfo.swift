@@ -11,18 +11,18 @@ import Foundation
 class TimerInfo {
     
     var item: Item
-    var index: Int
+    var UUID: String
     
     var previousScore: Int?
     
-    init(item: Item, index: Int) {
+    init(item: Item, UUID: String) {
         self.item = item
-        self.index = index
+        self.UUID = UUID
     }
     
-    init(item: Item, index: Int, previousScore: Int) {
+    init(item: Item, UUID: String, previousScore: Int) {
         self.item = item
-        self.index = index
+        self.UUID = UUID
         self.previousScore = previousScore
     }
     

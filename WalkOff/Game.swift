@@ -192,7 +192,11 @@ class Game: NSObject {
         standbyPowerUpIDs.removeAtIndex(standbyPowerUpIndex)
         let powerUp = getPowerUp(powerUpID)
         multiplier *= powerUp.multiplier
+        
         playerData[localPlayerID]!.powerUps.append(powerUp.name)
+        let powerUpUUID = NSUUID().UUIDString
+        playerData[localPlayerID]!.powerUpUUIDs.append(powerUpUUID)
+
         let powerUpIndex = playerData[localPlayerID]!.powerUps.endIndex.predecessor()
 
         delegate?.game(powerUpStarted: standbyPowerUpIndex)
@@ -207,7 +211,7 @@ class Game: NSObject {
             powerUp.duration,
             target: self,
             selector: "stopPowerUp:",
-            userInfo: TimerInfo(item: Item(powerUpID: powerUpID), index: powerUpIndex),
+            userInfo: TimerInfo(item: Item(powerUpID: powerUpID), UUID: powerUpUUID),
             repeats: false
         )
         
@@ -224,14 +228,17 @@ class Game: NSObject {
         let timerInfo = timer.userInfo as! TimerInfo
         let powerUp = getPowerUp(timerInfo.item.powerUpID!)
         
-        playerData[localPlayerID]!.powerUps.removeAtIndex(timerInfo.index)
+        let index = playerData[localPlayerID]!.powerUpUUIDs.indexOf(timerInfo.UUID)!
+        playerData[localPlayerID]!.powerUps.removeAtIndex(index)
+        playerData[localPlayerID]!.powerUpUUIDs.removeAtIndex(index)
+        
         multiplier /= powerUp.multiplier
         delegate?.game(itemUpdatedForPlayer: localPlayerID)
         
         GameManager.sharedInstance.emitUpdatedItem(
             gameID,
             itemType: "powerUp",
-            itemIndex: timerInfo.index,
+            itemIndex: index,
             itemName: ""
         )
     }
@@ -240,6 +247,9 @@ class Game: NSObject {
         
         let powerDown = getPowerDown(powerDownID)
         playerData[localPlayerID]!.powerDowns.append(powerDown.name)
+        let powerDownUUID = NSUUID().UUIDString
+        playerData[localPlayerID]!.powerDownUUIDs.append(powerDownUUID)
+        
         let powerDownIndex = playerData[localPlayerID]!.powerDowns.endIndex.predecessor()
         multiplier /= powerDown.divider
         delegate?.game(itemUpdatedForPlayer: localPlayerID)
@@ -253,7 +263,7 @@ class Game: NSObject {
             powerDown.duration,
             target: self,
             selector: "stopPowerDown:",
-            userInfo: TimerInfo(item: Item(powerDownID: powerDownID), index: powerDownIndex),
+            userInfo: TimerInfo(item: Item(powerDownID: powerDownID), UUID: powerDownUUID),
             repeats: false
         )
         
@@ -269,17 +279,18 @@ class Game: NSObject {
         
         let timerInfo = timer.userInfo as! TimerInfo
         let powerDown = getPowerDown(timerInfo.item.powerDownID!)
-        print("INDEX \(timerInfo.index) + \(playerData[localPlayerID]!.powerDowns)")
-        playerData[localPlayerID]!.powerDowns[timerInfo.index] = ""
         
-        //playerData[localPlayerID]!.powerDowns.removeAtIndex(timerInfo.index)
+        let index = playerData[localPlayerID]!.powerDownUUIDs.indexOf(timerInfo.UUID)!
+        playerData[localPlayerID]!.powerDowns.removeAtIndex(index)
+        playerData[localPlayerID]!.powerDownUUIDs.removeAtIndex(index)
+        
         multiplier *= powerDown.divider
         delegate?.game(itemUpdatedForPlayer: localPlayerID)
         
         GameManager.sharedInstance.emitUpdatedItem(
             gameID,
             itemType: "powerDown",
-            itemIndex: timerInfo.index,
+            itemIndex: index,
             itemName: ""
         )
     }
@@ -287,7 +298,10 @@ class Game: NSObject {
 	func startChallenge(challengeID: Challenge) {
 		
         let challenge = getChallenge(challengeID)
-		playerData[localPlayerID]!.challenges.append(challenge.name)
+        playerData[localPlayerID]!.challenges.append(challenge.name)
+        let challengesUUID = NSUUID().UUIDString
+        playerData[localPlayerID]!.challengeUUIDs.append(challengesUUID)
+        
 		delegate?.game(challengeStartedWithID: challengeID)
         delegate?.game(itemUpdatedForPlayer: localPlayerID)
 		
@@ -306,7 +320,7 @@ class Game: NSObject {
 			selector: "stopChallenge:",
             userInfo: TimerInfo(
                 item: Item(challengeID: challengeID),
-                index: challengeIndex,
+                UUID: challengesUUID,
                 previousScore: playerData[localPlayerID]!.score!),
 			repeats: false
 		)
@@ -315,10 +329,11 @@ class Game: NSObject {
 	func stopChallenge(timer: NSTimer) {
 		
         let timerInfo = timer.userInfo as! TimerInfo
-
-		//emit challenge is over
-		
-		playerData[localPlayerID]!.challenges.removeAtIndex(timerInfo.index)
+        
+        let index = playerData[localPlayerID]!.challengeUUIDs.indexOf(timerInfo.UUID)!
+        playerData[localPlayerID]!.challenges.removeAtIndex(index)
+        playerData[localPlayerID]!.challengeUUIDs.removeAtIndex(index)
+        
 		let challenge = getChallenge(timerInfo.item.challengeID!)
 		let previousScore = timerInfo.previousScore
 		let currentScore = playerData[localPlayerID]!.score!
@@ -334,7 +349,7 @@ class Game: NSObject {
 		GameManager.sharedInstance.emitUpdatedItem(
 			gameID,
 			itemType: "challenge",
-			itemIndex: timerInfo.index,
+			itemIndex: index,
 			itemName: ""
 		)
 	}
@@ -343,7 +358,9 @@ class Game: NSObject {
         
         let chase = getChase(chaseID)
         playerData[localPlayerID]!.chases.append(chase.name)
-        
+        let chaseUUID = NSUUID().UUIDString
+        playerData[localPlayerID]!.chaseUUIDs.append(chaseUUID)
+
         delegate?.game(chaseStartedWithID: chaseID)
         delegate?.game(itemUpdatedForPlayer: localPlayerID)
         
@@ -362,7 +379,7 @@ class Game: NSObject {
             selector: "stopChase:",
             userInfo: TimerInfo(
                 item: Item(chaseID: chaseID),
-                index: chaseIndex,
+                UUID: chaseUUID,
                 previousScore: playerData[localPlayerID]!.score!),
             repeats: false
         )
@@ -372,7 +389,10 @@ class Game: NSObject {
         
         let timerInfo = timer.userInfo as! TimerInfo
         
-        playerData[localPlayerID]!.chases.removeAtIndex(timerInfo.index)
+        let index = playerData[localPlayerID]!.chaseUUIDs.indexOf(timerInfo.UUID)!
+        playerData[localPlayerID]!.chases.removeAtIndex(index)
+        playerData[localPlayerID]!.chaseUUIDs.removeAtIndex(index)
+        
         let chase = getChase(timerInfo.item.chaseID!)
         let previousScore = timerInfo.previousScore
         let currentScore = playerData[localPlayerID]!.score!
@@ -385,7 +405,7 @@ class Game: NSObject {
         GameManager.sharedInstance.emitUpdatedItem(
             gameID,
             itemType: "chase",
-            itemIndex: timerInfo.index,
+            itemIndex: index,
             itemName: ""
         )
     }
@@ -425,11 +445,9 @@ class Game: NSObject {
 			case "powerDown":
 				
 				if itemName == "" {
-					playerData[playerID]!.powerDowns[itemIndex] = ""
+					playerData[playerID]!.powerDowns.removeAtIndex(itemIndex)
 					
 				} else {
-                    print("IAA \(itemIndex) + \(playerData[localPlayerID]!.powerDowns)")
-					//playerData[playerID]!.powerDowns[itemIndex] = itemName
                     playerData[playerID]!.powerDowns.insert(itemName, atIndex: itemIndex)
 				}
 			
