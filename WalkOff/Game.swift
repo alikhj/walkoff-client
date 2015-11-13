@@ -37,8 +37,13 @@ class Game: NSObject {
     var playerData = [String : Player]()
   
     var standbyPowerUpIDs = [PowerUp]()
-    var offenses = [Offense]()
-  
+    var offenses = [String]()
+    
+    var powerUpUUIDs = [String]()
+    var powerDownUUIDs = [String]()
+    var challengeUUIDs = [String]()
+    var chaseUUIDs = [String]()
+    
     var multiplier: Double = 1.0
     var timer = NSTimer()
 	var previousActivity = ""
@@ -74,8 +79,11 @@ class Game: NSObject {
 			let playerID = player.key as! String
 			let playerDict = player.value as! NSDictionary
 			let score = playerDict.objectForKey("score") as! Int
-			
-			self.playerData[playerID] = Player(score: score)
+            
+            self.playerData[playerID] = Player(
+                score: score,
+                isLocalPlayer: (playerID == localPlayerID)
+            )
 			
 			if score == 0 {
 				self.playerData[playerID]!.activity = "🏁"
@@ -182,6 +190,7 @@ class Game: NSObject {
         
         if let offenseID = item.offenseID {
             print("offense")
+            loadOffense(offenseID)
             
         }
     }
@@ -195,7 +204,7 @@ class Game: NSObject {
         
         playerData[localPlayerID]!.powerUps.append(powerUp.name)
         let powerUpUUID = NSUUID().UUIDString
-        playerData[localPlayerID]!.powerUpUUIDs.append(powerUpUUID)
+        powerUpUUIDs.append(powerUpUUID)
 
         let powerUpIndex = playerData[localPlayerID]!.powerUps.endIndex.predecessor()
 
@@ -228,9 +237,9 @@ class Game: NSObject {
         let timerInfo = timer.userInfo as! TimerInfo
         let powerUp = getPowerUp(timerInfo.item.powerUpID!)
         
-        let index = playerData[localPlayerID]!.powerUpUUIDs.indexOf(timerInfo.UUID)!
+        let index = powerUpUUIDs.indexOf(timerInfo.UUID)!
         playerData[localPlayerID]!.powerUps.removeAtIndex(index)
-        playerData[localPlayerID]!.powerUpUUIDs.removeAtIndex(index)
+        powerUpUUIDs.removeAtIndex(index)
         
         multiplier /= powerUp.multiplier
         delegate?.game(itemUpdatedForPlayer: localPlayerID)
@@ -246,9 +255,10 @@ class Game: NSObject {
     func startPowerDown(powerDownID: PowerDown) {
         
         let powerDown = getPowerDown(powerDownID)
+        
         playerData[localPlayerID]!.powerDowns.append(powerDown.name)
         let powerDownUUID = NSUUID().UUIDString
-        playerData[localPlayerID]!.powerDownUUIDs.append(powerDownUUID)
+        powerDownUUIDs.append(powerDownUUID)
         
         let powerDownIndex = playerData[localPlayerID]!.powerDowns.endIndex.predecessor()
         multiplier /= powerDown.divider
@@ -280,9 +290,9 @@ class Game: NSObject {
         let timerInfo = timer.userInfo as! TimerInfo
         let powerDown = getPowerDown(timerInfo.item.powerDownID!)
         
-        let index = playerData[localPlayerID]!.powerDownUUIDs.indexOf(timerInfo.UUID)!
+        let index = powerDownUUIDs.indexOf(timerInfo.UUID)!
         playerData[localPlayerID]!.powerDowns.removeAtIndex(index)
-        playerData[localPlayerID]!.powerDownUUIDs.removeAtIndex(index)
+        powerDownUUIDs.removeAtIndex(index)
         
         multiplier *= powerDown.divider
         delegate?.game(itemUpdatedForPlayer: localPlayerID)
@@ -298,9 +308,10 @@ class Game: NSObject {
 	func startChallenge(challengeID: Challenge) {
 		
         let challenge = getChallenge(challengeID)
+        
         playerData[localPlayerID]!.challenges.append(challenge.name)
         let challengesUUID = NSUUID().UUIDString
-        playerData[localPlayerID]!.challengeUUIDs.append(challengesUUID)
+        challengeUUIDs.append(challengesUUID)
         
 		delegate?.game(challengeStartedWithID: challengeID)
         delegate?.game(itemUpdatedForPlayer: localPlayerID)
@@ -330,9 +341,9 @@ class Game: NSObject {
 		
         let timerInfo = timer.userInfo as! TimerInfo
         
-        let index = playerData[localPlayerID]!.challengeUUIDs.indexOf(timerInfo.UUID)!
+        let index = challengeUUIDs.indexOf(timerInfo.UUID)!
         playerData[localPlayerID]!.challenges.removeAtIndex(index)
-        playerData[localPlayerID]!.challengeUUIDs.removeAtIndex(index)
+        challengeUUIDs.removeAtIndex(index)
         
 		let challenge = getChallenge(timerInfo.item.challengeID!)
 		let previousScore = timerInfo.previousScore
@@ -357,9 +368,10 @@ class Game: NSObject {
     func startChase(chaseID: Chase) {
         
         let chase = getChase(chaseID)
+        
         playerData[localPlayerID]!.chases.append(chase.name)
         let chaseUUID = NSUUID().UUIDString
-        playerData[localPlayerID]!.chaseUUIDs.append(chaseUUID)
+        chaseUUIDs.append(chaseUUID)
 
         delegate?.game(chaseStartedWithID: chaseID)
         delegate?.game(itemUpdatedForPlayer: localPlayerID)
@@ -389,9 +401,9 @@ class Game: NSObject {
         
         let timerInfo = timer.userInfo as! TimerInfo
         
-        let index = playerData[localPlayerID]!.chaseUUIDs.indexOf(timerInfo.UUID)!
+        let index = chaseUUIDs.indexOf(timerInfo.UUID)!
         playerData[localPlayerID]!.chases.removeAtIndex(index)
-        playerData[localPlayerID]!.chaseUUIDs.removeAtIndex(index)
+        chaseUUIDs.removeAtIndex(index)
         
         let chase = getChase(timerInfo.item.chaseID!)
         let previousScore = timerInfo.previousScore
@@ -411,8 +423,27 @@ class Game: NSObject {
     }
     
     func loadOffense(offenseID: Offense) {
-        offenses.append(offenseID)
+        let offenseItem = getOffense(offenseID)
         
+        if let powerUpID = offenseItem.powerUpID {
+            let powerUp = getPowerUp(powerUpID)
+            offenses.append(powerUp.name)
+        }
+        
+        if let powerDownID = offenseItem.powerDownID {
+            let powerDown = getPowerDown(powerDownID)
+            offenses.append(powerDown.name)
+        }
+        
+        if let challengeID = offenseItem.challengeID {
+            let challenge = getChallenge(challengeID)
+            offenses.append(challenge.name)
+        }
+        
+        if let chaseID = offenseItem.chaseID {
+            let chase = getChase(chaseID)
+            offenses.append(chase.name)
+        }
     }
     
     func fireOffense(index: Int) {

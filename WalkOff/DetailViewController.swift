@@ -29,22 +29,19 @@ GameDelegate {
     let players = 1
     let menu = 2
   
-    var localPlayerIndexPath: NSIndexPath!
-    var localPlayerCellHeight: CGFloat = 44.0
-    var localPlayerCell: PlayerCell!
-    var powerDownLabel: UILabel!
+    var localPlayerIndexPath: NSIndexPath {
+        return NSIndexPath(
+            forRow: game!.rankedPlayerIDs.indexOf(game!.localPlayerID)!,
+            inSection: players
+        )
+    }
   
     override func viewDidLoad() {
         game = GameManager.sharedInstance.games[gameID]!
         game.delegate = self
         super.viewDidLoad()
         title = gameID
-		
-		localPlayerIndexPath = NSIndexPath(
-            forRow: game!.rankedPlayerIDs.indexOf(game!.localPlayerID)!,
-            inSection: players
-        )
-	
+
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 44.0
     }
@@ -94,7 +91,8 @@ GameDelegate {
     }
     
     func gameOffenseOnStandby() {
-        
+        tableView.reloadData()
+
     }
 	
     override func tableView(
@@ -109,8 +107,26 @@ GameDelegate {
         }
         
         if indexPath.section == players {
-            cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as! PlayerCell
-            configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPath)
+            if indexPath.row < localPlayerIndexPath.row {
+                cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as! PlayerCell
+                configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPath)
+            
+            } else if indexPath.row >= localPlayerIndexPath.row &&
+            indexPath.row < localPlayerIndexPath.row + game.offenses.count {
+                cell = tableView.dequeueReusableCellWithIdentifier("OffenseCell") as! OffenseCell
+                configureTextForOffenseCell(cell as! OffenseCell, indexPath: indexPath)
+
+            } else {
+                
+                cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as! PlayerCell
+                
+                let indexPathWithOffenses = NSIndexPath(
+                    forRow: indexPath.row - game.offenses.count,
+                    inSection: indexPath.section
+                )
+                
+                configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPathWithOffenses)
+            }
         }
     
         if indexPath.section == menu {
@@ -129,11 +145,10 @@ GameDelegate {
 	}
 	
     func configureTextForPlayerCell(cell: PlayerCell, indexPath: NSIndexPath) {
-        
         let playerID = game!.rankedPlayerIDs[indexPath.row]
         var playerAlias = GameManager.sharedInstance.players[playerID]?.playerAlias
 		
-		let activity = game!.playerData[playerID]!.activity
+		let activity = game.playerData[playerID]!.activity
 		
 		let powerUps = game!.playerData[playerID]!.powerUps.joinWithSeparator("")
 		let powerDowns = game!.playerData[playerID]!.powerDowns.joinWithSeparator("")
@@ -154,6 +169,10 @@ GameDelegate {
 		
         cell.scoreLabel.text =
         "\(powerUps) \(game!.playerData[playerID]!.score!)"
+    }
+    
+    func configureTextForOffenseCell(cell: OffenseCell, indexPath: NSIndexPath) {
+        cell.offenseLabel.text = "👆 \(game.offenses[indexPath.row - localPlayerIndexPath.row])"
     }
   
     func configureTextForMenuCell(cell: MenuCell, indexPath: NSIndexPath) {
@@ -188,7 +207,7 @@ GameDelegate {
     }
 	
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-		
+        
         return 3
 	}
 	
@@ -204,7 +223,8 @@ GameDelegate {
             }
             
             if section == players {
-                numberOfRows = game.rankedPlayerIDs.count
+                numberOfRows = game.rankedPlayerIDs.count +
+                game.offenses.count
             }
             
             if section == menu {
