@@ -112,7 +112,7 @@
                                     <outlet property="powerUpNameLabel" destination="EUO-nv-tHX" id="8UH-YG-Qr0"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="PlayerCell" id="LqA-8f-K6O" customClass="PlayerCell" customModule="WalkOff" customModuleProvider="target">
+                            <tableViewCell userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="PlayerCell" id="LqA-8f-K6O" customClass="PlayerCell" customModule="WalkOff" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="130" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="LqA-8f-K6O" id="ld7-mB-PSF">
@@ -161,14 +161,14 @@
                                     <outlet property="tipsLabel" destination="ajb-oE-8ZM" id="DJ7-pf-4Yk"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="OffenseCell" id="YdF-hU-z8v" userLabel="OffenseCell" customClass="OffenseCell" customModule="WalkOff" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChaseWeaponCell" id="YdF-hU-z8v" userLabel="ChaseWeaponCell" customClass="ChaseWeaponCell" customModule="WalkOff" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="174" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="YdF-hU-z8v" id="ltD-WA-bwc">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="## OffenseCell" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LTA-Pa-bFS">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="## ChaseWeaponCell" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LTA-Pa-bFS" userLabel="chaseWeaponLabel">
                                             <rect key="frame" x="8" y="11" width="167" height="21"/>
                                             <animations/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -180,7 +180,7 @@
                                 </tableViewCellContentView>
                                 <animations/>
                                 <connections>
-                                    <outlet property="offenseLabel" destination="LTA-Pa-bFS" id="igj-DY-zPq"/>
+                                    <outlet property="chaseWeaponLabel" destination="LTA-Pa-bFS" id="k5z-C3-wni"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MenuCell" id="E8g-OC-DI9" customClass="MenuCell" customModule="WalkOff" customModuleProvider="target">

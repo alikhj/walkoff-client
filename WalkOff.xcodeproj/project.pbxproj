@@ -23,7 +23,7 @@
 		261DC59C1BAFE86F00C1C93E /* SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261DC58C1BAFE86F00C1C93E /* SocketTypes.swift */; };
 		261DC59D1BAFE86F00C1C93E /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261DC58D1BAFE86F00C1C93E /* SwiftRegex.swift */; };
 		261DC59E1BAFE86F00C1C93E /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261DC58E1BAFE86F00C1C93E /* WebSocket.swift */; };
-		262B6CEF1BF5964C00E278C7 /* OffenseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B6CEE1BF5964C00E278C7 /* OffenseCell.swift */; };
+		262B6CEF1BF5964C00E278C7 /* ChaseWeaponCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B6CEE1BF5964C00E278C7 /* ChaseWeaponCell.swift */; };
 		268713CC1BA9226500017EDA /* Milestones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268713CB1BA9226500017EDA /* Milestones.swift */; };
 		26B087B51BE7385B003B3A3B /* StandbyPowerUpCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B087B41BE7385B003B3A3B /* StandbyPowerUpCell.swift */; };
 		26B087B71BE73A2C003B3A3B /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B087B61BE73A2C003B3A3B /* MenuCell.swift */; };
@@ -50,7 +50,7 @@
 		F16B463E1BE1299C00D57794 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = F16B463D1BE1299C00D57794 /* Item.swift */; };
 		F1F99F3C1BE27ECE004810DB /* PowerDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F99F3B1BE27ECE004810DB /* PowerDown.swift */; };
 		F1F99F3E1BE2B002004810DB /* TimerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F99F3D1BE2B002004810DB /* TimerInfo.swift */; };
-		F1F99F401BE2D2DE004810DB /* Offense.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F99F3F1BE2D2DE004810DB /* Offense.swift */; };
+		F1F99F401BE2D2DE004810DB /* ChaseWeapon.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F99F3F1BE2D2DE004810DB /* ChaseWeapon.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,7 +80,7 @@
 		261DC58C1BAFE86F00C1C93E /* SocketTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketTypes.swift; sourceTree = "<group>"; };
 		261DC58D1BAFE86F00C1C93E /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
 		261DC58E1BAFE86F00C1C93E /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
-		262B6CEE1BF5964C00E278C7 /* OffenseCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OffenseCell.swift; sourceTree = "<group>"; };
+		262B6CEE1BF5964C00E278C7 /* ChaseWeaponCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChaseWeaponCell.swift; sourceTree = "<group>"; };
 		268713CB1BA9226500017EDA /* Milestones.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Milestones.swift; sourceTree = "<group>"; };
 		26B087B41BE7385B003B3A3B /* StandbyPowerUpCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandbyPowerUpCell.swift; sourceTree = "<group>"; };
 		26B087B61BE73A2C003B3A3B /* MenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
@@ -103,15 +103,15 @@
 		B89876881B03068300B54926 /* Movement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Movement.swift; sourceTree = "<group>"; };
 		B898768A1B0306A000B54926 /* GameCenterAuthorization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameCenterAuthorization.swift; sourceTree = "<group>"; };
 		B898768C1B03080D00B54926 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
-		B89876901B03099900B54926 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
-		B89876941B0309EE00B54926 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		B89876901B03099900B54926 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Game.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		B89876941B0309EE00B54926 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DetailViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		F16B12141BE1832A002419E0 /* PowerUp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowerUp.swift; sourceTree = "<group>"; };
 		F16B12181BE1838C002419E0 /* Chase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chase.swift; sourceTree = "<group>"; };
 		F16B121A1BE18399002419E0 /* Challenge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Challenge.swift; sourceTree = "<group>"; };
-		F16B463D1BE1299C00D57794 /* Item.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		F16B463D1BE1299C00D57794 /* Item.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Item.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		F1F99F3B1BE27ECE004810DB /* PowerDown.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowerDown.swift; sourceTree = "<group>"; };
 		F1F99F3D1BE2B002004810DB /* TimerInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerInfo.swift; sourceTree = "<group>"; };
-		F1F99F3F1BE2D2DE004810DB /* Offense.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Offense.swift; sourceTree = "<group>"; };
+		F1F99F3F1BE2D2DE004810DB /* ChaseWeapon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChaseWeapon.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,7 +166,7 @@
 				F16B12181BE1838C002419E0 /* Chase.swift */,
 				F16B121A1BE18399002419E0 /* Challenge.swift */,
 				F1F99F3D1BE2B002004810DB /* TimerInfo.swift */,
-				F1F99F3F1BE2D2DE004810DB /* Offense.swift */,
+				F1F99F3F1BE2D2DE004810DB /* ChaseWeapon.swift */,
 			);
 			name = Items;
 			sourceTree = "<group>";
@@ -178,7 +178,7 @@
 				B898768C1B03080D00B54926 /* NavigationController.swift */,
 				B89876941B0309EE00B54926 /* DetailViewController.swift */,
 				419F60121BB3078900E13E06 /* PlayerCell.swift */,
-				262B6CEE1BF5964C00E278C7 /* OffenseCell.swift */,
+				262B6CEE1BF5964C00E278C7 /* ChaseWeaponCell.swift */,
 				26B087B41BE7385B003B3A3B /* StandbyPowerUpCell.swift */,
 				26B087B61BE73A2C003B3A3B /* MenuCell.swift */,
 			);
@@ -380,7 +380,7 @@
 				26B087B71BE73A2C003B3A3B /* MenuCell.swift in Sources */,
 				261DC5961BAFE86F00C1C93E /* SocketIOClient.swift in Sources */,
 				261DC5931BAFE86F00C1C93E /* SocketEngineClient.swift in Sources */,
-				262B6CEF1BF5964C00E278C7 /* OffenseCell.swift in Sources */,
+				262B6CEF1BF5964C00E278C7 /* ChaseWeaponCell.swift in Sources */,
 				B859A3531B0EDB9F00409FF4 /* l.swift in Sources */,
 				261DC5901BAFE86F00C1C93E /* SocketAckManager.swift in Sources */,
 				261DC5921BAFE86F00C1C93E /* SocketEngine.swift in Sources */,
@@ -404,7 +404,7 @@
 				B898768B1B0306A000B54926 /* GameCenterAuthorization.swift in Sources */,
 				B89876911B03099900B54926 /* Game.swift in Sources */,
 				261DC59D1BAFE86F00C1C93E /* SwiftRegex.swift in Sources */,
-				F1F99F401BE2D2DE004810DB /* Offense.swift in Sources */,
+				F1F99F401BE2D2DE004810DB /* ChaseWeapon.swift in Sources */,
 				F16B463E1BE1299C00D57794 /* Item.swift in Sources */,
 				B898764A1B03038B00B54926 /* AppDelegate.swift in Sources */,
 				B898768D1B03080D00B54926 /* NavigationController.swift in Sources */,

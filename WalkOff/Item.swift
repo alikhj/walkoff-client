@@ -14,7 +14,7 @@ class Item {
     var powerDownID: PowerDown?
     var chaseID: Chase?
     var challengeID: Challenge?
-    var offenseID: Offense?
+    var chaseWeaponID: ChaseWeapon?
     
     init(powerUpID: PowerUp) {
         self.powerUpID = powerUpID
@@ -32,8 +32,8 @@ class Item {
         self.challengeID = challengeID
     }
     
-    init(offenseID: Offense) {
-        self.offenseID = offenseID
+    init(chaseWeaponID: ChaseWeapon) {
+        self.chaseWeaponID = chaseWeaponID
     }
 }
 

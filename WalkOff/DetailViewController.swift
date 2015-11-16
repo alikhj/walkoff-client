@@ -29,12 +29,14 @@ GameDelegate {
     let players = 1
     let menu = 2
   
-    var localPlayerIndexPath: NSIndexPath {
+    var indexPathLocalPlayer: NSIndexPath {
         return NSIndexPath(
             forRow: game!.rankedPlayerIDs.indexOf(game!.localPlayerID)!,
             inSection: players
         )
     }
+    
+    var chaseWeaponIndexPath: NSIndexPath?
   
     override func viewDidLoad() {
         game = GameManager.sharedInstance.games[gameID]!
@@ -47,7 +49,6 @@ GameDelegate {
     }
   
     func game(scoreUpdatedForPlayer playerID: String, previousRank: Int, newRank: Int) {
-        
         tableView.reloadData()
     
         let previousIndexPath = NSIndexPath(forRow: previousRank, inSection: players)
@@ -59,7 +60,7 @@ GameDelegate {
     func game(itemUpdatedForPlayer playerID: String) {
         let indexPath = NSIndexPath(forRow: game!.rankedPlayerIDs.indexOf(playerID)!, inSection: players)
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-        tableView.reloadData()
+        //tableView.reloadData()
     }
   
     func gamePowerUpOnStandby() {
@@ -69,7 +70,7 @@ GameDelegate {
     func game(powerUpStarted standbyPowerUpIndex: Int) {
         let indexPath = NSIndexPath(forRow: standbyPowerUpIndex, inSection: 0)
 		tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
-		tableView.reloadRowsAtIndexPaths([localPlayerIndexPath], withRowAnimation: .None)
+		tableView.reloadRowsAtIndexPaths([indexPathLocalPlayer], withRowAnimation: .None)
 	}
 	
     func game(challengeStartedWithID challengeID: Challenge) {
@@ -90,8 +91,17 @@ GameDelegate {
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
-    func gameOffenseOnStandby() {
+    func gameWeaponLoaded() {
         tableView.reloadData()
+    }
+    
+    func gameChaseWeaponFired() {
+        if game.chaseWeaponIDs.count > 0 {
+            tableView.reloadRowsAtIndexPaths([chaseWeaponIndexPath!], withRowAnimation: .None)
+        
+        } else {
+            tableView.reloadSections(NSIndexSet(index: players), withRowAnimation: .None)
+        }
 
     }
 	
@@ -107,25 +117,32 @@ GameDelegate {
         }
         
         if indexPath.section == players {
-            if indexPath.row < localPlayerIndexPath.row {
+            
+            if indexPath.row < indexPathLocalPlayer.row {
                 cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as! PlayerCell
                 configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPath)
             
-            } else if indexPath.row >= localPlayerIndexPath.row &&
-            indexPath.row < localPlayerIndexPath.row + game.offenses.count {
-                cell = tableView.dequeueReusableCellWithIdentifier("OffenseCell") as! OffenseCell
-                configureTextForOffenseCell(cell as! OffenseCell, indexPath: indexPath)
-
+            } else if game.chaseWeaponIDs.count > 0 && indexPath.row == indexPathLocalPlayer.row {
+                chaseWeaponIndexPath = indexPath
+                cell = tableView.dequeueReusableCellWithIdentifier("ChaseWeaponCell") as! ChaseWeaponCell
+                configureTextForChaseWeaponCell(cell as! ChaseWeaponCell, indexPath: indexPath)
+                
             } else {
+                
+                var index = indexPath.row
+                
+                if game.chaseWeaponIDs.count > 0 {
+                    index--
+                }
                 
                 cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as! PlayerCell
                 
-                let indexPathWithOffenses = NSIndexPath(
-                    forRow: indexPath.row - game.offenses.count,
+                let newIndexPath = NSIndexPath(
+                    forRow: index,
                     inSection: indexPath.section
                 )
                 
-                configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPathWithOffenses)
+                configureTextForPlayerCell(cell as! PlayerCell, indexPath: newIndexPath)
             }
         }
     
@@ -145,34 +162,66 @@ GameDelegate {
 	}
 	
     func configureTextForPlayerCell(cell: PlayerCell, indexPath: NSIndexPath) {
+        
         let playerID = game!.rankedPlayerIDs[indexPath.row]
         var playerAlias = GameManager.sharedInstance.players[playerID]?.playerAlias
-		
-		let activity = game.playerData[playerID]!.activity
-		
-		let powerUps = game!.playerData[playerID]!.powerUps.joinWithSeparator("")
-		let powerDowns = game!.playerData[playerID]!.powerDowns.joinWithSeparator("")
-		let challenges = game!.playerData[playerID]!.challenges.joinWithSeparator("")
-        let chases = game!.playerData[playerID]!.chases.joinWithSeparator("")
-		
-        if indexPath.row == game!.rankedPlayerIDs.indexOf(game!.localPlayerID)! {
-            playerAlias = "Me"
-            cell.playerLabel.font = UIFont.boldSystemFontOfSize(17.0)
+        var playerLabelText = ""
+        
+        if game.playerData[playerID]!.inGame == true {
+            
+            if ((GameManager.sharedInstance.players[playerID]?.connected) == true) {
+                
+                let activity = game.playerData[playerID]!.activity
+                
+                let powerUps = game!.playerData[playerID]!.powerUps.joinWithSeparator("")
+                let powerDowns = game!.playerData[playerID]!.powerDowns.joinWithSeparator("")
+                let challenges = game!.playerData[playerID]!.challenges.joinWithSeparator("")
+                let chases = game!.playerData[playerID]!.chases.joinWithSeparator("")
+                
+                if indexPath.row == game!.rankedPlayerIDs.indexOf(game!.localPlayerID)! {
+                    playerAlias = "Me"
+                    cell.playerLabel.font = UIFont.boldSystemFontOfSize(17.0)
+                } else {
+                    cell.playerLabel.font = UIFont.systemFontOfSize(17.0)
+                }
+                
+                cell.playerLabel.textColor = UIColor.blackColor()
+                playerLabelText = "\(challenges)\(activity)\(powerDowns)\(chases) \(playerAlias!)"
+                cell.scoreLabel.textColor = UIColor.blackColor()
+                cell.scoreLabel.text = "\(powerUps) \(game!.playerData[playerID]!.score!)"
+                
+            } else {
+                cell.playerLabel.textColor = UIColor.grayColor()
+                cell.scoreLabel.textColor = UIColor.grayColor()
+                playerLabelText = "⌛ \(playerAlias!)"
+            }
+        
         } else {
-            cell.playerLabel.font = UIFont.systemFontOfSize(17.0)
+            
+            playerLabelText = "💀 \(playerAlias!)"
         }
-
-		//if challenge is A, place after activity
-		//if challenge is B, place before activity
-		
-		cell.playerLabel.text = "\(challenges)\(activity)\(powerDowns)\(chases) \(playerAlias!)"
-		
-        cell.scoreLabel.text =
-        "\(powerUps) \(game!.playerData[playerID]!.score!)"
+    
+        cell.playerLabel.text = playerLabelText
+        cell.scoreLabel.text = "\(game!.playerData[playerID]!.score!)"
     }
     
-    func configureTextForOffenseCell(cell: OffenseCell, indexPath: NSIndexPath) {
-        cell.offenseLabel.text = "👆 \(game.offenses[indexPath.row - localPlayerIndexPath.row])"
+    func configureTextForChaseWeaponCell(cell: ChaseWeaponCell, indexPath: NSIndexPath) {
+        var indicator: String
+        var offenses = ""
+        if indexPath.row == 0 {
+            indicator = "✋"
+            cell.userInteractionEnabled = false
+        } else {
+
+            indicator = "👆"
+            cell.userInteractionEnabled = true
+        }
+        
+        for chaseID in game.chaseWeaponIDs {
+            offenses += getChase(chaseID).name
+        }
+        
+        cell.chaseWeaponLabel.text = "\(indicator) \(offenses)"
     }
   
     func configureTextForMenuCell(cell: MenuCell, indexPath: NSIndexPath) {
@@ -189,20 +238,24 @@ GameDelegate {
     
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     
-        if (indexPath.section == standbyPowerUps) {
+        if indexPath.section == standbyPowerUps {
             let powerUpID = game.standbyPowerUpIDs[indexPath.row]
             game.startPowerUp(powerUpID, standbyPowerUpIndex: indexPath.row)
         }
     
-        if (indexPath.section == menu) {
-            if (indexPath.row == 0) {
+        if indexPath.section == menu {
+            if indexPath.row == 0 {
                 GameManager.sharedInstance.leaveGame(gameID!, playerID: game!.localPlayerID)
                 delegate?.detailViewControllerDidLeaveGame(gameID!)
             }
             
-            if (indexPath.row == 1) {
+            if indexPath.row == 1 {
                 game!.addTestSteps()
             }
+        }
+        
+        if indexPath == chaseWeaponIndexPath {
+            game.fireChaseWeapon()
         }
     }
 	
@@ -216,15 +269,18 @@ GameDelegate {
         numberOfRowsInSection section: Int
         ) -> Int {
             
-            var numberOfRows: Int!
+            var numberOfRows = 0
             
             if section == standbyPowerUps {
                 numberOfRows = game.standbyPowerUpIDs.count
             }
             
             if section == players {
-                numberOfRows = game.rankedPlayerIDs.count +
-                game.offenses.count
+                numberOfRows = game.rankedPlayerIDs.count
+                
+                if game.chaseWeaponIDs.count > 0 {
+                    numberOfRows++
+                }
             }
             
             if section == menu {

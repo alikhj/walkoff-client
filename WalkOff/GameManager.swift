@@ -95,7 +95,6 @@ class GameManager: NSObject, GameKitHelperDelegate {
             "playerID": playerID
             ])
         
-        
         for player in games[gameID]!.rankedPlayerIDs {
             
             if (player != localPlayer.playerID) {
@@ -120,9 +119,16 @@ class GameManager: NSObject, GameKitHelperDelegate {
         for player in playerData {
             let playerID = player.valueForKey("id") as! String
             let playerAlias = player.valueForKey("alias") as! String
+            let games = player.valueForKey("games") as! [String]
+            let isConnected = player.valueForKey("connected") as! Bool
             //only add player if player doesn't exist in dictionary
             if((players[playerID]) == nil) {
-                players[playerID] = Player(playerID: playerID, playerAlias: playerAlias)
+                players[playerID] = Player(
+                    playerID: playerID,
+                    playerAlias: playerAlias,
+                    games: games,
+                    isConnected: isConnected
+                )
             }
         }
     }
@@ -156,6 +162,22 @@ class GameManager: NSObject, GameKitHelperDelegate {
 		])
 	}
   
+    func emitChaseWeapon(
+        gameID: String,
+        toPlayerID: String,
+        itemType: String,
+        rawValue: String
+        ) {
+            
+            print("emitting offense: \(itemType) \(rawValue)")
+            socket.emit("chaseWeapon-fired", [
+                "gameID": gameID,
+                "toPlayerID": toPlayerID,
+                "itemType": itemType,
+                "rawValue": rawValue
+                ])
+    }
+    
 	func handlers() {
 		
         socket.on("connect") { data, ack in
@@ -191,10 +213,10 @@ class GameManager: NSObject, GameKitHelperDelegate {
 			let games = received?.objectForKey("gamesData") as! NSArray
 			let players = received?.objectForKey("playerData") as! NSArray
 
-            //only add games if they don't exist already
+            //only add games and players if they don't exist already (ie app was restarted)
             if (self.games.count == 0) {
 				self.createPlayer(players)
-
+                
 				for game in games {
                     let gameData = game as! NSDictionary
                     self.createGame(gameData)
@@ -207,6 +229,8 @@ class GameManager: NSObject, GameKitHelperDelegate {
           let playerID = received?.objectForKey("playerID") as! String
           let gameID = received?.objectForKey("gameID") as! String
           self.players[playerID]?.connected = false
+          let game = self.games[gameID]
+          game?.delegate?.game(itemUpdatedForPlayer: playerID)
           l.o.g("\n\(playerID) was disconnected from \(gameID)")
         }
     
@@ -215,7 +239,18 @@ class GameManager: NSObject, GameKitHelperDelegate {
           let playerID = received?.objectForKey("playerID") as! String
           let gameID = received?.objectForKey("gameID") as! String
           self.players[playerID]?.connected = true
+          let game = self.games[gameID]
+          game?.delegate?.game(itemUpdatedForPlayer: playerID)
           l.o.g("\n\(playerID) has reconnected to \(gameID)")
+        }
+        
+        socket.on("player-quit-game") { data, ack in
+            let received = data[0] as? NSDictionary
+            let playerID = received?.objectForKey("playerID") as! String
+            let gameID = received?.objectForKey("gameID") as! String
+            let game = self.games[gameID]!
+            game.playerQuitGame(playerID)
+            game.delegate?.game(itemUpdatedForPlayer: playerID)
         }
     
         socket.on("score-updated") { data, ack in
@@ -248,6 +283,18 @@ class GameManager: NSObject, GameKitHelperDelegate {
 				itemIndex: itemIndex,
 				itemName: itemName
 			)
+        }
+        
+        socket.on("chaseWeapon-received") { data, ack in
+            print("chaseWeapon received")
+            let received = data[0] as? NSDictionary
+            let gameID = received?.objectForKey("gameID") as! String
+            let itemType = received?.objectForKey("itemType") as! String
+            let rawValue = received?.objectForKey("rawValue") as! String
+            
+            let game = self.games[gameID]
+            
+            game?.receiveChaseWeapon(itemType, rawValue: rawValue)
         }
     }
 	
