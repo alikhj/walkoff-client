@@ -23,8 +23,9 @@
 		261DC59C1BAFE86F00C1C93E /* SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261DC58C1BAFE86F00C1C93E /* SocketTypes.swift */; };
 		261DC59D1BAFE86F00C1C93E /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261DC58D1BAFE86F00C1C93E /* SwiftRegex.swift */; };
 		261DC59E1BAFE86F00C1C93E /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261DC58E1BAFE86F00C1C93E /* WebSocket.swift */; };
-		262B6CEF1BF5964C00E278C7 /* ChaseWeaponCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B6CEE1BF5964C00E278C7 /* ChaseWeaponCell.swift */; };
+		262B6CEF1BF5964C00E278C7 /* WeaponCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B6CEE1BF5964C00E278C7 /* WeaponCell.swift */; };
 		268713CC1BA9226500017EDA /* Milestones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268713CB1BA9226500017EDA /* Milestones.swift */; };
+		269F26971C245A270019E3EC /* ChallengeWeapon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269F26961C245A270019E3EC /* ChallengeWeapon.swift */; };
 		26B087B51BE7385B003B3A3B /* StandbyPowerUpCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B087B41BE7385B003B3A3B /* StandbyPowerUpCell.swift */; };
 		26B087B71BE73A2C003B3A3B /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B087B61BE73A2C003B3A3B /* MenuCell.swift */; };
 		419F60131BB3078900E13E06 /* PlayerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419F60121BB3078900E13E06 /* PlayerCell.swift */; };
@@ -80,8 +81,9 @@
 		261DC58C1BAFE86F00C1C93E /* SocketTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketTypes.swift; sourceTree = "<group>"; };
 		261DC58D1BAFE86F00C1C93E /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
 		261DC58E1BAFE86F00C1C93E /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
-		262B6CEE1BF5964C00E278C7 /* ChaseWeaponCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChaseWeaponCell.swift; sourceTree = "<group>"; };
+		262B6CEE1BF5964C00E278C7 /* WeaponCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeaponCell.swift; sourceTree = "<group>"; };
 		268713CB1BA9226500017EDA /* Milestones.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Milestones.swift; sourceTree = "<group>"; };
+		269F26961C245A270019E3EC /* ChallengeWeapon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChallengeWeapon.swift; sourceTree = "<group>"; };
 		26B087B41BE7385B003B3A3B /* StandbyPowerUpCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandbyPowerUpCell.swift; sourceTree = "<group>"; };
 		26B087B61BE73A2C003B3A3B /* MenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
 		419F60121BB3078900E13E06 /* PlayerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerCell.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 			children = (
 				268713CB1BA9226500017EDA /* Milestones.swift */,
 				F16B463D1BE1299C00D57794 /* Item.swift */,
+				269F26961C245A270019E3EC /* ChallengeWeapon.swift */,
 				F16B12141BE1832A002419E0 /* PowerUp.swift */,
 				F1F99F3B1BE27ECE004810DB /* PowerDown.swift */,
 				F16B12181BE1838C002419E0 /* Chase.swift */,
@@ -178,7 +181,7 @@
 				B898768C1B03080D00B54926 /* NavigationController.swift */,
 				B89876941B0309EE00B54926 /* DetailViewController.swift */,
 				419F60121BB3078900E13E06 /* PlayerCell.swift */,
-				262B6CEE1BF5964C00E278C7 /* ChaseWeaponCell.swift */,
+				262B6CEE1BF5964C00E278C7 /* WeaponCell.swift */,
 				26B087B41BE7385B003B3A3B /* StandbyPowerUpCell.swift */,
 				26B087B61BE73A2C003B3A3B /* MenuCell.swift */,
 			);
@@ -376,11 +379,12 @@
 				B89876891B03068300B54926 /* Movement.swift in Sources */,
 				261DC5911BAFE86F00C1C93E /* SocketAnyEvent.swift in Sources */,
 				B89876851B03050900B54926 /* GameManager.swift in Sources */,
+				269F26971C245A270019E3EC /* ChallengeWeapon.swift in Sources */,
 				41EE080A1B8683D2003124EB /* Player.swift in Sources */,
 				26B087B71BE73A2C003B3A3B /* MenuCell.swift in Sources */,
 				261DC5961BAFE86F00C1C93E /* SocketIOClient.swift in Sources */,
 				261DC5931BAFE86F00C1C93E /* SocketEngineClient.swift in Sources */,
-				262B6CEF1BF5964C00E278C7 /* ChaseWeaponCell.swift in Sources */,
+				262B6CEF1BF5964C00E278C7 /* WeaponCell.swift in Sources */,
 				B859A3531B0EDB9F00409FF4 /* l.swift in Sources */,
 				261DC5901BAFE86F00C1C93E /* SocketAckManager.swift in Sources */,
 				261DC5921BAFE86F00C1C93E /* SocketEngine.swift in Sources */,

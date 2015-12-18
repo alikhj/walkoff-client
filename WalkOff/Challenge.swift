@@ -10,7 +10,7 @@ import Foundation
 
 enum Challenge: String {
     
-    case poo = "poo"
+    case poop = "poop"
 }
 
 func getChallenge(challengeID: Challenge) -> ((
@@ -30,7 +30,7 @@ verification: ((previousScore: Int, currentScore: Int) -> Item?)
     
     switch challengeID {
         
-    case .poo:
+    case .poop:
         name = "💩"
         description = "💩🏃⏱🔟"
         numberOfSteps = 20

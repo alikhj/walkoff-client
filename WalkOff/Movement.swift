@@ -10,13 +10,20 @@ import UIKit
 import CoreMotion
 import CoreLocation
 
+protocol MovementDelegate: class {
+    func movementUpdated()
+}
+
 let MovementSingleton = Movement()
 
 class Movement: NSObject, CLLocationManagerDelegate {
 	class var sharedInstance: Movement {
 		return MovementSingleton
 	}
-		
+	
+    weak var delegate: MovementDelegate?
+    
+    var timer = NSTimer()
 	let pedometer = CMPedometer()
 	let activityManager = CMMotionActivityManager()
 	let locationManager = CLLocationManager()
@@ -32,8 +39,11 @@ class Movement: NSObject, CLLocationManagerDelegate {
 		locationManager.delegate = self
 		locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
 		locationManager.requestAlwaysAuthorization()
-		locationManager.pausesLocationUpdatesAutomatically = false //maybe?
-		locationManager.startUpdatingLocation()
+		
+        locationManager.pausesLocationUpdatesAutomatically = true //maybe?
+        locationManager.activityType = CLActivityType.Fitness
+		
+        locationManager.startUpdatingLocation()
         locationManager.allowsBackgroundLocationUpdates = true
 	}
 	
@@ -48,9 +58,21 @@ class Movement: NSObject, CLLocationManagerDelegate {
 				} else {
 					dispatch_async(dispatch_get_main_queue()) {
                         if (data!.numberOfSteps as Int > 0) {
-                          self.currentTotalSteps = data!.numberOfSteps as Int
-                          self.stepsUpdate = self.currentTotalSteps - self.previousTotalSteps
-                          self.previousTotalSteps = self.currentTotalSteps
+                            
+                            self.timer.invalidate()
+                            
+                            self.currentTotalSteps = data!.numberOfSteps as Int
+                            self.stepsUpdate = self.currentTotalSteps - self.previousTotalSteps
+                            self.previousTotalSteps = self.currentTotalSteps
+                            self.delegate?.movementUpdated()
+                            
+                            self.timer = NSTimer.scheduledTimerWithTimeInterval(
+                                10.0,
+                                target: self,
+                                selector: "movementStopped:",
+                                userInfo: nil,
+                                repeats: false
+                            )
                         }
 					}
 				}
@@ -58,7 +80,7 @@ class Movement: NSObject, CLLocationManagerDelegate {
             
 		} else { l.o.g("Pedometer not available") }
 	}
-	
+    
 	func startReadingMovementType() {
 		
 		if(CMMotionActivityManager.isActivityAvailable()) {
@@ -88,10 +110,23 @@ class Movement: NSObject, CLLocationManagerDelegate {
             
 		} else { l.o.g("Movement type not available") }
 	}
+    
+    func movementStopped(timer: NSTimer) {
+        print("stopped")
+        delegate?.movementUpdated()
+    }
 	
 	func locationManager(
 		manager: CLLocationManager,
 		didUpdateLocations locations: [CLLocation]) {
 			//l.o.g("Location updated")
 	}
+    
+    func locationManagerDidPauseLocationUpdates(manager: CLLocationManager) {
+        //emit something to server
+    }
+    
+    func locationManagerDidResumeLocationUpdates(manager: CLLocationManager) {
+        //emit something to server
+    }
 }

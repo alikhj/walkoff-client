@@ -24,6 +24,7 @@ protocol GameDelegate: class {
     func game(chaseStartedWithID chaseID: Chase)
     func gameWeaponLoaded()
     func gameChaseWeaponFired()
+    func gameChallengeWeaponFired()
 }
 
 class Game: NSObject {
@@ -40,6 +41,7 @@ class Game: NSObject {
   
     var standbyPowerUpIDs = [PowerUp]()
     var chaseWeaponIDs = [Chase]()
+    var challengeWeaponIDs = [Challenge]()
     
     var powerUpUUIDs = [String]()
     var powerDownUUIDs = [String]()
@@ -48,7 +50,6 @@ class Game: NSObject {
     
     var multiplier: Double = 1.0
     var timer = NSTimer()
-	var previousActivity = ""
   
 	var rankedPlayerIDs = [String]()
 	var localRank = 0
@@ -62,21 +63,14 @@ class Game: NSObject {
 		previousScore = playerData[localPlayerID]!.objectForKey("score") as! Int
 
 		super.init()
-
-		Movement.sharedInstance.addObserver(
-			self,
-			forKeyPath: "stepsUpdate",
-			options: .New,
-			context: nil
-		)
-		
-		Movement.sharedInstance.addObserver(
-			self,
-			forKeyPath: "movementType",
-			options: .New,
-			context: nil
-		)
         
+        Movement.sharedInstance.addObserver(
+            self,
+            forKeyPath: "stepsUpdate",
+            options: .New,
+            context: nil
+        )
+       
 		for player in playerData {
 			let playerID = player.key as! String
 			let playerDict = player.value as! NSDictionary
@@ -85,22 +79,12 @@ class Game: NSObject {
             
             self.playerData[playerID] = Player(
                 score: score,
-                inGame: inGame,
-                isLocalPlayer: (playerID == localPlayerID)
+                inGame: inGame
             )
-			
-			if score == 0 && inGame == true {
-				self.playerData[playerID]!.activity = "🏁"
-			} else { self.playerData[playerID]!.activity = "💤" }
             
-            if !inGame {
-                self.playerData[playerID]!.activity = "💀"
-            }
-            
-			GameManager.sharedInstance.players[playerID]!.games.append(gameID)
+			GameManager.sharedInstance.players[playerID]!.gameIDs.append(gameID)
 		}
 		
-		previousActivity = self.playerData[localPlayerID]!.activity
 		updateRankedPlayerIDs()
 		l.o.g("\(gameID) has initialized")
 	}
@@ -116,25 +100,9 @@ class Game: NSObject {
 		if keyPath == "stepsUpdate" {
 			let stepsUpdate = change?[NSKeyValueChangeNewKey]! as! Int
 			if stepsUpdate > 0 {
-					l.o.g("\(gameID) observing \(stepsUpdate) new steps")
-					updateScoreForLocalPlayer(stepsUpdate)
+                l.o.g("\(gameID) observing \(stepsUpdate) new steps")
+                updateScoreForLocalPlayer(stepsUpdate)
 			}
-		}
-	
-		else if keyPath == "movementType" {
-			let newActivity = change?[NSKeyValueChangeNewKey]! as! String
-			if (newActivity != previousActivity) {
-				playerData[localPlayerID]!.activity = newActivity
-				previousActivity = newActivity
-				
-				GameManager.sharedInstance.emitUpdatedItem(
-					gameID,
-					itemType: "activity",
-					itemIndex: 0,
-					itemName: newActivity
-				)
-				delegate?.game(itemUpdatedForPlayer: localPlayerID)
-            }
 		}
 	}
 	
@@ -143,16 +111,9 @@ class Game: NSObject {
         previousScore = playerData[localPlayerID]!.score!
         let scoreUpdate = Int(multiplier * Double(stepsUpdate))
         playerData[localPlayerID]!.score! += scoreUpdate
-        
         updateRanking(localPlayerID)
-        
         let newScore = playerData[localPlayerID]!.score!
         evaluateScoreForItem(newScore, previousScore: previousScore)
-        
-        GameManager.sharedInstance.emitUpdatedScore(
-            gameID,
-            updatedScore: newScore
-        )
     }
     
     //this is called by the GameManager
@@ -199,7 +160,11 @@ class Game: NSObject {
         if let chaseWeaponID = item.chaseWeaponID {
             print("offenseChase")
             loadChaseWeapon(chaseWeaponID)
-            
+        }
+        
+        if let challengeWeaponID = item.challengeWeaponID {
+            print("offenseChase")
+            loadChallengeWeapon(challengeWeaponID)
         }
     }
     
@@ -422,6 +387,8 @@ class Game: NSObject {
                 evaluateItemForID(chaseItem)
         }
         
+        delegate?.game(itemUpdatedForPlayer: localPlayerID)
+        
         GameManager.sharedInstance.emitUpdatedItem(
             gameID,
             itemType: "chase",
@@ -435,6 +402,22 @@ class Game: NSObject {
         chaseWeaponIDs.append(getChaseWeapon(chaseWeaponID))
         delegate?.gameWeaponLoaded()
     }
+    
+    func receiveWeapon(itemType: String, rawValue: String) {
+        
+        if itemType == "PowerDown" {
+            startPowerDown(PowerDown(rawValue: rawValue)!)
+        }
+        
+        if itemType == "Chase" {
+            startChase(Chase(rawValue: rawValue)!)
+        }
+        
+        if itemType == "Challenge" {
+            startChallenge(Challenge(rawValue: rawValue)!)
+        }
+    }
+    
     
     func fireChaseWeapon() {
         let chaseID = chaseWeaponIDs[chaseWeaponIDs.startIndex]
@@ -456,19 +439,30 @@ class Game: NSObject {
         delegate?.gameChaseWeaponFired()
     }
     
-    func receiveChaseWeapon(itemType: String, rawValue: String) {
-
-        if itemType == "PowerDown" {
-            startPowerDown(PowerDown(rawValue: rawValue)!)
-        }
+    func loadChallengeWeapon(challengeWeaponID: ChallengeWeapon) {
         
-        if itemType == "Chase" {
-            startChase(Chase(rawValue: rawValue)!)
-        }
+        challengeWeaponIDs.append(getChallengeWeapon(challengeWeaponID))
+        delegate?.gameWeaponLoaded()
+    }
+    
+    func fireChallengeWeapon() {
+        let challengeID = challengeWeaponIDs[challengeWeaponIDs.startIndex]
         
-        if itemType == "Challenge" {
-            startChallenge(Challenge(rawValue: rawValue)!)
-        }
+        let itemType = "\(challengeID.dynamicType)"
+        let rawValue = challengeID.rawValue
+        
+        let toPlayerIDIndex = rankedPlayerIDs.indexOf(localPlayerID)! + 1
+        let toPlayerID = rankedPlayerIDs[toPlayerIDIndex]
+        
+        GameManager.sharedInstance.emitChaseWeapon(
+            gameID,
+            toPlayerID: toPlayerID,
+            itemType: itemType,
+            rawValue: rawValue
+        )
+        
+        chaseWeaponIDs.removeFirst()
+        //delegate?.gameChallengeWeaponFired()
     }
     
 	func updateItemForOtherPlayer(
@@ -479,10 +473,7 @@ class Game: NSObject {
 	) {
 		
 		switch itemType {
-			
-			case "activity":
-				playerData[playerID]!.activity = itemName
-			
+
 			case "powerUp":
 				
 				if itemName == "" {
@@ -565,20 +556,16 @@ class Game: NSObject {
 		localRank = rankedPlayerIDs.indexOf(localPlayerID)! + 1
 	}
 	
-    deinit {
-    l.o.g("\(gameID) deinit Movement observer")
-    Movement.sharedInstance.removeObserver(
-      self,
-      forKeyPath: "stepsUpdate",
-      context: nil)
-		Movement.sharedInstance.removeObserver(
-			self,
-			forKeyPath: "movementType",
-			context: nil)
-    }
-    
     func addTestSteps() {
         updateScoreForLocalPlayer(5)
 
+    }
+    
+    deinit {
+        l.o.g("\(gameID) deinit Movement observer")
+        Movement.sharedInstance.removeObserver(
+            self,
+            forKeyPath: "stepsUpdate",
+            context: nil)
     }
 }

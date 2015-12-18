@@ -15,6 +15,8 @@ class Item {
     var chaseID: Chase?
     var challengeID: Challenge?
     var chaseWeaponID: ChaseWeapon?
+    var challengeWeaponID: ChallengeWeapon?
+
     
     init(powerUpID: PowerUp) {
         self.powerUpID = powerUpID
@@ -34,6 +36,10 @@ class Item {
     
     init(chaseWeaponID: ChaseWeapon) {
         self.chaseWeaponID = chaseWeaponID
+    }
+    
+    init(challengeWeaponID: ChallengeWeapon) {
+        self.challengeWeaponID = challengeWeaponID
     }
 }
 

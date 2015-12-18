@@ -24,6 +24,10 @@ DetailViewControllerDelegate {
 		GameManager.sharedInstance.delegate = self
 		//only show required rows
 		tableView.tableFooterView = UIView(frame: CGRectZero)
+        
+        Movement.sharedInstance.startCountingSteps()
+        Movement.sharedInstance.startReadingMovementType()
+
 		//the row with startNewGame cell is row 0, so...
 		//insert dummy index so array matches tableview rows
 		gameIDs.append("")

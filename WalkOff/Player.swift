@@ -13,21 +13,19 @@ class Player: NSObject {
   
     var playerID: String?
     var playerAlias: String?
-    var inGame: Bool?
-    
+    var gameIDs: [String] = []
+    var connected: Bool?
+    var movementType: String?
+
     var score: Int?
-	
-    var activity = ""
+    var inGame: Bool?
     
     var powerUps = [String]()
     var powerDowns = [String]()
     var challenges = [String]()
     var chases = [String]()
-    
-    var connected: Bool?
-    var games: [String] = []
 
-    init(score: Int, inGame: Bool, isLocalPlayer: Bool) {
+    init(score: Int, inGame: Bool) {
         self.score = score
         self.inGame = inGame
 
@@ -35,17 +33,19 @@ class Player: NSObject {
         powerDowns.reserveCapacity(10)
         challenges.reserveCapacity(10)
         chases.reserveCapacity(10)
-
     }
   
     init(
         playerID: String,
         playerAlias: String,
-        games: [String],
-        isConnected: Bool
+        gameIDs: [String],
+        isConnected: Bool,
+        movementType: String
     ) {
         self.playerID = playerID
         self.playerAlias = playerAlias
+        self.gameIDs = gameIDs
         self.connected = isConnected
+        self.movementType = movementType
     }
 }
