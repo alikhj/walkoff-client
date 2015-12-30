@@ -68,9 +68,21 @@ GameDelegate {
     }
 
     func game(itemUpdatedForPlayer playerID: String) {
-        let indexPath = NSIndexPath(forRow: game!.rankedPlayerIDs.indexOf(playerID)!, inSection: players)
+        var indexPath = NSIndexPath()
+        var rankIndex = game!.rankedPlayerIDs.indexOf(playerID)!
+        
+        if game.challengeWeaponIDs.count > 0 {
+            rankIndex++
+        }
+        
+        if game.chaseWeaponIDs.count > 0 {
+            rankIndex++
+        }
+                
+        print("test: \(playerID) \(rankIndex)")
+        
+        indexPath = NSIndexPath(forRow: rankIndex, inSection: players)
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-        //tableView.reloadData()
     }
   
     func gamePowerUpOnStandby() {
@@ -137,14 +149,12 @@ GameDelegate {
         
         if indexPath.section == players {
             
-            if game.chaseWeaponIDs.count > 0 {
-                
-            }
-            
+            //for all rows up to localplayer row
             if indexPath.row < indexPathLocalPlayer.row {
                 cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as! PlayerCell
                 configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPath)
                 
+                //if there is a chaseWeapon and it's the row before localplayer
                 if indexPath.row == indexPathLocalPlayer.row - 1 && game.chaseWeaponIDs.count > 0 {
                     
                     chaseWeaponIndexPath = indexPath
@@ -154,6 +164,7 @@ GameDelegate {
                 
             } else {
                 
+                //for all rows after localplayer row
                 if indexPath.row == indexPathLocalPlayer.row + 1 && game.challengeWeaponIDs.count > 0 {
                     
                     challengeWeaponIndexPath = indexPath
@@ -306,10 +317,6 @@ GameDelegate {
             if indexPath.row == 0 {
                 GameManager.sharedInstance.leaveGame(gameID!, playerID: game!.localPlayerID)
                 delegate?.detailViewControllerDidLeaveGame(gameID!)
-            }
-            
-            if indexPath.row == 1 {
-                game!.addTestSteps()
             }
         }
         

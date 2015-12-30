@@ -461,8 +461,8 @@ class Game: NSObject {
             rawValue: rawValue
         )
         
-        chaseWeaponIDs.removeFirst()
-        //delegate?.gameChallengeWeaponFired()
+        challengeWeaponIDs.removeFirst()
+        delegate?.gameChallengeWeaponFired()
     }
     
 	func updateItemForOtherPlayer(

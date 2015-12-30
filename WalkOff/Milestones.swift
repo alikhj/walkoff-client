@@ -27,15 +27,7 @@ class Milestones: NSObject {
     
         milestones = [
             (40, "getting started", Item(chaseWeaponID: ChaseWeapon.bees)),
-            (50, "getting started", Item(chaseWeaponID: ChaseWeapon.bees)),
-            (100, "getting started", Item(chaseWeaponID: ChaseWeapon.bees)),
-            (775, "getting started", Item(chaseWeaponID: ChaseWeapon.bees)),
-            
-            (50, "getting started", Item(challengeWeaponID: ChallengeWeapon.poop)),
-            (55, "getting started", Item(challengeWeaponID: ChallengeWeapon.poop)),
-            (105, "getting started", Item(challengeWeaponID: ChallengeWeapon.poop)),
-            (205, "getting started", Item(challengeWeaponID: ChallengeWeapon.poop)),
-            (305, "getting started", Item(challengeWeaponID: ChallengeWeapon.poop))
+            (50, "getting started", Item(challengeWeaponID: ChallengeWeapon.poop))
         ]
     }
 	
