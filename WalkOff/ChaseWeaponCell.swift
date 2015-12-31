@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 
-class ChaseWeaponCell: UITableViewCell {
+class WeaponCell: UITableViewCell {
     
-    @IBOutlet weak var chaseWeaponLabel: UILabel!
+    @IBOutlet weak var weaponLabel: UILabel!
     override func layoutSubviews() {
         super.layoutSubviews()
     }

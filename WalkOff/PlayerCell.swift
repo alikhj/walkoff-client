@@ -11,11 +11,20 @@ import UIKit
 
 class PlayerCell: UITableViewCell {
   
-  @IBOutlet var playerLabel: UILabel!
-  @IBOutlet var scoreLabel: UILabel!
-  @IBOutlet weak var tipsLabel: UILabel!
-  
-  override func layoutSubviews() {
-    super.layoutSubviews()
-  }
+    @IBOutlet var playerLabel: UILabel!
+    @IBOutlet var scoreLabel: UILabel!
+    
+    @IBOutlet weak var fireChaseWeaponButton: UIButton!
+    @IBOutlet weak var chaseWeaponsLabel: UILabel!
+    
+    @IBOutlet weak var fireChallengeWeaponButton: UIButton!
+    @IBOutlet weak var challengeWeaponsLabel: UILabel!
+    
+    @IBAction func fireChaseWeaponButton(sender: AnyObject) {
+    
+    }
+    
+    @IBAction func fireChallengeWeaponButton(sender: AnyObject) {
+    
+    }
 }

@@ -40,7 +40,7 @@ class Game: NSObject {
     var playerData = [String : Player]()
   
     var standbyPowerUpIDs = [PowerUp]()
-    var chaseWeaponIDs = [Chase]()
+    var chaseWeapons = [(description: String, chaseID: Chase)]()
     var challengeWeaponIDs = [Challenge]()
     
     var powerUpUUIDs = [String]()
@@ -158,12 +158,12 @@ class Game: NSObject {
         }
         
         if let chaseWeaponID = item.chaseWeaponID {
-            print("offenseChase")
+            print("chaseWeapon")
             loadChaseWeapon(chaseWeaponID)
         }
         
         if let challengeWeaponID = item.challengeWeaponID {
-            print("offenseChase")
+            print("challengeWeapon")
             loadChallengeWeapon(challengeWeaponID)
         }
     }
@@ -399,7 +399,7 @@ class Game: NSObject {
     
     func loadChaseWeapon(chaseWeaponID: ChaseWeapon) {
 
-        chaseWeaponIDs.append(getChaseWeapon(chaseWeaponID))
+        chaseWeapons.append(getChaseWeapon(chaseWeaponID))
         delegate?.gameWeaponLoaded()
     }
     
@@ -420,10 +420,10 @@ class Game: NSObject {
     
     
     func fireChaseWeapon() {
-        let chaseID = chaseWeaponIDs[chaseWeaponIDs.startIndex]
+        let chaseWeapon = chaseWeapons[chaseWeapons.startIndex]
         
-        let itemType = "\(chaseID.dynamicType)"
-        let rawValue = chaseID.rawValue
+        let itemType = "\(chaseWeapon.chaseID.dynamicType)"
+        let rawValue = chaseWeapon.chaseID.rawValue
         
         let toPlayerIDIndex = rankedPlayerIDs.indexOf(localPlayerID)! - 1
         let toPlayerID = rankedPlayerIDs[toPlayerIDIndex]
@@ -435,7 +435,7 @@ class Game: NSObject {
             rawValue: rawValue
         )
         
-        chaseWeaponIDs.removeFirst()
+        chaseWeapons.removeFirst()
         delegate?.gameChaseWeaponFired()
     }
     

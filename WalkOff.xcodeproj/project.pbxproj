@@ -163,13 +163,13 @@
 			children = (
 				268713CB1BA9226500017EDA /* Milestones.swift */,
 				F16B463D1BE1299C00D57794 /* Item.swift */,
-				269F26961C245A270019E3EC /* ChallengeWeapon.swift */,
 				F16B12141BE1832A002419E0 /* PowerUp.swift */,
 				F1F99F3B1BE27ECE004810DB /* PowerDown.swift */,
 				F16B12181BE1838C002419E0 /* Chase.swift */,
 				F16B121A1BE18399002419E0 /* Challenge.swift */,
 				F1F99F3D1BE2B002004810DB /* TimerInfo.swift */,
 				F1F99F3F1BE2D2DE004810DB /* ChaseWeapon.swift */,
+				269F26961C245A270019E3EC /* ChallengeWeapon.swift */,
 			);
 			name = Items;
 			sourceTree = "<group>";

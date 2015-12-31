@@ -29,20 +29,32 @@ GameDelegate {
     let players = 1
     let menu = 2
   
-    var indexPathLocalPlayer: NSIndexPath {
-        
-        var forRow: Int
-        
-        if game!.chaseWeaponIDs.count > 0 {
-            forRow = game!.rankedPlayerIDs.indexOf(game!.localPlayerID)! + 1
-        } else {
-            forRow = game!.rankedPlayerIDs.indexOf(game!.localPlayerID)!
-        }
+    var indexPathOfLocalPlayer: NSIndexPath {
         
         return NSIndexPath(
-            forRow: forRow,
+            forRow: game!.rankedPlayerIDs.indexOf(game!.localPlayerID)!,
             inSection: players
         )
+    }
+    
+    var challengeWeaponAvailable: Bool {
+        
+        if game.challengeWeaponIDs.count > 0 {
+            return true
+        
+        } else {
+            return false
+        }
+    }
+    
+    var chaseWeaponAvailable: Bool {
+        
+        if game.chaseWeapons.count > 0 {
+            return true
+            
+        } else {
+            return false
+        }
     }
     
     var chaseWeaponIndexPath: NSIndexPath?
@@ -54,8 +66,7 @@ GameDelegate {
         super.viewDidLoad()
         title = gameID
 
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 44.0
+        //tableView.rowHeight = UITableViewAutomaticDimension
     }
   
     func game(scoreUpdatedForPlayer playerID: String, previousRank: Int, newRank: Int) {
@@ -71,15 +82,7 @@ GameDelegate {
         var indexPath = NSIndexPath()
         var rankIndex = game!.rankedPlayerIDs.indexOf(playerID)!
         
-        if game.challengeWeaponIDs.count > 0 {
-            rankIndex++
-        }
-        
-        if game.chaseWeaponIDs.count > 0 {
-            rankIndex++
-        }
-                
-        print("test: \(playerID) \(rankIndex)")
+        print("ranked: \(game!.rankedPlayerIDs.indexOf(playerID)!)")
         
         indexPath = NSIndexPath(forRow: rankIndex, inSection: players)
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
@@ -92,7 +95,7 @@ GameDelegate {
     func game(powerUpStarted standbyPowerUpIndex: Int) {
         let indexPath = NSIndexPath(forRow: standbyPowerUpIndex, inSection: 0)
 		tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
-		tableView.reloadRowsAtIndexPaths([indexPathLocalPlayer], withRowAnimation: .None)
+		tableView.reloadRowsAtIndexPaths([indexPathOfLocalPlayer], withRowAnimation: .None)
 	}
 	
     func game(challengeStartedWithID challengeID: Challenge) {
@@ -114,11 +117,11 @@ GameDelegate {
     }
     
     func gameWeaponLoaded() {
-        tableView.reloadData()
+        tableView.reloadRowsAtIndexPaths([indexPathOfLocalPlayer], withRowAnimation: .None)
     }
     
     func gameChaseWeaponFired() {
-        if game.chaseWeaponIDs.count > 0 {
+        if game.chaseWeapons.count > 0 {
             tableView.reloadRowsAtIndexPaths([chaseWeaponIndexPath!], withRowAnimation: .None)
         
         } else {
@@ -149,48 +152,32 @@ GameDelegate {
         
         if indexPath.section == players {
             
-            //for all rows up to localplayer row
-            if indexPath.row < indexPathLocalPlayer.row {
-                cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as! PlayerCell
-                configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPath)
+            if (chaseWeaponAvailable || challengeWeaponAvailable) &&
+                indexPath == indexPathOfLocalPlayer
+            {
+                if challengeWeaponAvailable && chaseWeaponAvailable {
+                    cell = tableView.dequeueReusableCellWithIdentifier("ChaseChallengeCell") as! PlayerCell
+                    configureTextForFireChallengeWeaponButton(cell as! PlayerCell)
+                    configureTextForChallengeWeaponsLabel(cell as! PlayerCell)
+                    configureTextForFireChaseWeaponButton(cell as! PlayerCell)
+                    configureTextForChaseWeaponsLabel(cell as! PlayerCell)
                 
-                //if there is a chaseWeapon and it's the row before localplayer
-                if indexPath.row == indexPathLocalPlayer.row - 1 && game.chaseWeaponIDs.count > 0 {
-                    
-                    chaseWeaponIndexPath = indexPath
-                    cell = tableView.dequeueReusableCellWithIdentifier("WeaponCell") as! WeaponCell
-                    configureTextForChaseWeaponCell(cell as! WeaponCell, indexPath: indexPath)
+                } else if challengeWeaponAvailable {
+                    cell = tableView.dequeueReusableCellWithIdentifier("ChallengeCell") as! PlayerCell
+                    configureTextForFireChallengeWeaponButton(cell as! PlayerCell)
+                    configureTextForChaseWeaponsLabel(cell as! PlayerCell)
+                
+                } else {
+                    cell = tableView.dequeueReusableCellWithIdentifier("ChaseCell") as! PlayerCell
+                    configureTextForFireChaseWeaponButton(cell as! PlayerCell)
+                    configureTextForChaseWeaponsLabel(cell as! PlayerCell)
+
                 }
                 
             } else {
                 
-                //for all rows after localplayer row
-                if indexPath.row == indexPathLocalPlayer.row + 1 && game.challengeWeaponIDs.count > 0 {
-                    
-                    challengeWeaponIndexPath = indexPath
-                    cell = tableView.dequeueReusableCellWithIdentifier("WeaponCell") as! WeaponCell
-                    configureTextForChallengeWeaponCell(cell as! WeaponCell, indexPath: indexPath)
-                
-                } else {
-                    var index = indexPath.row
-                    
-                    if game.chaseWeaponIDs.count > 0 {
-                        index--
-                    }
-                    
-                    if game.challengeWeaponIDs.count > 0 && indexPath.row > indexPathLocalPlayer.row {
-                        index--
-                    }
-                    
-                    cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as! PlayerCell
-                    
-                    let newIndexPath = NSIndexPath(
-                        forRow: index,
-                        inSection: indexPath.section
-                    )
-                    
-                    configureTextForPlayerCell(cell as! PlayerCell, indexPath: newIndexPath)
-                }
+                cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as! PlayerCell
+                configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPath)
             }
         }
     
@@ -201,6 +188,23 @@ GameDelegate {
 
         return cell
     }
+    
+    func configureTextForFireChaseWeaponButton(cell: PlayerCell) {
+        let description = game.chaseWeapons.first!.description
+        cell.fireChaseWeaponButton.setTitle(description, forState: UIControlState.Normal)
+    }
+    
+    func configureTextForChaseWeaponsLabel(cell: PlayerCell) {
+        
+    }
+    
+    func configureTextForFireChallengeWeaponButton(cell: PlayerCell) {
+        
+    }
+    
+    func configureTextForChallengeWeaponsLabel(cell: PlayerCell) {
+        
+    }
 	
     func configureTextForStandbyPowerUpCell(cell: StandbyPowerUpCell, indexPath: NSIndexPath) {
 		
@@ -208,9 +212,8 @@ GameDelegate {
         cell.powerUpDescriptionLabel.text = powerUp.description
         cell.powerUpNameLabel.text = powerUp.name
 	}
-	
+    
     func configureTextForPlayerCell(cell: PlayerCell, indexPath: NSIndexPath) {
-        
         let playerID = game!.rankedPlayerIDs[indexPath.row]
         var playerAlias = GameManager.sharedInstance.players[playerID]?.playerAlias
         var playerLabelText = ""
@@ -257,51 +260,16 @@ GameDelegate {
         cell.playerLabel.text = playerLabelText
         cell.scoreLabel.text = "\(game!.playerData[playerID]!.score!)"
     }
-    
-    func configureTextForChaseWeaponCell(cell: WeaponCell, indexPath: NSIndexPath) {
-        var indicator: String
-        var weapons = ""
-        if indexPath.row == 0 || indexPath.row == tableView.numberOfRowsInSection(players) - 1 {
-            indicator = "🚫"
-            cell.userInteractionEnabled = false
-        } else {
-            indicator = "👆"
-            cell.userInteractionEnabled = true
-        }
-        
-        for chaseID in game.chaseWeaponIDs {
-            weapons += getChase(chaseID).name
-        }
-        
-        cell.weaponLabel.text = "\(indicator) \(weapons)"
-    }
-    
-    func configureTextForChallengeWeaponCell(cell: WeaponCell, indexPath: NSIndexPath) {
-        var indicator: String
-        var weapons = ""
-        if indexPath.row == 0 || indexPath.row == tableView.numberOfRowsInSection(players) - 1 {
-            indicator = "🚫"
-            cell.userInteractionEnabled = false
-        } else {
-            indicator = "👇"
-            cell.userInteractionEnabled = true
-        }
-        
-        for challengeID in game.challengeWeaponIDs {
-            weapons += getChallenge(challengeID).name
-        }
-        
-        cell.weaponLabel.text = "\(indicator) \(weapons)"
-    }
+
   
     func configureTextForMenuCell(cell: MenuCell, indexPath: NSIndexPath) {
         if indexPath.row == 0 {
             cell.menuItemLabel.text = "Leave Game"
         }
+    }
+    
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
-        if indexPath.row == 1 {
-            cell.menuItemLabel.text = "TEST – add 5 steps"
-        }
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -318,14 +286,6 @@ GameDelegate {
                 GameManager.sharedInstance.leaveGame(gameID!, playerID: game!.localPlayerID)
                 delegate?.detailViewControllerDidLeaveGame(gameID!)
             }
-        }
-        
-        if indexPath == chaseWeaponIndexPath {
-            game.fireChaseWeapon()
-        }
-        
-        if indexPath == challengeWeaponIndexPath {
-            game.fireChallengeWeapon()
         }
     }
 	
@@ -347,14 +307,6 @@ GameDelegate {
             
             if section == players {
                 numberOfRows = game.rankedPlayerIDs.count
-                
-                if game.chaseWeaponIDs.count > 0 {
-                    numberOfRows++
-                }
-                
-                if game.challengeWeaponIDs.count > 0 {
-                    numberOfRows++
-                }
             }
             
             if section == menu {

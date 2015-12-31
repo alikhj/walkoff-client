@@ -107,63 +107,188 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="## Player alias" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wPW-h2-0A4">
-                                            <rect key="frame" x="8" y="11" width="167" height="21"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ajb-oE-8ZM">
-                                            <rect key="frame" x="8" y="40" width="291" height="0.0"/>
+                                            <rect key="frame" x="8" y="12" width="167" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="### Score" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9pu-Y8-lIj">
-                                            <rect key="frame" x="209" y="11" width="103" height="21"/>
+                                            <rect key="frame" x="209" y="12" width="103" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstAttribute="bottom" secondItem="ajb-oE-8ZM" secondAttribute="bottom" constant="3.5" id="3zJ-UM-gYB"/>
                                         <constraint firstItem="9pu-Y8-lIj" firstAttribute="top" secondItem="ld7-mB-PSF" secondAttribute="top" constant="11" id="5UB-2n-bOD"/>
-                                        <constraint firstItem="ajb-oE-8ZM" firstAttribute="top" secondItem="9pu-Y8-lIj" secondAttribute="bottom" constant="8" id="E21-Ek-PNs"/>
                                         <constraint firstItem="wPW-h2-0A4" firstAttribute="leading" secondItem="ld7-mB-PSF" secondAttribute="leading" constant="8" id="Mcm-FE-CwH"/>
                                         <constraint firstAttribute="trailing" secondItem="9pu-Y8-lIj" secondAttribute="trailing" constant="8" id="bK0-8t-D3h"/>
-                                        <constraint firstAttribute="trailing" secondItem="ajb-oE-8ZM" secondAttribute="trailing" constant="21" id="kk4-mZ-7mj"/>
                                         <constraint firstItem="9pu-Y8-lIj" firstAttribute="leading" secondItem="wPW-h2-0A4" secondAttribute="trailing" constant="34" id="pNA-ax-8GI"/>
-                                        <constraint firstItem="ajb-oE-8ZM" firstAttribute="leading" secondItem="ld7-mB-PSF" secondAttribute="leading" constant="8" id="qL8-cR-Efx"/>
-                                        <constraint firstItem="wPW-h2-0A4" firstAttribute="top" secondItem="ld7-mB-PSF" secondAttribute="top" constant="11" id="s7v-0X-X1l"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="playerLabel" destination="wPW-h2-0A4" id="ebQ-M3-1pa"/>
                                     <outlet property="scoreLabel" destination="9pu-Y8-lIj" id="4yl-xN-5VH"/>
-                                    <outlet property="tipsLabel" destination="ajb-oE-8ZM" id="DJ7-pf-4Yk"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="WeaponCell" id="YdF-hU-z8v" userLabel="WeaponCell" customClass="WeaponCell" customModule="WalkOff" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="174" width="320" height="44"/>
+                            <tableViewCell userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ChaseChallengeCell" rowHeight="132" id="lFh-X6-TG9" userLabel="ChaseChallengeCell" customClass="PlayerCell" customModule="WalkOff" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="174" width="320" height="132"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="YdF-hU-z8v" id="ltD-WA-bwc">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lFh-X6-TG9" id="rUl-Sq-Im4">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="131.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="## WeaponCell" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LTA-Pa-bFS" userLabel="weaponLabel">
-                                            <rect key="frame" x="8" y="11" width="167" height="21"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="## Player alias" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D9z-4x-1XJ">
+                                            <rect key="frame" x="8" y="56" width="167" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="### Score" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mgk-ra-bRF">
+                                            <rect key="frame" x="209" y="55" width="103" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="### Weapons" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bDH-R0-2td">
+                                            <rect key="frame" x="205" y="11" width="107" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oY2-tG-eHP">
+                                            <rect key="frame" x="8" y="7" width="102" height="30"/>
+                                            <state key="normal" title="FireChase Text"/>
+                                            <connections>
+                                                <action selector="fireChaseWeaponButton:" destination="lFh-X6-TG9" eventType="touchUpInside" id="LlY-WH-pTv"/>
+                                            </connections>
+                                        </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="### Weapons" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dbc-fB-bR8">
+                                            <rect key="frame" x="205" y="99" width="107" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kVL-Np-FEh">
+                                            <rect key="frame" x="8" y="95" width="127" height="30"/>
+                                            <state key="normal" title="FireChallenge Text"/>
+                                            <connections>
+                                                <action selector="fireChallengeWeaponButton:" destination="lFh-X6-TG9" eventType="touchUpInside" id="iC9-DP-I1l"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="D9z-4x-1XJ" firstAttribute="leading" secondItem="rUl-Sq-Im4" secondAttribute="leading" constant="8" id="2DR-hw-XFX"/>
+                                        <constraint firstAttribute="trailing" secondItem="Mgk-ra-bRF" secondAttribute="trailing" constant="8" id="Rap-rS-n0n"/>
+                                        <constraint firstItem="Mgk-ra-bRF" firstAttribute="top" secondItem="rUl-Sq-Im4" secondAttribute="top" constant="11" id="eHX-nY-E1v"/>
+                                        <constraint firstItem="Mgk-ra-bRF" firstAttribute="leading" secondItem="D9z-4x-1XJ" secondAttribute="trailing" constant="34" id="qU2-aE-Qd5"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="weaponLabel" destination="LTA-Pa-bFS" id="RBy-D0-Zzt"/>
+                                    <outlet property="challengeWeaponsLabel" destination="dbc-fB-bR8" id="Rvn-1J-4hY"/>
+                                    <outlet property="chaseWeaponsLabel" destination="bDH-R0-2td" id="snP-Aj-BTO"/>
+                                    <outlet property="fireChallengeWeaponButton" destination="kVL-Np-FEh" id="ch0-10-sA2"/>
+                                    <outlet property="fireChaseWeaponButton" destination="oY2-tG-eHP" id="WfB-O0-kMb"/>
+                                    <outlet property="playerLabel" destination="D9z-4x-1XJ" id="Uii-Hy-WgS"/>
+                                    <outlet property="scoreLabel" destination="Mgk-ra-bRF" id="sco-gP-TfB"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ChallengeCell" rowHeight="88" id="ZnF-zm-HCg" userLabel="ChallengeCell" customClass="PlayerCell" customModule="WalkOff" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="306" width="320" height="88"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZnF-zm-HCg" id="ZCU-2z-BaH">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="87.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="## Player alias" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3ld-bg-OLH">
+                                            <rect key="frame" x="8" y="12" width="167" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="### Score" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9mz-5M-tl8">
+                                            <rect key="frame" x="209" y="12" width="103" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="### Weapons" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JfO-j3-oqX">
+                                            <rect key="frame" x="205" y="55" width="107" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sHR-3k-9nb">
+                                            <rect key="frame" x="8" y="51" width="127" height="30"/>
+                                            <state key="normal" title="FireChallenge Text"/>
+                                            <connections>
+                                                <action selector="fireChallengeWeaponButton:" destination="ZnF-zm-HCg" eventType="touchUpInside" id="WCE-eG-zrC"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="9mz-5M-tl8" firstAttribute="top" secondItem="ZCU-2z-BaH" secondAttribute="top" constant="11" id="C1L-bA-ou3"/>
+                                        <constraint firstItem="9mz-5M-tl8" firstAttribute="leading" secondItem="3ld-bg-OLH" secondAttribute="trailing" constant="34" id="JVD-LZ-Ozm"/>
+                                        <constraint firstItem="3ld-bg-OLH" firstAttribute="leading" secondItem="ZCU-2z-BaH" secondAttribute="leading" constant="8" id="bXE-bL-LSf"/>
+                                        <constraint firstAttribute="trailing" secondItem="9mz-5M-tl8" secondAttribute="trailing" constant="8" id="e1v-UT-znl"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="challengeWeaponsLabel" destination="JfO-j3-oqX" id="5rN-yM-LIr"/>
+                                    <outlet property="fireChallengeWeaponButton" destination="sHR-3k-9nb" id="Gar-hZ-QUn"/>
+                                    <outlet property="playerLabel" destination="3ld-bg-OLH" id="oyO-0G-Ty0"/>
+                                    <outlet property="scoreLabel" destination="9mz-5M-tl8" id="5Dc-9z-PtY"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ChaseCell" rowHeight="88" id="9bQ-d5-0YZ" userLabel="ChaseCell" customClass="PlayerCell" customModule="WalkOff" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="394" width="320" height="88"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9bQ-d5-0YZ" id="8aL-dA-4gY">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="87.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="## Player alias" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iXS-p1-ljL">
+                                            <rect key="frame" x="8" y="56" width="167" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="### Score" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BH7-Pr-i2I">
+                                            <rect key="frame" x="209" y="55" width="103" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="### Weapons" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xqt-1U-FWC">
+                                            <rect key="frame" x="205" y="11" width="107" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uaz-zP-6Gv">
+                                            <rect key="frame" x="8" y="7" width="102" height="30"/>
+                                            <state key="normal" title="FireChase Text"/>
+                                            <connections>
+                                                <action selector="fireChaseWeaponButton:" destination="9bQ-d5-0YZ" eventType="touchUpInside" id="nu1-YP-zQG"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="iXS-p1-ljL" firstAttribute="leading" secondItem="8aL-dA-4gY" secondAttribute="leading" constant="8" id="0b9-MO-akV"/>
+                                        <constraint firstItem="BH7-Pr-i2I" firstAttribute="leading" secondItem="iXS-p1-ljL" secondAttribute="trailing" constant="34" id="3cn-cr-jat"/>
+                                        <constraint firstItem="BH7-Pr-i2I" firstAttribute="top" secondItem="8aL-dA-4gY" secondAttribute="top" constant="11" id="DVk-y5-xfB"/>
+                                        <constraint firstAttribute="trailing" secondItem="BH7-Pr-i2I" secondAttribute="trailing" constant="8" id="RL3-7K-NYD"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="chaseWeaponsLabel" destination="Xqt-1U-FWC" id="6Vf-rH-jDM"/>
+                                    <outlet property="fireChaseWeaponButton" destination="Uaz-zP-6Gv" id="3tN-qh-Ztg"/>
+                                    <outlet property="playerLabel" destination="iXS-p1-ljL" id="5eU-6T-1yF"/>
+                                    <outlet property="scoreLabel" destination="BH7-Pr-i2I" id="J8B-0h-yx9"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MenuCell" id="E8g-OC-DI9" customClass="MenuCell" customModule="WalkOff" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="218" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="482" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="E8g-OC-DI9" id="AyK-wL-Tri">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>

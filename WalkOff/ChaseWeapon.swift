@@ -13,15 +13,16 @@ enum ChaseWeapon: String {
     case bees = "bees"
 }
 
-func getChaseWeapon(chaseWeaponID: ChaseWeapon) -> Chase {
+func getChaseWeapon(chaseWeaponID: ChaseWeapon) -> (description: String, chaseID: Chase) {
     
-    var chaseID: Chase
-    
+    var chaseWeapon: (description: String, chaseID: Chase)
+
     switch chaseWeaponID {
         
     case .bees:
-        chaseID = Item(chaseID: Chase.bees).chaseID!
+        chaseWeapon.chaseID = Item(chaseID: Chase.bees).chaseID!
+        chaseWeapon.description = "Unleash the bees"
     }
     
-    return chaseID
+    return chaseWeapon
 }
