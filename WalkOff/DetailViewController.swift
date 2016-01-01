@@ -39,7 +39,7 @@ GameDelegate {
     
     var challengeWeaponAvailable: Bool {
         
-        if game.challengeWeaponIDs.count > 0 {
+        if game.challengeWeapons.count > 0 {
             return true
         
         } else {
@@ -57,16 +57,19 @@ GameDelegate {
         }
     }
     
-    var chaseWeaponIndexPath: NSIndexPath?
-    var challengeWeaponIndexPath: NSIndexPath?
-  
     override func viewDidLoad() {
         game = GameManager.sharedInstance.games[gameID]!
         game.delegate = self
         super.viewDidLoad()
         title = gameID
-
-        //tableView.rowHeight = UITableViewAutomaticDimension
+    }
+    
+    @IBAction func fireChaseButton(sender: AnyObject) {
+        game.fireChaseWeapon()
+    }
+    
+    @IBAction func fireChallengeButton(sender: AnyObject) {
+        game.fireChallengeWeapon()
     }
   
     func game(scoreUpdatedForPlayer playerID: String, previousRank: Int, newRank: Int) {
@@ -80,10 +83,7 @@ GameDelegate {
 
     func game(itemUpdatedForPlayer playerID: String) {
         var indexPath = NSIndexPath()
-        var rankIndex = game!.rankedPlayerIDs.indexOf(playerID)!
-        
-        print("ranked: \(game!.rankedPlayerIDs.indexOf(playerID)!)")
-        
+        let rankIndex = game!.rankedPlayerIDs.indexOf(playerID)!
         indexPath = NSIndexPath(forRow: rankIndex, inSection: players)
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
     }
@@ -121,23 +121,11 @@ GameDelegate {
     }
     
     func gameChaseWeaponFired() {
-        if game.chaseWeapons.count > 0 {
-            tableView.reloadRowsAtIndexPaths([chaseWeaponIndexPath!], withRowAnimation: .None)
-        
-        } else {
-            tableView.reloadSections(NSIndexSet(index: players), withRowAnimation: .None)
-        }
-
+        tableView.reloadRowsAtIndexPaths([indexPathOfLocalPlayer], withRowAnimation: .None)
     }
 	
     func gameChallengeWeaponFired() {
-        if game.challengeWeaponIDs.count > 0 {
-            tableView.reloadRowsAtIndexPaths([challengeWeaponIndexPath!], withRowAnimation: .None)
-            
-        } else {
-            tableView.reloadSections(NSIndexSet(index: players), withRowAnimation: .None)
-        }
-        
+        tableView.reloadRowsAtIndexPaths([indexPathOfLocalPlayer], withRowAnimation: .None)
     }
     
     override func tableView(
@@ -152,24 +140,26 @@ GameDelegate {
         
         if indexPath.section == players {
             
-            if (chaseWeaponAvailable || challengeWeaponAvailable) &&
-                indexPath == indexPathOfLocalPlayer
+            if indexPath == indexPathOfLocalPlayer &&
+            (chaseWeaponAvailable || challengeWeaponAvailable)
             {
                 if challengeWeaponAvailable && chaseWeaponAvailable {
                     cell = tableView.dequeueReusableCellWithIdentifier("ChaseChallengeCell") as! PlayerCell
-                    configureTextForFireChallengeWeaponButton(cell as! PlayerCell)
+                    
+                    configureTitleForFireChallengeWeaponButton(cell as! PlayerCell, indexPath: indexPath)
                     configureTextForChallengeWeaponsLabel(cell as! PlayerCell)
-                    configureTextForFireChaseWeaponButton(cell as! PlayerCell)
+                    
+                    configureTitleForFireChaseWeaponButton(cell as! PlayerCell, indexPath: indexPath)
                     configureTextForChaseWeaponsLabel(cell as! PlayerCell)
                 
                 } else if challengeWeaponAvailable {
                     cell = tableView.dequeueReusableCellWithIdentifier("ChallengeCell") as! PlayerCell
-                    configureTextForFireChallengeWeaponButton(cell as! PlayerCell)
+                    configureTitleForFireChallengeWeaponButton(cell as! PlayerCell, indexPath: indexPath)
                     configureTextForChaseWeaponsLabel(cell as! PlayerCell)
                 
                 } else {
                     cell = tableView.dequeueReusableCellWithIdentifier("ChaseCell") as! PlayerCell
-                    configureTextForFireChaseWeaponButton(cell as! PlayerCell)
+                    configureTitleForFireChaseWeaponButton(cell as! PlayerCell, indexPath: indexPath)
                     configureTextForChaseWeaponsLabel(cell as! PlayerCell)
 
                 }
@@ -189,21 +179,63 @@ GameDelegate {
         return cell
     }
     
-    func configureTextForFireChaseWeaponButton(cell: PlayerCell) {
-        let description = game.chaseWeapons.first!.description
-        cell.fireChaseWeaponButton.setTitle(description, forState: UIControlState.Normal)
+    func configureTitleForFireChaseWeaponButton(cell: PlayerCell, indexPath: NSIndexPath) {
+        
+        var indicator: String
+        var description: String
+        
+        if indexPath.row == 0 {
+            cell.fireChaseWeaponButton.enabled = false
+            indicator = "🚫"
+            description = "Chill, you're winning."
+            
+        } else {
+            cell.fireChaseWeaponButton.enabled = true
+            indicator = "👆"
+            description = game.chaseWeapons.first!.description
+        }
+        
+        let fireChaseWeaponButtonTitle = "\(indicator) \(description)"
+        cell.fireChaseWeaponButton.setTitle(fireChaseWeaponButtonTitle, forState: UIControlState.Normal)
+
+    }
+    
+    func configureTitleForFireChallengeWeaponButton(cell: PlayerCell, indexPath: NSIndexPath) {
+        
+        var indicator: String
+        var description: String
+        
+        if indexPath.row == tableView.numberOfRowsInSection(indexPath.section) - 1 {
+            cell.fireChallengeWeaponButton.enabled = false
+            indicator = "🚫"
+            description = "Giddyup, you're losing"
+        
+        } else {
+            cell.fireChallengeWeaponButton.enabled = true
+            indicator = "👇"
+            description = game.challengeWeapons.first!.description
+        }
+        
+        let fireChallengeWeaponButtonTitle = "\(indicator) \(description)"
+        cell.fireChallengeWeaponButton.setTitle(fireChallengeWeaponButtonTitle, forState: UIControlState.Normal)
     }
     
     func configureTextForChaseWeaponsLabel(cell: PlayerCell) {
-        
-    }
+        var chaseWeaponsLabelText = ""
+        for chaseWeapon in game.chaseWeapons {
+            chaseWeaponsLabelText += getChase(chaseWeapon.chaseID).name
+        }
     
-    func configureTextForFireChallengeWeaponButton(cell: PlayerCell) {
-        
+        cell.chaseWeaponsLabel.text = chaseWeaponsLabelText
     }
     
     func configureTextForChallengeWeaponsLabel(cell: PlayerCell) {
+        var challengeWeaponsLabelText = ""
+        for challengeWeapon in game.challengeWeapons {
+            challengeWeaponsLabelText += getChallenge(challengeWeapon.challengeID).name
+        }
         
+        cell.challengeWeaponsLabel.text = challengeWeaponsLabelText
     }
 	
     func configureTextForStandbyPowerUpCell(cell: StandbyPowerUpCell, indexPath: NSIndexPath) {
@@ -270,6 +302,23 @@ GameDelegate {
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
+        var rowHeight: CGFloat
+        
+        if indexPath == indexPathOfLocalPlayer &&
+        (chaseWeaponAvailable || challengeWeaponAvailable)
+        {
+            if chaseWeaponAvailable && challengeWeaponAvailable {
+                rowHeight = 132
+            
+            } else {
+                rowHeight = 88
+            }
+        
+        } else {
+            rowHeight = 44
+        }
+        
+        return rowHeight
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

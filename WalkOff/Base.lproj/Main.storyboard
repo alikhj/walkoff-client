@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="a73-km-Bo1">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="a73-km-Bo1">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
@@ -17,7 +17,7 @@
                                 <rect key="frame" x="0.0" y="86" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7dv-tO-5bL" id="8bV-Q2-66F">
-                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="1001" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Start a new game" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xq4-1t-AqW">
@@ -32,7 +32,7 @@
                                 <rect key="frame" x="0.0" y="130" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Vrm-fP-HxU" id="CkJ-sh-mpO">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="1000" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Game Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w9k-yK-NNj">
@@ -77,7 +77,7 @@
                                 <rect key="frame" x="0.0" y="86" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UUf-Dv-DwN" id="PkJ-uG-xag">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="1002" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="PowerUp Description" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jJQ-Gc-cXU">
@@ -103,7 +103,7 @@
                                 <rect key="frame" x="0.0" y="130" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="LqA-8f-K6O" id="ld7-mB-PSF">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="## Player alias" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wPW-h2-0A4">
@@ -135,7 +135,7 @@
                                 <rect key="frame" x="0.0" y="174" width="320" height="132"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lFh-X6-TG9" id="rUl-Sq-Im4">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="131.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="131"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="## Player alias" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D9z-4x-1XJ">
@@ -160,7 +160,7 @@
                                             <rect key="frame" x="8" y="7" width="102" height="30"/>
                                             <state key="normal" title="FireChase Text"/>
                                             <connections>
-                                                <action selector="fireChaseWeaponButton:" destination="lFh-X6-TG9" eventType="touchUpInside" id="LlY-WH-pTv"/>
+                                                <action selector="fireChaseButton:" destination="K2u-Vp-INc" eventType="touchUpInside" id="k8I-60-0pD"/>
                                             </connections>
                                         </button>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="### Weapons" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dbc-fB-bR8">
@@ -173,7 +173,7 @@
                                             <rect key="frame" x="8" y="95" width="127" height="30"/>
                                             <state key="normal" title="FireChallenge Text"/>
                                             <connections>
-                                                <action selector="fireChallengeWeaponButton:" destination="lFh-X6-TG9" eventType="touchUpInside" id="iC9-DP-I1l"/>
+                                                <action selector="fireChallengeButton:" destination="K2u-Vp-INc" eventType="touchUpInside" id="zKr-eZ-NtO"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -197,7 +197,7 @@
                                 <rect key="frame" x="0.0" y="306" width="320" height="88"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZnF-zm-HCg" id="ZCU-2z-BaH">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="87.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="87"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="## Player alias" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3ld-bg-OLH">
@@ -222,7 +222,7 @@
                                             <rect key="frame" x="8" y="51" width="127" height="30"/>
                                             <state key="normal" title="FireChallenge Text"/>
                                             <connections>
-                                                <action selector="fireChallengeWeaponButton:" destination="ZnF-zm-HCg" eventType="touchUpInside" id="WCE-eG-zrC"/>
+                                                <action selector="fireChallengeButton:" destination="K2u-Vp-INc" eventType="touchUpInside" id="JRt-wp-b9G"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -244,7 +244,7 @@
                                 <rect key="frame" x="0.0" y="394" width="320" height="88"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9bQ-d5-0YZ" id="8aL-dA-4gY">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="87.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="87"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="## Player alias" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iXS-p1-ljL">
@@ -269,7 +269,7 @@
                                             <rect key="frame" x="8" y="7" width="102" height="30"/>
                                             <state key="normal" title="FireChase Text"/>
                                             <connections>
-                                                <action selector="fireChaseWeaponButton:" destination="9bQ-d5-0YZ" eventType="touchUpInside" id="nu1-YP-zQG"/>
+                                                <action selector="fireChaseButton:" destination="K2u-Vp-INc" eventType="touchUpInside" id="r6a-4G-sYL"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -291,7 +291,7 @@
                                 <rect key="frame" x="0.0" y="482" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="E8g-OC-DI9" id="AyK-wL-Tri">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="1003" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Leave game" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tj9-EQ-XEs">

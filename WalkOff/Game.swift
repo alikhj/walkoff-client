@@ -41,7 +41,7 @@ class Game: NSObject {
   
     var standbyPowerUpIDs = [PowerUp]()
     var chaseWeapons = [(description: String, chaseID: Chase)]()
-    var challengeWeaponIDs = [Challenge]()
+    var challengeWeapons = [(description: String, challengeID: Challenge)]()
     
     var powerUpUUIDs = [String]()
     var powerDownUUIDs = [String]()
@@ -441,12 +441,12 @@ class Game: NSObject {
     
     func loadChallengeWeapon(challengeWeaponID: ChallengeWeapon) {
         
-        challengeWeaponIDs.append(getChallengeWeapon(challengeWeaponID))
+        challengeWeapons.append(getChallengeWeapon(challengeWeaponID))
         delegate?.gameWeaponLoaded()
     }
     
     func fireChallengeWeapon() {
-        let challengeID = challengeWeaponIDs[challengeWeaponIDs.startIndex]
+        let challengeID = challengeWeapons[challengeWeapons.startIndex].challengeID
         
         let itemType = "\(challengeID.dynamicType)"
         let rawValue = challengeID.rawValue
@@ -461,7 +461,7 @@ class Game: NSObject {
             rawValue: rawValue
         )
         
-        challengeWeaponIDs.removeFirst()
+        challengeWeapons.removeFirst()
         delegate?.gameChallengeWeaponFired()
     }
     

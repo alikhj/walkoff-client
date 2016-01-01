@@ -20,11 +20,4 @@ class PlayerCell: UITableViewCell {
     @IBOutlet weak var fireChallengeWeaponButton: UIButton!
     @IBOutlet weak var challengeWeaponsLabel: UILabel!
     
-    @IBAction func fireChaseWeaponButton(sender: AnyObject) {
-    
-    }
-    
-    @IBAction func fireChallengeWeaponButton(sender: AnyObject) {
-    
-    }
 }

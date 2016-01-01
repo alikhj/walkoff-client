@@ -13,15 +13,18 @@ enum ChallengeWeapon: String {
     case poop = "poop"
 }
 
-func getChallengeWeapon(challengeWeaponID: ChallengeWeapon) -> Challenge {
+func getChallengeWeapon(challengeWeaponID: ChallengeWeapon) ->
+    (description: String, challengeID: Challenge)
+{
     
-    var challengeID: Challenge
+    var challengeWeapon: (description: String, challengeID: Challenge)
     
     switch challengeWeaponID {
         
     case .poop:
-        challengeID = Item(challengeID: Challenge.poop).challengeID!
+        challengeWeapon.challengeID = Item(challengeID: Challenge.poop).challengeID!
+        challengeWeapon.description = "Drop a turd bomb"
     }
     
-    return challengeID
+    return challengeWeapon
 }
