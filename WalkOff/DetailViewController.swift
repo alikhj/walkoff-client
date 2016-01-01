@@ -155,7 +155,7 @@ GameDelegate {
                 } else if challengeWeaponAvailable {
                     cell = tableView.dequeueReusableCellWithIdentifier("ChallengeCell") as! PlayerCell
                     configureTitleForFireChallengeWeaponButton(cell as! PlayerCell, indexPath: indexPath)
-                    configureTextForChaseWeaponsLabel(cell as! PlayerCell)
+                    configureTextForChallengeWeaponsLabel(cell as! PlayerCell)
                 
                 } else {
                     cell = tableView.dequeueReusableCellWithIdentifier("ChaseCell") as! PlayerCell
@@ -167,8 +167,10 @@ GameDelegate {
             } else {
                 
                 cell = tableView.dequeueReusableCellWithIdentifier("PlayerCell") as! PlayerCell
-                configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPath)
             }
+            
+            configureTextForPlayerCell(cell as! PlayerCell, indexPath: indexPath)
+
         }
     
         if indexPath.section == menu {
@@ -186,8 +188,8 @@ GameDelegate {
         
         if indexPath.row == 0 {
             cell.fireChaseWeaponButton.enabled = false
-            indicator = "🚫"
-            description = "Chill, you're winning."
+            indicator = ""
+            description = "👍 Keep it up!"
             
         } else {
             cell.fireChaseWeaponButton.enabled = true
@@ -207,8 +209,8 @@ GameDelegate {
         
         if indexPath.row == tableView.numberOfRowsInSection(indexPath.section) - 1 {
             cell.fireChallengeWeaponButton.enabled = false
-            indicator = "🚫"
-            description = "Giddyup, you're losing"
+            indicator = ""
+            description = "👎 Giddyup, you're losing"
         
         } else {
             cell.fireChallengeWeaponButton.enabled = true

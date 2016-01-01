@@ -11,6 +11,11 @@ import Foundation
 enum ChaseWeapon: String {
     
     case bees = "bees"
+//    case cheetah = "cheetah"
+//    case bull = "bull"
+//    case tiger = "tiger"
+//    case cop = "cop"
+//    case gun = "gun"
 }
 
 func getChaseWeapon(chaseWeaponID: ChaseWeapon) -> (description: String, chaseID: Chase) {

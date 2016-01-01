@@ -11,6 +11,11 @@ import Foundation
 enum Chase: String {
     
     case bees = "bees"
+    case cheetah = "cheetah"
+    case bull = "bull"
+    case tiger = "tiger"
+    case cop = "cop"
+    case gun = "gun"
 }
 
 func getChase(chaseID: Chase) -> ((
@@ -33,6 +38,41 @@ verification: ((previousScore: Int, currentScore: Int) -> Item?)
     case .bees:
         name = "🐝"
         description = "🏃🐝⏱🔟"
+        numberOfSteps = 20
+        duration = 10.0
+        item = Item(powerDownID: PowerDown.hurt)
+        
+    case .cheetah:
+        name = "🐆"
+        description = ""
+        numberOfSteps = 20
+        duration = 10.0
+        item = Item(powerDownID: PowerDown.hurt)
+    
+    case .bull:
+        name = "🐂"
+        description = ""
+        numberOfSteps = 20
+        duration = 10.0
+        item = Item(powerDownID: PowerDown.hurt)
+        
+    case .tiger:
+        name = "🐅"
+        description = ""
+        numberOfSteps = 20
+        duration = 10.0
+        item = Item(powerDownID: PowerDown.hurt)
+        
+    case .cop:
+        name = "👮"
+        description = ""
+        numberOfSteps = 20
+        duration = 10.0
+        item = Item(powerDownID: PowerDown.hurt)
+    
+    case .gun:
+        name = "🔫"
+        description = ""
         numberOfSteps = 20
         duration = 10.0
         item = Item(powerDownID: PowerDown.hurt)

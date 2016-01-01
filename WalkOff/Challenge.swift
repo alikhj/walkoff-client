@@ -11,6 +11,13 @@ import Foundation
 enum Challenge: String {
     
     case poop = "poop"
+    case bananaPeel = "bananaPeel"
+    case bomb = "bomb"
+    case potHole = "potHole"
+    case spiderWeb = "spiderWeb"
+    case rain = "rain"
+    case barricade = "barricade"
+
 }
 
 func getChallenge(challengeID: Challenge) -> ((
@@ -36,6 +43,49 @@ verification: ((previousScore: Int, currentScore: Int) -> Item?)
         numberOfSteps = 20
         duration = 10.0
         item = Item(powerDownID: PowerDown.hurt)
+        
+    case .bananaPeel:
+        name = "🍌"
+        description = "test"
+        numberOfSteps = 20
+        duration = 10.0
+        item = Item(powerDownID: PowerDown.hurt)
+        
+    case .bomb:
+        name = "💣"
+        description = "test"
+        numberOfSteps = 20
+        duration = 10.0
+        item = Item(powerDownID: PowerDown.hurt)
+    
+    case .potHole:
+        name = "🕳"
+        description = "test"
+        numberOfSteps = 20
+        duration = 10.0
+        item = Item(powerDownID: PowerDown.hurt)
+        
+    case .spiderWeb:
+        name = "🕸"
+        description = "test"
+        numberOfSteps = 20
+        duration = 10.0
+        item = Item(powerDownID: PowerDown.hurt)
+        
+    case .rain:
+        name = "🌧"
+        description = "test"
+        numberOfSteps = 20
+        duration = 10.0
+        item = Item(powerDownID: PowerDown.hurt)
+        
+    case .barricade:
+        name = "🚧"
+        description = "test"
+        numberOfSteps = 20
+        duration = 10.0
+        item = Item(powerDownID: PowerDown.hurt)
+        
     }
     
     func verification(previousScore: Int, currentScore: Int) -> Item? {

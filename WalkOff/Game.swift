@@ -328,7 +328,7 @@ class Game: NSObject {
             evaluateItemForID(challengeItem)
 		}
         
-        delegate?.game(itemUpdatedForPlayer: localPlayerID)
+        //delegate?.game(itemUpdatedForPlayer: localPlayerID)
 		
 		GameManager.sharedInstance.emitUpdatedItem(
 			gameID,
@@ -446,6 +446,7 @@ class Game: NSObject {
     }
     
     func fireChallengeWeapon() {
+        print("test: \(challengeWeapons)")
         let challengeID = challengeWeapons[challengeWeapons.startIndex].challengeID
         
         let itemType = "\(challengeID.dynamicType)"

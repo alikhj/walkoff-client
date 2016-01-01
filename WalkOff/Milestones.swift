@@ -26,8 +26,9 @@ class Milestones: NSObject {
     override init() {
     
         milestones = [
-            (999, "getting started", Item(chaseWeaponID: ChaseWeapon.bees)),
-            (410, "getting started", Item(challengeWeaponID: ChallengeWeapon.poop))
+            (15, "getting started", Item(chaseWeaponID: ChaseWeapon.bees)),
+            (25, "getting started", Item(challengeWeaponID: ChallengeWeapon.poop)),
+            (40, "getting started", Item(challengeWeaponID: ChallengeWeapon.rain))
         ]
     }
 	
