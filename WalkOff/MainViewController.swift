@@ -12,13 +12,16 @@ import GameKit
 class MainViewController:
 UITableViewController,
 GameManagerDelegate,
-DetailViewControllerDelegate {
+DetailViewControllerDelegate,
+CreateInvitationViewControllerDelegate
+{
 	
 	let PresentAuthenticationViewController =
 	"PresentAuthenticationViewController"
 
 	var gameIDs = [String]()
-	
+	var localPlayer = GKLocalPlayer.localPlayer()
+    
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		GameManager.sharedInstance.delegate = self
@@ -87,6 +90,11 @@ DetailViewControllerDelegate {
         if indexPath.row == 0 {
             cell = tableView.dequeueReusableCellWithIdentifier("StartNewGameCell")
                 as UITableViewCell!
+            
+        } else if indexPath.row == 1 {
+            cell = tableView.dequeueReusableCellWithIdentifier("StartNewGameCellTest")
+                as UITableViewCell!
+            
         } else {
             cell = tableView.dequeueReusableCellWithIdentifier("GameCell")
                 as UITableViewCell!
@@ -115,7 +123,7 @@ DetailViewControllerDelegate {
     didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         if indexPath.row == 0 {
-            if !GameCenterAuthorization.sharedInstance.gameCenterEnabled {
+            if !GameManager.sharedInstance.gameKitHelper.gameCenterEnabled {
                 l.o.g("No Game Center login.")
                 
                 let alert = UIAlertController(
@@ -143,12 +151,15 @@ DetailViewControllerDelegate {
                 //open matchmaker
                 GameManager.sharedInstance.gameKitHelper.findMatch(
                     2,
-                    maxPlayers: 4,
+                    maxPlayers: 2,
                     presentingViewController: self,
                     delegate: GameManager.sharedInstance
                 )
             }
-        
+            
+        } else if indexPath.row == 1 {
+
+            
         } else {
             //segue to games
 
@@ -160,11 +171,23 @@ DetailViewControllerDelegate {
 	override func prepareForSegue(
     segue: UIStoryboardSegue,
     sender: AnyObject?) {
-        let navigationController = segue.destinationViewController as! UINavigationController
-        let controller = navigationController.topViewController as! DetailViewController
         
-        if let indexPath = tableView.indexPathForCell(sender as! UITableViewCell) {
-            controller.gameID = gameIDs[indexPath.row]
+        let navigationController = segue.destinationViewController as! UINavigationController
+
+        if segue.identifier == "GameDetailSegue" {
+            
+            let controller = navigationController.topViewController as! DetailViewController
+            if let indexPath = tableView.indexPathForCell(sender as! UITableViewCell) {
+                controller.gameID = gameIDs[indexPath.row]
+                controller.delegate = self
+            }
+        }
+        
+        
+        if segue.identifier == "CreateInvitationSegue" {
+            print(segue.identifier)
+
+            let controller = navigationController.topViewController as! CreateInvitationViewController
             controller.delegate = self
         }
 	}
@@ -172,8 +195,12 @@ DetailViewControllerDelegate {
 	func detailViewControllerDidClose() {
 		tableView.reloadData()
 		dismissViewControllerAnimated(true, completion: nil)
-		
 	}
+    
+    func createInvitationViewControllerDidClose() {
+        tableView.reloadData()
+        dismissViewControllerAnimated(true, completion: nil)
+    }
 	
 	func detailViewControllerDidLeaveGame(gameID: String) {
 		let index = gameIDs.indexOf(gameID)

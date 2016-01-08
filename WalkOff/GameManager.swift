@@ -51,7 +51,7 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
 	}
 	
 	func gameKitHelper(newPlayersFound arrayOfPlayersFound: [GKPlayer]) {
-		//create an array of playerIDs to for the server to use as tmpGameIDKey
+		//create an array of playerIDs for the server to use as tmpGameIDKey
 		allGKPlayers = arrayOfPlayersFound
 		allGKPlayers.append(localPlayer)
 		

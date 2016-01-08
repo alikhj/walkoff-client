@@ -4,6 +4,74 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <scenes>
+        <!--Invite friends-->
+        <scene sceneID="T4h-dL-gJG">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YFx-rF-17f" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController title="Invite friends" id="3t3-VB-6P9" customClass="CreateInvitationViewController" customModule="WalkOff" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="DJK-sm-AtP">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="FriendCell" textLabel="uVH-wA-17b" style="IBUITableViewCellStyleDefault" id="2Op-te-JCT" customClass="FriendCell" customModule="WalkOff" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="92" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2Op-te-JCT" id="t6x-lJ-5Q6">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="FriendAlias" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="uVH-wA-17b">
+                                            <rect key="frame" x="15" y="0.0" width="290" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="friendAliasLabel" destination="uVH-wA-17b" id="snE-Rd-DQf"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="3t3-VB-6P9" id="n6X-ak-pcN"/>
+                            <outlet property="delegate" destination="3t3-VB-6P9" id="uhb-Se-KZY"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Invite friends" id="JzP-pc-0Im">
+                        <barButtonItem key="leftBarButtonItem" title="Close" id="TVk-EE-frm">
+                            <connections>
+                                <action selector="closeButton:" destination="3t3-VB-6P9" id="DBh-XK-HoY"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Invite" id="YyK-gJ-Z3o">
+                            <connections>
+                                <action selector="inviteButton:" destination="3t3-VB-6P9" id="PLx-j1-BKW"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+            </objects>
+            <point key="canvasLocation" x="1287" y="-325"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Y1j-Ei-uWu">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PDI-bc-gr1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController id="eLv-6g-pDJ" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="h9Y-xK-fpk">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="3t3-VB-6P9" kind="relationship" relationship="rootViewController" id="60Z-Pp-doe"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="805" y="-325"/>
+        </scene>
         <!--Walk Off-->
         <scene sceneID="KcM-wW-kMK">
             <objects>
@@ -28,8 +96,26 @@
                                     </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="GameCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="GameCell" id="Vrm-fP-HxU">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="StartNewGameCellTest" id="cAQ-nI-ylj" userLabel="StartNewGameCellTest">
                                 <rect key="frame" x="0.0" y="130" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cAQ-nI-ylj" id="Geg-F4-hYy">
+                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="1001" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Start a new game Test" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XJ5-Wh-9CR">
+                                            <rect key="frame" x="8" y="11" width="260" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="eLv-6g-pDJ" kind="modal" identifier="CreateInvitationSegue" id="S0B-Oa-7jH"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="GameCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="GameCell" id="Vrm-fP-HxU">
+                                <rect key="frame" x="0.0" y="174" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Vrm-fP-HxU" id="CkJ-sh-mpO">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
@@ -352,7 +438,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Yhj-Zx-8vF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="746" y="327"/>
+            <point key="canvasLocation" x="805" y="327"/>
         </scene>
     </scenes>
 </document>
