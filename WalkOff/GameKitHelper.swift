@@ -11,6 +11,7 @@
 //
 //	TODO - code to handle invitations
 
+import Foundation
 import UIKit
 import GameKit
 
@@ -26,7 +27,8 @@ let PresentInviteViewController =
 
 class GameKitHelper:
 NSObject,
-GKMatchmakerViewControllerDelegate
+GKMatchmakerViewControllerDelegate,
+GKLocalPlayerListener
 {
     
     var authenticationViewController: UIViewController?
@@ -60,7 +62,7 @@ GKMatchmakerViewControllerDelegate
             
             } else if localPlayer.authenticated {
                 
-                //GKLocalPlayer.localPlayer().registerListener(self)
+                localPlayer.registerListener(self)
                 
                 self.gameCenterEnabled = true
                 GameManager.sharedInstance.startNetworking()
@@ -72,43 +74,20 @@ GKMatchmakerViewControllerDelegate
             }
         }
     }
+
+    func player(player: GKPlayer, didAcceptInvite invite: GKInvite) {
+        
+        print("didAcceptInvite")
+        print("asd \(invite)")
+        
+        GKMatchmaker.sharedMatchmaker().matchForInvite(invite, completionHandler:
+        { match, error -> Void in
+            
+            
+        })
+    }
     
-//    func player(player: GKPlayer, didAcceptInvite invite: GKInvite) {
-//        print("didAcceptInvite")
-//        
-//        inviteViewController = GKMatchmakerViewController(invite: invite)
-//        inviteViewController.hosted = true
-//        inviteViewController.matchmakerDelegate = self
-//        
-//        inviteViewController.setHostedPlayer(invite.sender, didConnect: true)
-//        
-//        NSNotificationCenter.defaultCenter().postNotificationName(
-//            PresentInviteViewController,
-//            object: self)
-//        print("test: \(invite.sender.playerID)")
-//
-//    }
-//    
-//    func player(player: GKPlayer, didRequestMatchWithRecipients recipientPlayers: [GKPlayer]) {
-//        print("didRequestMatchWithRecipients")
-//    }
-//    
-//    func matchmakerViewController(viewController: GKMatchmakerViewController, hostedPlayerDidAccept player: GKPlayer) {
-//        
-//        viewController.setHostedPlayer(player, didConnect: true)
-//    }
-//    
-//	func gameCenterViewControllerDidFinish(
-//		gameCenterViewController: GKGameCenterViewController!) {
-//		presentingViewController?.dismissViewControllerAnimated(
-//			true,
-//			completion: nil)
-//            
-//            print("gameCenterViewControllerDidFinish")
-//        
-//	}
-	
-	//assign the presentingViewController to the object calling this func
+    //assign the presentingViewController to the object calling this func
 	//setup the matchRequest terms and present the matchMakerViewController
 	func findMatch(
 		minPlayers: Int,

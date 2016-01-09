@@ -40,7 +40,6 @@ class CreateInvitationViewController: UITableViewController {
     tableView: UITableView,
     cellForRowAtIndexPath indexPath: NSIndexPath)
     -> UITableViewCell {
-        print(friendsArray[indexPath.row].alias)
         let cell = tableView.dequeueReusableCellWithIdentifier("FriendCell") as! FriendCell
         configureTextForFriendCell(indexPath, cell: cell)
         if checked[indexPath.row] == false {
@@ -79,6 +78,25 @@ class CreateInvitationViewController: UITableViewController {
             }
         }
     }
+
+    func inviteFriends(friends: [GKPlayer]) {
+        
+        let matchRequest = GKMatchRequest()
+        matchRequest.defaultNumberOfPlayers = 2
+        matchRequest.minPlayers = 2
+        matchRequest.maxPlayers = 2
+        matchRequest.recipients = friends
+        
+        matchRequest.recipientResponseHandler = { (playerID, response) -> Void in
+            print("invitation received: \(response)")
+        }
+        
+        GKMatchmaker.sharedMatchmaker().findPlayersForHostedRequest(
+            matchRequest,
+            withCompletionHandler: {(players : [GKPlayer]?, error: NSError?) -> Void in
+                print("find players")
+        })
+    }
     
     @IBAction func inviteButton(sender: AnyObject) {
         for index in 0...checked.count - 1 {
@@ -87,7 +105,7 @@ class CreateInvitationViewController: UITableViewController {
             }
         }
         
-        print(invitedFriends)
+        inviteFriends(invitedFriends)
     }
     @IBAction func closeButton(sender: AnyObject) {
         delegate?.createInvitationViewControllerDidClose()
