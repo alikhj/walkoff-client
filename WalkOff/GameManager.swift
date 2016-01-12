@@ -9,10 +9,10 @@
 import UIKit
 import GameKit
 
-protocol GameManagerDelegate: class {
-	func gameManager(newGameCreated gameID: String)
-	func gameManager(scoreUpdatedForGame gameID: String)
-	func gameManagerWasDisconnected()
+@objc protocol GameManagerDelegate: class {
+    optional func gameManager(newGameCreated gameID: String)
+    optional func gameManager(scoreUpdatedForGame gameID: String)
+    optional func gameManagerWasDisconnected()
 }
 
 let GameManagerSingleton = GameManager()
@@ -31,7 +31,7 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
 //
 //    #endif
     
-    let socket = SocketIOClient(socketURL: "http://162.243.138.39:2000")
+    let socket = SocketIOClient(socketURL: "http://192.168.0.10:2000")
     
 
 	let localPlayer = GKLocalPlayer.localPlayer()
@@ -82,35 +82,8 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
     func createGame(gameData: NSDictionary) {
         let newGame = Game(gameData: gameData)
         games[newGame.gameID] = newGame
-        delegate?.gameManager(newGameCreated: newGame.gameID)
+        delegate?.gameManager!(newGameCreated: newGame.gameID)
         allGKPlayers.removeAll(keepCapacity: false)
-    }
-    
-    func leaveGame(gameID: String, playerID: String) {
-        
-        socket.emit("leave-game", [
-            "gameID": gameID,
-            "playerID": playerID
-            ])
-        
-        for playerID in games[gameID]!.rankedPlayerIDs {
-            
-            if (playerID != localPlayer.playerID) {
-                if (players[playerID]!.gameIDs.count > 1) {
-                    let index = players[playerID]!.gameIDs.indexOf(gameID)
-                    players[playerID]!.gameIDs.removeAtIndex(index!)
-                    
-                } else {
-                    players.removeValueForKey(playerID)
-                }
-            }
-        }
-        
-        games.removeValueForKey(gameID)
-        
-        //		do this after game timer has ended:
-        //		let index = find(players[playerID]!.games, gameID)
-        //		players[playerID]!.games.removeAtIndex(index!)
     }
     
     func createPlayer(playerData: NSArray) {
@@ -169,21 +142,54 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
 		])
 	}
   
-    func emitChaseWeapon(
-        gameID: String,
-        toPlayerID: String,
-        itemType: String,
-        rawValue: String
-        ) {
-            
-            print("emitting weapon: \(itemType) \(rawValue)")
-            
-            socket.emit("weapon-fired", [
-                "gameID": gameID,
-                "toPlayerID": toPlayerID,
-                "itemType": itemType,
-                "rawValue": rawValue
+    func emitWeapon(
+    gameID: String,
+    toPlayerID: String,
+    itemType: String,
+    rawValue: String
+    ) {
+        
+        print("emitting weapon: \(itemType) \(rawValue)")
+        
+        socket.emit("weapon-fired", [
+            "gameID": gameID,
+            "toPlayerID": toPlayerID,
+            "itemType": itemType,
+            "rawValue": rawValue
+        ])
+    }
+    
+    func emitInvitedPlayersForNewGame(players: [String: String]) {
+        socket.emit("game-invitation", [
+            "invitedPlayers": players
+        ])
+    }
+    
+    func leaveGame(gameID: String, playerID: String) {
+        
+        socket.emit("leave-game", [
+            "gameID": gameID,
+            "playerID": playerID
             ])
+        
+        for playerID in games[gameID]!.rankedPlayerIDs {
+            
+            if (playerID != localPlayer.playerID) {
+                if (players[playerID]!.gameIDs.count > 1) {
+                    let index = players[playerID]!.gameIDs.indexOf(gameID)
+                    players[playerID]!.gameIDs.removeAtIndex(index!)
+                    
+                } else {
+                    players.removeValueForKey(playerID)
+                }
+            }
+        }
+        
+        games.removeValueForKey(gameID)
+        
+        //		do this after game timer has ended:
+        //		let index = find(players[playerID]!.games, gameID)
+        //		players[playerID]!.games.removeAtIndex(index!)
     }
     
 	func handlers() {
@@ -203,7 +209,7 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
     
 		socket.on("reconnect") { data, ack in
 			l.o.g("Disconnected, trying to reconnect...")
-			self.delegate?.gameManagerWasDisconnected()
+			self.delegate?.gameManagerWasDisconnected!()
 			self.socket.connect()
 		}
 		
@@ -214,6 +220,12 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
             let playerData = received?.objectForKey("playerData") as! NSArray
 			self.createPlayer(playerData)
             self.createGame(gameData)
+        }
+        
+        socket.on("invitation") { data, ack in
+            l.o.g("invitation received by socket")
+            let received = data[0] as? NSDictionary
+
         }
     
         socket.on("all-data") { data, ack in
@@ -274,7 +286,7 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
             l.o.g("\nscore-update\ngameID: \(gameID)\nplayerID: \(playerID)\nnewScore: \(newScore)")
             let game = self.games[gameID]
             game?.updateScoreForOtherPlayer(playerID, newScore: newScore)
-            self.delegate?.gameManager(scoreUpdatedForGame: gameID)
+            self.delegate?.gameManager!(scoreUpdatedForGame: gameID)
         }
 		
 		socket.on("item-updated") { data, ack in

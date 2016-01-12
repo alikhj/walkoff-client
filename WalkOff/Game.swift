@@ -428,7 +428,7 @@ class Game: NSObject {
         let toPlayerIDIndex = rankedPlayerIDs.indexOf(localPlayerID)! - 1
         let toPlayerID = rankedPlayerIDs[toPlayerIDIndex]
         
-        GameManager.sharedInstance.emitChaseWeapon(
+        GameManager.sharedInstance.emitWeapon(
             gameID,
             toPlayerID: toPlayerID,
             itemType: itemType,
@@ -455,7 +455,7 @@ class Game: NSObject {
         let toPlayerIDIndex = rankedPlayerIDs.indexOf(localPlayerID)! + 1
         let toPlayerID = rankedPlayerIDs[toPlayerIDIndex]
         
-        GameManager.sharedInstance.emitChaseWeapon(
+        GameManager.sharedInstance.emitWeapon(
             gameID,
             toPlayerID: toPlayerID,
             itemType: itemType,

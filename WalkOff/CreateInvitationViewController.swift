@@ -14,14 +14,14 @@ protocol CreateInvitationViewControllerDelegate: class {
     func createInvitationViewControllerDidClose()
 }
 
-class CreateInvitationViewController: UITableViewController {
+class CreateInvitationViewController: UITableViewController, GameManagerDelegate {
     
     weak var delegate: CreateInvitationViewControllerDelegate?
     
     let localPlayer = GKLocalPlayer.localPlayer()
     var friendsArray = [GKPlayer]()
+    var invitedFriendsArray = [GKPlayer]()
     var checked = [Bool]()
-    var invitedFriends = [GKPlayer]()
 
     override func viewDidLoad() {
         tableView.tableFooterView = UIView(frame: CGRectZero)
@@ -79,14 +79,14 @@ class CreateInvitationViewController: UITableViewController {
         }
     }
 
-    func inviteFriends(friends: [GKPlayer]) {
-        
+    func gameManager(newGameCreated gameID: String) {
+        print("yay")
         let matchRequest = GKMatchRequest()
+        
         matchRequest.defaultNumberOfPlayers = 2
         matchRequest.minPlayers = 2
         matchRequest.maxPlayers = 2
-        matchRequest.recipients = friends
-        
+        matchRequest.recipients = invitedFriendsArray
         matchRequest.recipientResponseHandler = { (playerID, response) -> Void in
             print("invitation received: \(response)")
         }
@@ -96,17 +96,25 @@ class CreateInvitationViewController: UITableViewController {
             withCompletionHandler: {(players : [GKPlayer]?, error: NSError?) -> Void in
                 print("find players")
         })
+
     }
     
     @IBAction func inviteButton(sender: AnyObject) {
+        
+        var invitedFriendsDictionary = [String: String]()
+        
         for index in 0...checked.count - 1 {
             if checked[index] == true {
-                invitedFriends.append(friendsArray[index])
+                let invitedFriend = friendsArray[index]
+                invitedFriendsArray.append(invitedFriend)
+                invitedFriendsDictionary[invitedFriend.playerID!] = invitedFriend.alias!
             }
         }
         
-        inviteFriends(invitedFriends)
+        invitedFriendsDictionary[GKLocalPlayer.localPlayer().playerID!] = GKLocalPlayer.localPlayer().alias
+        GameManager.sharedInstance.emitInvitedPlayersForNewGame(invitedFriendsDictionary)
     }
+    
     @IBAction func closeButton(sender: AnyObject) {
         delegate?.createInvitationViewControllerDidClose()
     }

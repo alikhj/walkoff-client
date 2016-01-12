@@ -41,8 +41,8 @@ GKLocalPlayerListener
 	var presentingViewController: UIViewController?
 	var multiplayerMatch: GKMatch?
 	var multiplayerMatchStarted: Bool
-
-	
+    var invite: GKInvite?
+    
 	override init() {
 		multiplayerMatchStarted = false
         gameCenterEnabled = false
@@ -78,13 +78,19 @@ GKLocalPlayerListener
     func player(player: GKPlayer, didAcceptInvite invite: GKInvite) {
         
         print("didAcceptInvite")
-        print("asd \(invite)")
+        self.invite = invite
+        test()
         
-        GKMatchmaker.sharedMatchmaker().matchForInvite(invite, completionHandler:
-        { match, error -> Void in
-            
-            
+        print("testing \(invite)")
+    }
+    
+    func test() {
+        GKMatchmaker.sharedMatchmaker().matchForInvite(
+            invite!,
+            completionHandler: {(game: GKMatch?, error: NSError?) -> Void in
+                
         })
+
     }
     
     //assign the presentingViewController to the object calling this func

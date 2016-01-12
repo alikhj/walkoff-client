@@ -78,7 +78,8 @@ CreateInvitationViewControllerDelegate
     numberOfRowsInSection section: Int)
     -> Int {
 	
-        return gameIDs.count
+        return gameIDs.count + 1
+        
 	}
 	
 	override func tableView(
@@ -183,11 +184,9 @@ CreateInvitationViewControllerDelegate
             }
         }
         
-        
         if segue.identifier == "CreateInvitationSegue" {
-            print(segue.identifier)
-
             let controller = navigationController.topViewController as! CreateInvitationViewController
+            GameManager.sharedInstance.delegate = controller
             controller.delegate = self
         }
 	}
