@@ -97,7 +97,7 @@ class Movement: NSObject, CLLocationManagerDelegate {
                         self.movementType = "🏃"
 
                     } else if (data!.stationary) {
-                        self.movementType = "💤"
+                        self.movementType = "😴"
 
                     } else if (data!.cycling) {
                       self.movementType = "🚴"

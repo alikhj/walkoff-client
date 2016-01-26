@@ -78,20 +78,10 @@ GKLocalPlayerListener
     func player(player: GKPlayer, didAcceptInvite invite: GKInvite) {
         
         print("didAcceptInvite")
-        self.invite = invite
-        test()
-        
-        print("testing \(invite)")
+        GameManager.sharedInstance.checkForInvitations()
+  
     }
-    
-    func test() {
-        GKMatchmaker.sharedMatchmaker().matchForInvite(
-            invite!,
-            completionHandler: {(game: GKMatch?, error: NSError?) -> Void in
-                
-        })
 
-    }
     
     //assign the presentingViewController to the object calling this func
 	//setup the matchRequest terms and present the matchMakerViewController

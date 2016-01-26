@@ -38,13 +38,11 @@ class Player: NSObject {
     init(
         playerID: String,
         playerAlias: String,
-        gameIDs: [String],
         isConnected: Bool,
         movementType: String
     ) {
         self.playerID = playerID
         self.playerAlias = playerAlias
-        self.gameIDs = gameIDs
         self.connected = isConnected
         self.movementType = movementType
     }

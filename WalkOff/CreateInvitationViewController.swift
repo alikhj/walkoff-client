@@ -11,7 +11,9 @@ import UIKit
 import GameKit
 
 protocol CreateInvitationViewControllerDelegate: class {
-    func createInvitationViewControllerDidClose()
+    func createInvitationViewControllerDidCancel()
+    func createInvitationViewControllerDidComplete()
+
 }
 
 class CreateInvitationViewController: UITableViewController, GameManagerDelegate {
@@ -22,6 +24,9 @@ class CreateInvitationViewController: UITableViewController, GameManagerDelegate
     var friendsArray = [GKPlayer]()
     var invitedFriendsArray = [GKPlayer]()
     var checked = [Bool]()
+    
+    @IBOutlet weak var inviteButton: UIBarButtonItem!
+
 
     override func viewDidLoad() {
         tableView.tableFooterView = UIView(frame: CGRectZero)
@@ -34,6 +39,36 @@ class CreateInvitationViewController: UITableViewController, GameManagerDelegate
             
             self.tableView.reloadData()
         }
+    }
+    
+    func gameManagerWasDisconnected() {
+        print("disconnected")
+    }
+    
+    func gameManager(newGameCreated gameID: String) {
+        inviteButton.title = "Done!"
+        
+        let matchRequest = GKMatchRequest()
+        matchRequest.defaultNumberOfPlayers = 2
+        matchRequest.minPlayers = 2
+        matchRequest.maxPlayers = 2
+        matchRequest.recipients = invitedFriendsArray
+        matchRequest.recipientResponseHandler = { (playerID, response) -> Void in
+            print("invitation received: \(response)")
+        }
+        
+        GKMatchmaker.sharedMatchmaker().findPlayersForHostedRequest(
+            matchRequest,
+            withCompletionHandler: {(players : [GKPlayer]?, error: NSError?) -> Void in
+                print("invitations sent")
+        })
+        
+        delegate?.createInvitationViewControllerDidComplete()
+
+    }
+    
+    func gameManagerInvitationReceived() {
+
     }
     
     override func tableView(
@@ -79,26 +114,6 @@ class CreateInvitationViewController: UITableViewController, GameManagerDelegate
         }
     }
 
-    func gameManager(newGameCreated gameID: String) {
-        print("yay")
-        let matchRequest = GKMatchRequest()
-        
-        matchRequest.defaultNumberOfPlayers = 2
-        matchRequest.minPlayers = 2
-        matchRequest.maxPlayers = 2
-        matchRequest.recipients = invitedFriendsArray
-        matchRequest.recipientResponseHandler = { (playerID, response) -> Void in
-            print("invitation received: \(response)")
-        }
-        
-        GKMatchmaker.sharedMatchmaker().findPlayersForHostedRequest(
-            matchRequest,
-            withCompletionHandler: {(players : [GKPlayer]?, error: NSError?) -> Void in
-                print("find players")
-        })
-
-    }
-    
     @IBAction func inviteButton(sender: AnyObject) {
         
         var invitedFriendsDictionary = [String: String]()
@@ -112,10 +127,11 @@ class CreateInvitationViewController: UITableViewController, GameManagerDelegate
         }
         
         invitedFriendsDictionary[GKLocalPlayer.localPlayer().playerID!] = GKLocalPlayer.localPlayer().alias
-        GameManager.sharedInstance.emitInvitedPlayersForNewGame(invitedFriendsDictionary)
+        GameManager.sharedInstance.invitePlayers(invitedFriendsDictionary)
+        inviteButton.title = "Waiting..."
     }
     
     @IBAction func closeButton(sender: AnyObject) {
-        delegate?.createInvitationViewControllerDidClose()
+        delegate?.createInvitationViewControllerDidCancel()
     }
 }

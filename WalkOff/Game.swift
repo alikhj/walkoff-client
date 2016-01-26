@@ -526,7 +526,6 @@ class Game: NSObject {
     
     func playerQuitGame(playerID: String) {
         playerData[playerID]!.inGame = false
-        print("game test: \(playerData[playerID]?.inGame)")
     }
 	
 	func updateRanking(playerID: String) {

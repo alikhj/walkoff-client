@@ -10,6 +10,7 @@ import UIKit
 import GameKit
 
 @objc protocol GameManagerDelegate: class {
+    optional func gameManagerInvitationReceived()
     optional func gameManager(newGameCreated gameID: String)
     optional func gameManager(scoreUpdatedForGame gameID: String)
     optional func gameManagerWasDisconnected()
@@ -31,14 +32,18 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
 //
 //    #endif
     
-    let socket = SocketIOClient(socketURL: "http://192.168.0.10:2000")
+    let socket = SocketIOClient(socketURL: "http://192.168.0.6:2000")
     
-
+    var gameIDs = [String]()
+    var invitations = [NSDictionary]()
+    
 	let localPlayer = GKLocalPlayer.localPlayer()
 	var gameKitHelper = GameKitHelper()
-	var games = [String : Game]()
+	
+    var games = [String : Game]()
 	var players = [String: Player]()
-	weak var delegate: GameManagerDelegate?
+	
+    weak var delegate: GameManagerDelegate?
 	var allGKPlayers = [GKPlayer]()
 	
 	func startNetworking() {
@@ -82,6 +87,8 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
     func createGame(gameData: NSDictionary) {
         let newGame = Game(gameData: gameData)
         games[newGame.gameID] = newGame
+        gameIDs.append(newGame.gameID)
+        
         delegate?.gameManager!(newGameCreated: newGame.gameID)
         allGKPlayers.removeAll(keepCapacity: false)
     }
@@ -90,8 +97,6 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
         for player in playerData {
             let playerID = player.valueForKey("id") as! String
             let playerAlias = player.valueForKey("alias") as! String
-            //change "games" to gameIDs on the server
-            let gameIDs = player.valueForKey("games") as! [String]
             let isConnected = player.valueForKey("connected") as! Bool
             let movementType = player.valueForKey("movementType") as! String
 
@@ -100,7 +105,6 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
                 players[playerID] = Player(
                     playerID: playerID,
                     playerAlias: playerAlias,
-                    gameIDs: gameIDs,
                     isConnected: isConnected,
                     movementType: movementType
                 )
@@ -124,7 +128,45 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
             "gameScores": gameScores
         ])
     }
+    
+    func invitePlayers(players: [String: String]) {
+        socket.emit("new-invitation", [
+            "invitedPlayers": players,
+            "playerID": localPlayer.playerID!,
+            "alias": localPlayer.alias!
+        ])
+    }
 	
+    func checkForInvitations() {
+        print("checking for invitations...")
+        
+        socket.emit("check-invitations", [
+            "playerID": localPlayer.playerID!
+        ])
+        
+//        if let lastInvitationID = invitationIDs.last {
+//           
+//            socket.emit("check-invitations", [
+//                "playerID": localPlayer.playerID!,
+//                "lastInvitationID": lastInvitationID
+//            ])
+//        
+//        } else {
+//            socket.emit("check-invitations", [
+//                "playerID": localPlayer.playerID!,
+//                "lastInvitationID": "none"
+//            ])
+//        }
+    }
+    
+    func acceptInvitationForGame(invitationID: String, index: Int) {
+        socket.emit("accept-invitation", [
+            "playerID": localPlayer.playerID!,
+            "invitationID": invitationID,
+            "index": index
+        ])
+    }
+    
 	func emitUpdatedItem(
     gameID: String,
     itemType: String,
@@ -159,18 +201,12 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
         ])
     }
     
-    func emitInvitedPlayersForNewGame(players: [String: String]) {
-        socket.emit("game-invitation", [
-            "invitedPlayers": players
-        ])
-    }
-    
     func leaveGame(gameID: String, playerID: String) {
         
         socket.emit("leave-game", [
             "gameID": gameID,
             "playerID": playerID
-            ])
+        ])
         
         for playerID in games[gameID]!.rankedPlayerIDs {
             
@@ -198,7 +234,8 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
 			l.o.g("Connected, with sid: \(self.socket.sid!)")
 			
 			let gamesCount = self.games.count
-			
+            self.checkForInvitations()
+
 			self.socket.emit("player-connected", [
 				"playerID": self.localPlayer.playerID!,
 				"playerAlias": self.localPlayer.alias!,
@@ -222,10 +259,12 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
             self.createGame(gameData)
         }
         
-        socket.on("invitation") { data, ack in
-            l.o.g("invitation received by socket")
-            let received = data[0] as? NSDictionary
-
+        socket.on("invitations") { data, ack in
+            l.o.g("new-invitation received by socket")
+            let received = data[0] as! NSDictionary
+            let invitations = received.objectForKey("invitations") as! NSArray
+            self.invitations = invitations as! [NSDictionary]
+            self.delegate?.gameManagerInvitationReceived!()
         }
     
         socket.on("all-data") { data, ack in
@@ -265,7 +304,7 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
           l.o.g("\n\(playerID) has reconnected to \(gameID)")
         }
         
-        socket.on("player-quit-game") { data, ack in
+        socket.on("player-left-game") { data, ack in
             let received = data[0] as? NSDictionary
             let playerID = received?.objectForKey("playerID") as! String
             let gameID = received?.objectForKey("gameID") as! String
@@ -286,7 +325,7 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
             l.o.g("\nscore-update\ngameID: \(gameID)\nplayerID: \(playerID)\nnewScore: \(newScore)")
             let game = self.games[gameID]
             game?.updateScoreForOtherPlayer(playerID, newScore: newScore)
-            self.delegate?.gameManager!(scoreUpdatedForGame: gameID)
+            //self.delegate?.gameManager!(scoreUpdatedForGame: gameID)
         }
 		
 		socket.on("item-updated") { data, ack in

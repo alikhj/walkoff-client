@@ -31,7 +31,7 @@ duration: Double
         
     case .hurt:
         powerDown.name = "🤕"
-        powerDown.description = "🤕  = 💤🚶💤"
+        powerDown.description = "🤕  = 😴🚶😴"
         powerDown.divider = 2.0
         powerDown.duration = 10.0
     }
