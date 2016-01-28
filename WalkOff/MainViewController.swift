@@ -33,27 +33,32 @@ CreateInvitationViewControllerDelegate
         Movement.sharedInstance.startCountingSteps()
         Movement.sharedInstance.startReadingMovementType()
 	}
-
+    
+    func gameManagerMovementUpdated() {
+        tableView.reloadSections(NSIndexSet(index: gameIDsSection), withRowAnimation: .None)
+    }
+    
 	func gameManager(newGameCreated gameID: String) {
         print("newGameCreated main VC")
-        tableView.reloadData()
+        tableView.reloadSections(NSIndexSet(index: gameIDsSection), withRowAnimation: .Left)
 	}
 	
 	func gameManager(scoreUpdatedForGame gameID: String) {
-		let indexOfGame = GameManager.sharedInstance.gameIDs.indexOf(gameID)
-		let indexPath = NSIndexPath(forRow: indexOfGame!, inSection: 0)
+		print("asd")
+        let indexOfGame = GameManager.sharedInstance.gameIDs.indexOf(gameID)
+		let indexPath = NSIndexPath(forRow: indexOfGame!, inSection: gameIDsSection)
 		let indexPaths = [indexPath]
 		
         tableView.reloadRowsAtIndexPaths(
 			indexPaths,
-			withRowAnimation: .Automatic
+			withRowAnimation: .None
         )
 	}
     
     func gameManagerInvitationReceived() {
         tableView.reloadSections(NSIndexSet(index: invitationIDsSection), withRowAnimation: .Left)
     }
-	
+
     
 	func gameManagerWasDisconnected() {
         
@@ -98,6 +103,17 @@ CreateInvitationViewControllerDelegate
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 3
     }
+    
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if indexPath.section == invitationIDsSection {
+            
+            return 72.0
+        
+        } else {
+            
+            return 44.0
+        }
+    }
 	
 	override func tableView(
     tableView: UITableView,
@@ -132,28 +148,114 @@ CreateInvitationViewControllerDelegate
 	}
 	
     func configureTextForInvitationCell(cell: UITableViewCell, row: Int) {
-        let invitation = GameManager.sharedInstance.invitations[row]
+        let lastIndex = GameManager.sharedInstance.invitations.count - 1
+        let invitation = GameManager.sharedInstance.invitations[lastIndex - row]
         let hostAlias = invitation.objectForKey("alias")
         
-        let invitationLabel = cell.viewWithTag(1000) as! UILabel
-        invitationLabel.text = "\(hostAlias!) wants to play"
+        let invitationLabel = cell.viewWithTag(1001) as! UILabel
+        invitationLabel.text = "👋\(hostAlias!)"
+    }
+    
+    @IBAction func acceptInvitationButton(sender: AnyObject) {
+        
+        let indexPath = findIndexPathFromSender(sender as! UIButton)
+        
+        let lastIndex = GameManager.sharedInstance.invitations.count - 1
+        let index = lastIndex - indexPath.row
+        
+        let invitationID = GameManager.sharedInstance.invitations[index].objectForKey("gameID") as! String
+        GameManager.sharedInstance.acceptInvitationForGame(invitationID, index: index)
+        tableView.reloadSections(NSIndexSet(index: invitationIDsSection), withRowAnimation: .None)
+    }
+    
+    @IBAction func declineInvitationButton(sender: AnyObject) {
+        
+        let indexPath = findIndexPathFromSender(sender as! UIButton)
+        let lastIndex = GameManager.sharedInstance.invitations.count - 1
+        let index = lastIndex - indexPath.row
+        
+        let invitationID = GameManager.sharedInstance.invitations[index].objectForKey("gameID") as! String
+
+        GameManager.sharedInstance.leaveGame(
+            invitationID,
+            playerID: localPlayer.playerID!
+        )
+        
+        GameManager.sharedInstance.declineInvitation(
+            invitationID,
+            invitationIndex: index,
+            playerID: localPlayer.playerID!
+        )
+        
+        tableView.reloadSections(NSIndexSet(index: invitationIDsSection), withRowAnimation: .None)
+    }
+    
+    func findIndexPathFromSender(button: UIButton) -> NSIndexPath {
+        let buttonPosition = button.convertPoint(CGPointZero, toView: tableView)
+        return tableView.indexPathForRowAtPoint(buttonPosition)!
     }
     
 	func configureTextForGameCell(cell: UITableViewCell, row: Int) {
-        let gameID = GameManager.sharedInstance.gameIDs[row]
+        let lastIndex = GameManager.sharedInstance.gameIDs.count - 1
+        let gameID = GameManager.sharedInstance.gameIDs[lastIndex - row]
 		let game = GameManager.sharedInstance.games[gameID]
 		let localPlayerID = GameManager.sharedInstance.localPlayer.playerID
 		let gameScore = game?.playerData[localPlayerID!]?.score
-		let playerRank = game?.localRank
-
-		let gameNameLabel = cell.viewWithTag(1000) as! UILabel
+        let renderedRank = renderPlayerRank((game?.localRank)!)
+		
+        let gameNameLabel = cell.viewWithTag(1000) as! UILabel
 		gameNameLabel.text = "\(gameID)"
 		
         
 		let scoreAndRankLabel = cell.viewWithTag(1001) as! UILabel
-		scoreAndRankLabel.text = "\(gameScore!) (\(playerRank!))"
+		scoreAndRankLabel.text = "\(gameScore!) \(renderedRank)"
 	}
 	
+    func renderPlayerRank(playerRank: Int) -> String {
+        
+        var renderedRanked = ""
+        
+        switch playerRank {
+            
+        case 1:
+            renderedRanked = "🏆"
+        case 2:
+            renderedRanked = "2️⃣"
+        case 3:
+            renderedRanked = "3️⃣"
+        case 4:
+            renderedRanked = "4️⃣"
+        case 5:
+            renderedRanked = "5⃣️"
+        case 6:
+            renderedRanked = "6⃣️"
+        case 7:
+            renderedRanked = "7⃣️"
+        case 8:
+            renderedRanked = "8⃣️"
+        case 9:
+            renderedRanked = "9⃣️"
+        case 10:
+            renderedRanked = "1⃣️0⃣️"
+        case 11:
+            renderedRanked = "1⃣️1⃣️"
+        case 12:
+            renderedRanked = "1⃣️2️⃣"
+        case 13:
+            renderedRanked = "1⃣️3️⃣"
+        case 14:
+            renderedRanked = "1⃣️4️⃣"
+        case 15:
+            renderedRanked = "1⃣️5⃣️"
+        case 16:
+            renderedRanked = "1⃣️6⃣️"
+        default:
+            renderedRanked = ""
+        }
+        
+        return renderedRanked
+    }
+    
 	override func tableView(
     tableView: UITableView,
     didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -199,12 +301,6 @@ CreateInvitationViewControllerDelegate
         
         if indexPath.section == invitationIDsSection {
             
-            let invitationID = GameManager.sharedInstance.invitations[indexPath.row].objectForKey("gameID") as! String
-            
-            GameManager.sharedInstance.acceptInvitationForGame(invitationID, index: indexPath.row)
-            GameManager.sharedInstance.invitations.removeAtIndex(indexPath.row)
-
-            tableView.reloadSections(NSIndexSet(index: invitationIDsSection), withRowAnimation: .Left)
         }
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
@@ -220,7 +316,11 @@ CreateInvitationViewControllerDelegate
             
             let controller = navigationController.topViewController as! DetailViewController
             if let indexPath = tableView.indexPathForCell(sender as! UITableViewCell) {
-                controller.gameID = GameManager.sharedInstance.gameIDs[indexPath.row]
+
+                let lastIndex = GameManager.sharedInstance.gameIDs.count - 1
+                let index = lastIndex - indexPath.row
+                
+                controller.gameID = GameManager.sharedInstance.gameIDs[index]
                 controller.delegate = self
             }
         }

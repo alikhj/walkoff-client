@@ -22,9 +22,8 @@ protocol GameDelegate: class {
     func game(powerUpStarted standbyPowerUpIndex: Int)
     func game(challengeStartedWithID challengeID: Challenge)
     func game(chaseStartedWithID chaseID: Chase)
-    func gameWeaponLoaded()
-    func gameChaseWeaponFired()
-    func gameChallengeWeaponFired()
+    func gameWeaponUpdated()
+    func gamePlayerLeft()
 }
 
 class Game: NSObject {
@@ -109,9 +108,12 @@ class Game: NSObject {
     //called by observer method
     func updateScoreForLocalPlayer(stepsUpdate: Int) {
         previousScore = playerData[localPlayerID]!.score!
+        
         let scoreUpdate = Int(multiplier * Double(stepsUpdate))
+        
         playerData[localPlayerID]!.score! += scoreUpdate
         updateRanking(localPlayerID)
+        
         let newScore = playerData[localPlayerID]!.score!
         evaluateScoreForItem(newScore, previousScore: previousScore)
     }
@@ -400,7 +402,7 @@ class Game: NSObject {
     func loadChaseWeapon(chaseWeaponID: ChaseWeapon) {
 
         chaseWeapons.append(getChaseWeapon(chaseWeaponID))
-        delegate?.gameWeaponLoaded()
+        delegate?.gameWeaponUpdated()
     }
     
     func receiveWeapon(itemType: String, rawValue: String) {
@@ -436,13 +438,13 @@ class Game: NSObject {
         )
         
         chaseWeapons.removeFirst()
-        delegate?.gameChaseWeaponFired()
+        delegate?.gameWeaponUpdated()
     }
     
     func loadChallengeWeapon(challengeWeaponID: ChallengeWeapon) {
         
         challengeWeapons.append(getChallengeWeapon(challengeWeaponID))
-        delegate?.gameWeaponLoaded()
+        delegate?.gameWeaponUpdated()
     }
     
     func fireChallengeWeapon() {
@@ -463,7 +465,7 @@ class Game: NSObject {
         )
         
         challengeWeapons.removeFirst()
-        delegate?.gameChallengeWeaponFired()
+        delegate?.gameWeaponUpdated()
     }
     
 	func updateItemForOtherPlayer(
@@ -524,8 +526,10 @@ class Game: NSObject {
         delegate?.game(itemUpdatedForPlayer: playerID)
 	}
     
-    func playerQuitGame(playerID: String) {
+    func playerLeftGame(playerID: String) {
         playerData[playerID]!.inGame = false
+        updateRankedPlayerIDs()
+        delegate?.gamePlayerLeft()
     }
 	
 	func updateRanking(playerID: String) {
@@ -551,8 +555,16 @@ class Game: NSObject {
 			let bScore = b.score as NSNumber!
 			return bScore.compare(aScore)
 		}
+        
 		rankedPlayerIDs = rankedPlayersArray as! [String]
-        //insert weapon here
+        
+        for (playerID, player) in playerData {
+            if player.inGame == false {
+                let index = rankedPlayerIDs.indexOf(playerID)
+                rankedPlayerIDs.removeAtIndex(index!)
+            }
+        }
+        
 		localRank = rankedPlayerIDs.indexOf(localPlayerID)! + 1
 	}
 	

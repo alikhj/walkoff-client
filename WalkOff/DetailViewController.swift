@@ -116,16 +116,12 @@ GameDelegate {
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
-    func gameWeaponLoaded() {
+    func gameWeaponUpdated() {
         tableView.reloadRowsAtIndexPaths([indexPathOfLocalPlayer], withRowAnimation: .None)
     }
     
-    func gameChaseWeaponFired() {
-        tableView.reloadRowsAtIndexPaths([indexPathOfLocalPlayer], withRowAnimation: .None)
-    }
-	
-    func gameChallengeWeaponFired() {
-        tableView.reloadRowsAtIndexPaths([indexPathOfLocalPlayer], withRowAnimation: .None)
+    func gamePlayerLeft() {
+        tableView.reloadData()
     }
     
     override func tableView(
@@ -210,7 +206,7 @@ GameDelegate {
         if indexPath.row == tableView.numberOfRowsInSection(indexPath.section) - 1 {
             cell.fireChallengeWeaponButton.enabled = false
             indicator = ""
-            description = "👎 Giddyup, you're losing"
+            description = "👎 Get moving!"
         
         } else {
             cell.fireChallengeWeaponButton.enabled = true

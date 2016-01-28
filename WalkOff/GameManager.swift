@@ -12,6 +12,7 @@ import GameKit
 @objc protocol GameManagerDelegate: class {
     optional func gameManagerInvitationReceived()
     optional func gameManager(newGameCreated gameID: String)
+    optional func gameManagerMovementUpdated()
     optional func gameManager(scoreUpdatedForGame gameID: String)
     optional func gameManagerWasDisconnected()
 }
@@ -127,6 +128,8 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
             "movementType": Movement.sharedInstance.movementType,
             "gameScores": gameScores
         ])
+        
+        delegate?.gameManagerMovementUpdated?()
     }
     
     func invitePlayers(players: [String: String]) {
@@ -143,23 +146,12 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
         socket.emit("check-invitations", [
             "playerID": localPlayer.playerID!
         ])
-        
-//        if let lastInvitationID = invitationIDs.last {
-//           
-//            socket.emit("check-invitations", [
-//                "playerID": localPlayer.playerID!,
-//                "lastInvitationID": lastInvitationID
-//            ])
-//        
-//        } else {
-//            socket.emit("check-invitations", [
-//                "playerID": localPlayer.playerID!,
-//                "lastInvitationID": "none"
-//            ])
-//        }
     }
     
     func acceptInvitationForGame(invitationID: String, index: Int) {
+        
+        invitations.removeAtIndex(index)
+        
         socket.emit("accept-invitation", [
             "playerID": localPlayer.playerID!,
             "invitationID": invitationID,
@@ -207,25 +199,38 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
             "gameID": gameID,
             "playerID": playerID
         ])
+       
+        if games[gameID] != nil {
         
-        for playerID in games[gameID]!.rankedPlayerIDs {
-            
-            if (playerID != localPlayer.playerID) {
-                if (players[playerID]!.gameIDs.count > 1) {
-                    let index = players[playerID]!.gameIDs.indexOf(gameID)
-                    players[playerID]!.gameIDs.removeAtIndex(index!)
-                    
-                } else {
-                    players.removeValueForKey(playerID)
+            for playerID in (games[gameID]!.rankedPlayerIDs) {
+                
+                if (playerID != localPlayer.playerID) {
+                    if (players[playerID]!.gameIDs.count > 1) {
+                        let index = players[playerID]!.gameIDs.indexOf(gameID)
+                        players[playerID]!.gameIDs.removeAtIndex(index!)
+                        
+                    } else {
+                        players.removeValueForKey(playerID)
+                    }
                 }
             }
+            
+            games.removeValueForKey(gameID)
         }
-        
-        games.removeValueForKey(gameID)
-        
         //		do this after game timer has ended:
         //		let index = find(players[playerID]!.games, gameID)
         //		players[playerID]!.games.removeAtIndex(index!)
+    }
+    
+    func declineInvitation(invitationID: String, invitationIndex: Int, playerID: String) {
+        
+        invitations.removeAtIndex(invitationIndex)
+        
+        socket.emit("decline-invitation", [
+            "invitationID": invitationID,
+            "invitationIndex": invitationIndex,
+            "playerID": playerID
+        ])
     }
     
 	func handlers() {
@@ -309,8 +314,7 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
             let playerID = received?.objectForKey("playerID") as! String
             let gameID = received?.objectForKey("gameID") as! String
             let game = self.games[gameID]!
-            game.playerQuitGame(playerID)
-            game.delegate?.game(itemUpdatedForPlayer: playerID)
+            game.playerLeftGame(playerID)
         }
     
         socket.on("movement-updated") { data, ack in
@@ -325,7 +329,7 @@ class GameManager: NSObject, GameKitHelperDelegate, MovementDelegate {
             l.o.g("\nscore-update\ngameID: \(gameID)\nplayerID: \(playerID)\nnewScore: \(newScore)")
             let game = self.games[gameID]
             game?.updateScoreForOtherPlayer(playerID, newScore: newScore)
-            //self.delegate?.gameManager!(scoreUpdatedForGame: gameID)
+            self.delegate?.gameManager?(scoreUpdatedForGame: gameID)
         }
 		
 		socket.on("item-updated") { data, ack in

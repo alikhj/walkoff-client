@@ -79,7 +79,6 @@ GKLocalPlayerListener
         
         print("didAcceptInvite")
         GameManager.sharedInstance.checkForInvitations()
-  
     }
 
     
